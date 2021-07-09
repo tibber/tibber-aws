@@ -1,3 +1,10 @@
+# [5.3.0](https://github.com/tibbercom/tibber-aws/compare/v5.2.8...v5.3.0) (2021-07-09)
+
+
+### Features
+
+* **s3bucket:** added support for listing objects in a bucket via listObjects ([5c300e9](https://github.com/tibbercom/tibber-aws/commit/5c300e9e976a7b211adc0f5c1c646c068df240b1))
+
 ## [5.2.8](https://github.com/tibbercom/tibber-aws/compare/v5.2.7...v5.2.8) (2021-03-09)
 
 
