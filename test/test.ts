@@ -7,10 +7,6 @@ configure({region: 'eu-west-1'});
 const testBucketName = 'tibber-tibber-ftw-123321';
 
 describe('getBucket', () => {
-  beforeEach(async () => {
-    await S3Bucket.deleteIfExsists(testBucketName);
-  });
-
   it('should be able to create bucket', async () => {
     const result = await S3Bucket.getBucket(testBucketName);
     expect(typeof result).toBe('object');
@@ -87,6 +83,39 @@ describe('getBucket', () => {
 
     result = await bucket.objectAvailable(name);
     expect(result).toBe(false);
+  });
+
+  it('should be able to list objects', async () => {
+    const bucket = await S3Bucket.getBucket(testBucketName);
+
+    const res = await bucket.listObjects();
+
+    const contents = res.Contents || [];
+
+    expect(contents.length).toBeGreaterThan(10);
+  });
+
+  it('should be able to list objects with prefix', async () => {
+    const bucket = await S3Bucket.getBucket(testBucketName);
+
+    const res = await bucket.listObjects('test');
+
+    const contents = res.Contents || [];
+
+    expect(contents).toHaveLength(2);
+  });
+
+  it('should be able to list after a given key', async () => {
+    const bucket = await S3Bucket.getBucket(testBucketName);
+
+    const buffer = Buffer.from([8, 6, 7, 5, 3, 0, 9]);
+    await bucket.putObject('test2', buffer);
+
+    const res = await bucket.listObjects('test', 'test');
+
+    const contents = res.Contents || [];
+
+    expect(contents).toHaveLength(1);
   });
 });
 

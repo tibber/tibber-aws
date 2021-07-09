@@ -103,4 +103,14 @@ export class S3Bucket {
       return false;
     }
   }
+
+  async listObjects(prefix?: string, startAfter?: string) {
+    return await this.s3
+      .listObjectsV2({
+        Bucket: this.name,
+        Prefix: prefix,
+        StartAfter: startAfter,
+      })
+      .promise();
+  }
 }
