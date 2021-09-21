@@ -10,7 +10,7 @@ jobs:
   build:
     working_directory: ~/package
     docker:
-      - image: circleci/node:10
+      - image: circleci/node:14.17
     steps:
       - checkout
       - run:
