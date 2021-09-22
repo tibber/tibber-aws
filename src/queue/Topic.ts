@@ -1,16 +1,21 @@
 import AWS from 'aws-sdk';
 
 export class Topic {
-  public sns = new AWS.SNS();
+  public sns = new AWS.SNS({endpoint: this.endpoint});
 
   constructor(
     public topicArn: string,
     public subject: string,
-    public name: string
+    public name: string,
+    public endpoint?: string
   ) {}
 
-  static async createTopic(topicName: string, subjectName: string) {
-    const sns = new AWS.SNS();
+  static async createTopic(
+    topicName: string,
+    subjectName: string,
+    endpoint?: string
+  ) {
+    const sns = new AWS.SNS({endpoint});
     const topicResponse = await sns.createTopic({Name: topicName}).promise();
 
     if (!topicResponse.TopicArn) {
@@ -19,7 +24,7 @@ export class Topic {
       );
     }
 
-    return new Topic(topicResponse.TopicArn, subjectName, topicName);
+    return new Topic(topicResponse.TopicArn, subjectName, topicName, undefined);
   }
 
   async push(evt: unknown, subject?: string) {
