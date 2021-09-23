@@ -43,11 +43,15 @@ const policyTemplate: PolicyTemplate = {
 };
 
 export class Queue {
-  public sqs = new AWS.SQS();
-  public sns = new AWS.SNS();
+  public sqs = new AWS.SQS({endpoint: this.endpoint});
+  public sns = new AWS.SNS({endpoint: this.endpoint});
   public _arnMap: Record<string, boolean> = {};
 
-  constructor(public queueUrl: string, public queueArn: string) {}
+  constructor(
+    public queueUrl: string,
+    public queueArn: string,
+    public endpoint: string | undefined
+  ) {}
 
   async subscribeTopic(topic: Topic) {
     if (this._arnMap[topic.topicArn]) {
@@ -122,8 +126,8 @@ export class Queue {
     return await this.sqs.sendMessage(payload).promise();
   }
 
-  static async createQueue(queueName: string) {
-    const sqs = new AWS.SQS();
+  static async createQueue(queueName: string, endpoint?: string) {
+    const sqs = new AWS.SQS({endpoint});
     const queue = await sqs.createQueue({QueueName: queueName}).promise();
 
     if (!queue.QueueUrl)
@@ -139,7 +143,7 @@ export class Queue {
     if (!response.Attributes?.QueueArn)
       throw Error("Expected QueueArn to be set on 'response' instance.");
 
-    return new Queue(queue.QueueUrl, response.Attributes.QueueArn);
+    return new Queue(queue.QueueUrl, response.Attributes.QueueArn, endpoint);
   }
 
   async receiveMessage(params: Omit<ReceiveMessageRequest, 'QueueUrl'>) {
