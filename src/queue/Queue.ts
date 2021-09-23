@@ -143,7 +143,7 @@ export class Queue {
     if (!response.Attributes?.QueueArn)
       throw Error("Expected QueueArn to be set on 'response' instance.");
 
-    return new Queue(queue.QueueUrl, response.Attributes.QueueArn, undefined);
+    return new Queue(queue.QueueUrl, response.Attributes.QueueArn, endpoint);
   }
 
   async receiveMessage(params: Omit<ReceiveMessageRequest, 'QueueUrl'>) {

@@ -24,7 +24,7 @@ export class Topic {
       );
     }
 
-    return new Topic(topicResponse.TopicArn, subjectName, topicName, undefined);
+    return new Topic(topicResponse.TopicArn, subjectName, topicName, endpoint);
   }
 
   async push(evt: unknown, subject?: string) {
