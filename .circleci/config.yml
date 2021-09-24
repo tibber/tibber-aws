@@ -14,6 +14,8 @@ jobs:
     steps:
       - checkout
       - run:
+          env:
+            GH_TOKEN: $GITHUB_AUTH_TOKEN
           name: Deploy Package
           command: |
             yarn
