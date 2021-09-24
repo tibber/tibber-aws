@@ -14,10 +14,10 @@ jobs:
     steps:
       - checkout
       - run:
-          env:
-            GH_TOKEN: $GITHUB_AUTH_TOKEN
+
           name: Deploy Package
           command: |
+            export GH_TOKEN=$GITHUB_AUTH_TOKEN
             yarn
             yarn test
             yarn release
