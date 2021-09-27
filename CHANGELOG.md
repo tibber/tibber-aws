@@ -1,3 +1,10 @@
+## [5.4.1](https://github.com/tibbercom/tibber-aws/compare/v5.4.0...v5.4.1) (2021-09-27)
+
+
+### Bug Fixes
+
+* **queue:** corrected constructor params ([031da33](https://github.com/tibbercom/tibber-aws/commit/031da33729e5d6a4cf544363e6e4633548c50f6c))
+
 # [5.4.0](https://github.com/tibbercom/tibber-aws/compare/v5.3.0...v5.4.0) (2021-09-24)
 
 
