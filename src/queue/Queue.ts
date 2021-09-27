@@ -50,7 +50,7 @@ export class Queue {
   constructor(
     public queueUrl: string,
     public queueArn: string,
-    public endpoint: string | undefined
+    public endpoint?: string
   ) {}
 
   async subscribeTopic(topic: Topic) {
