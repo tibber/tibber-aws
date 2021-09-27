@@ -1,3 +1,10 @@
+# [5.4.0](https://github.com/tibbercom/tibber-aws/compare/v5.3.0...v5.4.0) (2021-09-24)
+
+
+### Features
+
+* **queue:** add endpoint config to sqs,sns ([b68366e](https://github.com/tibbercom/tibber-aws/commit/b68366eeae6c338b8dd5090e4fb9a14541a00b2d))
+
 # [5.3.0](https://github.com/tibbercom/tibber-aws/compare/v5.2.8...v5.3.0) (2021-07-09)
 
 
