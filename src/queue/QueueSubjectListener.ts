@@ -45,13 +45,13 @@ export class QueueSubjectListener {
   }
 
   listen(params: ReceiveMessageRequest) {
-    const {
-      MaxNumberOfMessages,
-      VisibilityTimeout,
-      WaitTimeSeconds,
-      receiveTimeout,
-    } = Object.assign({}, this.options, params);
-    // const self = this;
+    const MaxNumberOfMessages =
+      params?.MaxNumberOfMessages ?? this.options.maxConcurrentMessage;
+    const VisibilityTimeout =
+      params?.VisibilityTimeout ?? this.options.visibilityTimeout;
+    const WaitTimeSeconds =
+      params?.WaitTimeSeconds ?? this.options.waitTimeSeconds;
+    const receiveTimeout = this.options.receiveTimeout;
 
     let cntInFlight = 0;
 
