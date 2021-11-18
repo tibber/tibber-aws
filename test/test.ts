@@ -129,6 +129,22 @@ it('should be able to assign several topics to builder', () => {
   expect(builder.topics.length).toBe(2);
 });
 
+// it('should be able to use a custom endpoint for localstack', async () => {
+//   const bucket = await S3Bucket.getBucket(
+//     testBucketName,
+//     'http://localhost:4566/'
+//   );
+//
+//   const buffer = Buffer.from([8, 6, 7, 5, 3, 0, 9]);
+//   await bucket.putObject('test2', buffer);
+//
+//   const res = await bucket.listObjects('test', 'test');
+//
+//   const contents = res.Contents || [];
+//
+//   expect(contents).toHaveLength(1);
+// });
+
 /*
 it.only('run lambda func', async t => {
 
