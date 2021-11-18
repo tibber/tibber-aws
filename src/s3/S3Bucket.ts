@@ -17,7 +17,7 @@ export class S3Bucket {
     this.s3 = new AWS.S3({
       apiVersion: '2006-03-01',
       endpoint: this.endpoint,
-      s3ForcePathStyle: !!endpoint
+      s3ForcePathStyle: !!endpoint,
     });
   }
 
@@ -26,14 +26,17 @@ export class S3Bucket {
       const s3 = new AWS.S3({
         apiVersion: '2006-03-01',
         endpoint,
-        s3ForcePathStyle: !!endpoint
+        s3ForcePathStyle: !!endpoint,
       });
       await s3.createBucket({Bucket: bucketName}).promise();
 
-      return new S3Bucket({
-        CreationDate: new Date(Date.now()),
-        Name: bucketName,
-      }, endpoint);
+      return new S3Bucket(
+        {
+          CreationDate: new Date(Date.now()),
+          Name: bucketName,
+        },
+        endpoint
+      );
     } catch (err) {
       if (err.code === 'BucketAlreadyOwnedByYou') {
         return (await S3Bucket.getBuckets(endpoint)).filter(
@@ -50,7 +53,7 @@ export class S3Bucket {
       const result = await new AWS.S3({
         apiVersion: '2006-03-01',
         endpoint,
-        s3ForcePathStyle: !!endpoint
+        s3ForcePathStyle: !!endpoint,
       })
         .listBuckets()
         .promise();
@@ -69,7 +72,7 @@ export class S3Bucket {
       await new AWS.S3({
         apiVersion: '2006-03-01',
         endpoint,
-        s3ForcePathStyle: !!endpoint
+        s3ForcePathStyle: !!endpoint,
       })
         .deleteBucket({Bucket: bucketName})
         .promise();
