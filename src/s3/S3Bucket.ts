@@ -5,7 +5,7 @@ export class S3Bucket {
   public name: string;
   public creationDate: CreationDate;
   private s3: AWS.S3;
-  constructor(private bucket: AWS.S3.Bucket) {
+  constructor(private bucket: AWS.S3.Bucket, public endpoint?: string) {
     if (bucket.Name === undefined)
       throw Error("Property 'Name' on 'bucket' was undefined.");
 
@@ -14,21 +14,32 @@ export class S3Bucket {
 
     this.name = bucket.Name;
     this.creationDate = bucket.CreationDate;
-    this.s3 = new AWS.S3({apiVersion: '2006-03-01'});
+    this.s3 = new AWS.S3({
+      apiVersion: '2006-03-01',
+      endpoint: this.endpoint,
+      s3ForcePathStyle: !!endpoint,
+    });
   }
 
-  static async getBucket(bucketName: string) {
+  static async getBucket(bucketName: string, endpoint?: string) {
     try {
-      const s3 = new AWS.S3({apiVersion: '2006-03-01'});
+      const s3 = new AWS.S3({
+        apiVersion: '2006-03-01',
+        endpoint,
+        s3ForcePathStyle: !!endpoint,
+      });
       await s3.createBucket({Bucket: bucketName}).promise();
 
-      return new S3Bucket({
-        CreationDate: new Date(Date.now()),
-        Name: bucketName,
-      });
+      return new S3Bucket(
+        {
+          CreationDate: new Date(Date.now()),
+          Name: bucketName,
+        },
+        endpoint
+      );
     } catch (err) {
       if (err.code === 'BucketAlreadyOwnedByYou') {
-        return (await S3Bucket.getBuckets()).filter(
+        return (await S3Bucket.getBuckets(endpoint)).filter(
           b => b.name === bucketName
         )[0];
       }
@@ -37,9 +48,13 @@ export class S3Bucket {
     }
   }
 
-  static async getBuckets() {
+  static async getBuckets(endpoint?: string) {
     try {
-      const result = await new AWS.S3({apiVersion: '2006-03-01'})
+      const result = await new AWS.S3({
+        apiVersion: '2006-03-01',
+        endpoint,
+        s3ForcePathStyle: !!endpoint,
+      })
         .listBuckets()
         .promise();
 
@@ -52,9 +67,13 @@ export class S3Bucket {
     }
   }
 
-  static async deleteIfExsists(bucketName: string) {
+  static async deleteIfExsists(bucketName: string, endpoint?: string) {
     try {
-      await new AWS.S3({apiVersion: '2006-03-01'})
+      await new AWS.S3({
+        apiVersion: '2006-03-01',
+        endpoint,
+        s3ForcePathStyle: !!endpoint,
+      })
         .deleteBucket({Bucket: bucketName})
         .promise();
       return true;
