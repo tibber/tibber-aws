@@ -1,4 +1,4 @@
-# [5.5.0-s3localstack.1](https://github.com/tibbercom/tibber-aws/compare/v5.4.1...v5.5.0-s3localstack.1) (2021-11-23)
+# [5.5.0](https://github.com/tibbercom/tibber-aws/compare/v5.4.1...v5.5.0) (2021-11-23)
 
 
 ### Features
