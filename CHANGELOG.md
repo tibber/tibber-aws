@@ -1,3 +1,10 @@
+# [5.5.0-s3localstack.1](https://github.com/tibbercom/tibber-aws/compare/v5.4.1...v5.5.0-s3localstack.1) (2021-11-23)
+
+
+### Features
+
+* **s3bucket:** added localstack support for s3 ([9a32392](https://github.com/tibbercom/tibber-aws/commit/9a3239236b6e04ab9c2853b9e6a68ef3f1fe7070))
+
 ## [5.4.1](https://github.com/tibbercom/tibber-aws/compare/v5.4.0...v5.4.1) (2021-09-27)
 
 

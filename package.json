@@ -1,6 +1,6 @@
 {
   "name": "tibber-aws",
-  "version": "5.4.0",
+  "version": "5.5.0-s3localstack.1",
   "description": "",
   "main": "./dist/src/index.js",
   "scripts": {
