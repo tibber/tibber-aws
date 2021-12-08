@@ -1,3 +1,10 @@
+## [5.4.2](https://github.com/tibbercom/tibber-aws/compare/v5.4.1...v5.4.2) (2021-12-08)
+
+
+### Performance Improvements
+
+* **topic:** do not try to create already-created topics ([288299e](https://github.com/tibbercom/tibber-aws/commit/288299e87a8ab905e1795b7c5ac395ec4b500911))
+
 # [5.5.0](https://github.com/tibbercom/tibber-aws/compare/v5.4.1...v5.5.0) (2021-11-23)
 
 
