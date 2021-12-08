@@ -9,12 +9,12 @@ interface ITopic {
 }
 
 export class QueueSubjectListenerBuilder {
-  public topics: Array<ITopic>;
+  public topics: Array<ITopic | Topic>;
 
   constructor(
     public queueName: string,
     public logger?: ILogger | undefined | null,
-    ...topics: Array<ITopic>
+    ...topics: Array<ITopic | Topic>
   ) {
     this.topics = topics;
   }
@@ -25,7 +25,16 @@ export class QueueSubjectListenerBuilder {
     const queue = await Queue.createQueue(this.queueName);
 
     for (const t of this.topics) {
-      const topic = await Topic.createTopic(t.name, t.subject);
+      let topic;
+      if (!(t instanceof Topic)) {
+        topic = await Topic.createTopic(t.name, t.subject);
+      } else {
+        topic = t;
+      }
+
+      if (topic.topicArn === undefined)
+        throw new Error('"topicArn" must be specified');
+
       await queue.subscribeTopic(topic);
     }
 
