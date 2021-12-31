@@ -25,9 +25,9 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tibbercom/tibber-aws.git"
+    "url": "git+https://github.com/tibber/tibber-aws.git"
   },
-  "homepage": "https://github.com/tibbercom/tibber-aws#readme",
+  "homepage": "https://github.com/tibber/tibber-aws#readme",
   "author": "tibber",
   "license": "ISC",
   "devDependencies": {
