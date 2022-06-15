@@ -44,7 +44,7 @@ export class QueueSubjectListener {
     this.handlers[subjectName].push(handler);
   }
 
-  listen(params: ReceiveMessageRequest) {
+  listen(params?: ReceiveMessageRequest) {
     const MaxNumberOfMessages =
       params?.MaxNumberOfMessages ?? this.options.maxConcurrentMessage;
     const VisibilityTimeout =
