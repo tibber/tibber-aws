@@ -1,3 +1,10 @@
+## [5.4.3](https://github.com/tibber/tibber-aws/compare/v5.4.2...v5.4.3) (2022-06-15)
+
+
+### Bug Fixes
+
+* **tibber-aws:** update aws sdk ([5d26512](https://github.com/tibber/tibber-aws/commit/5d26512fd7af98afe0ac933db4defac2db25e6a8))
+
 ## [5.4.2](https://github.com/tibber/tibber-aws/compare/v5.4.1...v5.4.2) (2021-12-08)
 
 
