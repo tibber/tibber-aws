@@ -1,3 +1,10 @@
+## [5.4.4](https://github.com/tibber/tibber-aws/compare/v5.4.3...v5.4.4) (2022-08-09)
+
+
+### Bug Fixes
+
+* upgrade commitizen ([fd279ec](https://github.com/tibber/tibber-aws/commit/fd279ecd4d2124b0c16e8b908e3bd03b190b616a))
+
 ## [5.4.3](https://github.com/tibber/tibber-aws/compare/v5.4.2...v5.4.3) (2022-06-15)
 
 
