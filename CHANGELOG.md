@@ -1,3 +1,10 @@
+## [5.4.5](https://github.com/tibber/tibber-aws/compare/v5.4.4...v5.4.5) (2022-08-15)
+
+
+### Bug Fixes
+
+* **deps:** bump aws-sdk from 2.1154.0 to 2.1194.0 ([3623751](https://github.com/tibber/tibber-aws/commit/3623751a459047f9350f89704ab409a75535d941))
+
 ## [5.4.4](https://github.com/tibber/tibber-aws/compare/v5.4.3...v5.4.4) (2022-08-09)
 
 
