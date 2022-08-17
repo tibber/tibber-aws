@@ -33,7 +33,6 @@
   "devDependencies": {
     "@semantic-release/changelog": "^5.0.1",
     "@semantic-release/git": "^10.0.0",
-    "@snowcoders/sortier": "^3.2.0",
     "@types/jest": "^27.0.2",
     "@types/node": "^16.9.4",
     "@types/randomstring": "^1.1.7",
@@ -46,6 +45,7 @@
     "lint-staged": "^10.5.3",
     "randomstring": "^1.2.1",
     "semantic-release": "^19.0.3",
+    "sortier": "^1.0.1",
     "ts-jest": "^27.0.5",
     "ts-node": "^10.2.1",
     "typescript": "^4.0.3"
