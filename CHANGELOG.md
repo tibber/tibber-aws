@@ -1,3 +1,10 @@
+## [5.4.7](https://github.com/tibber/tibber-aws/compare/v5.4.6...v5.4.7) (2022-08-17)
+
+
+### Bug Fixes
+
+* upgrade commitizen to avoid minimist vulnerability ([fc7a16f](https://github.com/tibber/tibber-aws/commit/fc7a16f2a3c33b6df600d04d6ced5298d42c6c0d))
+
 ## [5.4.6](https://github.com/tibber/tibber-aws/compare/v5.4.5...v5.4.6) (2022-08-17)
 
 
