@@ -1,3 +1,10 @@
+## [5.4.10](https://github.com/tibber/tibber-aws/compare/v5.4.9...v5.4.10) (2022-08-17)
+
+
+### Bug Fixes
+
+* switch @snowcoders/sortier to sortier to avoid postcss vulnerability ([e2a8b85](https://github.com/tibber/tibber-aws/commit/e2a8b8567c539e136ca7ae01791e48de23177acc))
+
 ## [5.4.9](https://github.com/tibber/tibber-aws/compare/v5.4.8...v5.4.9) (2022-08-17)
 
 
