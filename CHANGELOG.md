@@ -1,3 +1,10 @@
+## [5.4.9](https://github.com/tibber/tibber-aws/compare/v5.4.8...v5.4.9) (2022-08-17)
+
+
+### Bug Fixes
+
+* upgrade gts to avoid got vulnerability ([48f9fa7](https://github.com/tibber/tibber-aws/commit/48f9fa7330f409a5ea1e5e5bb7d1df99ee14fc66))
+
 ## [5.4.8](https://github.com/tibber/tibber-aws/compare/v5.4.7...v5.4.8) (2022-08-17)
 
 
