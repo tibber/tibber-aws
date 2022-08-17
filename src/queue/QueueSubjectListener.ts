@@ -15,10 +15,8 @@ export type QueueSubjectListenerMessageHandler = {
 };
 
 export class QueueSubjectListener {
-  public handlers: Record<
-    string,
-    Array<QueueSubjectListenerMessageHandler>
-  > = {};
+  public handlers: Record<string, Array<QueueSubjectListenerMessageHandler>> =
+    {};
   public isStopped = false;
 
   public logger: ILogger;

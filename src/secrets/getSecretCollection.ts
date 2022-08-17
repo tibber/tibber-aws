@@ -11,8 +11,10 @@ export const getSecretCollection = function <TData = Record<string, string>>(
 
   try {
     const client: SyncSecretsResolved = rpc(__dirname + '/syncSecrets.js');
-    const secretString = client({region: AWS.config.region, secret: secretName})
-      .SecretString;
+    const secretString = client({
+      region: AWS.config.region,
+      secret: secretName,
+    }).SecretString;
 
     if (!secretString)
       throw Error("Property 'SecretString' on client response was undefined.");
