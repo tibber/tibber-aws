@@ -1,3 +1,10 @@
+## [5.4.8](https://github.com/tibber/tibber-aws/compare/v5.4.7...v5.4.8) (2022-08-17)
+
+
+### Bug Fixes
+
+* upgrade minimist ([528e7f4](https://github.com/tibber/tibber-aws/commit/528e7f43bfe2873a485f2df00770b708d8941033))
+
 ## [5.4.7](https://github.com/tibber/tibber-aws/compare/v5.4.6...v5.4.7) (2022-08-17)
 
 
