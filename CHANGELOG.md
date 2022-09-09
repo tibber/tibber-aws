@@ -1,3 +1,10 @@
+## [5.4.11](https://github.com/tibber/tibber-aws/compare/v5.4.10...v5.4.11) (2022-09-09)
+
+
+### Reverts
+
+* Revert "Dont require default subject name when creating topic" ([18c27e1](https://github.com/tibber/tibber-aws/commit/18c27e1de151d9667a198094844e5881f24700b8))
+
 # [5.5.0](https://github.com/tibber/tibber-aws/compare/v5.4.10...v5.5.0) (2022-09-09)
 
 
