@@ -5,14 +5,14 @@ export class Topic {
 
   constructor(
     public topicArn: string,
+    public subject: string,
     public name: string,
-    public subject?: string,
     public endpoint?: string
   ) {}
 
   static async createTopic(
     topicName: string,
-    subjectName?: string,
+    subjectName: string,
     endpoint?: string
   ) {
     const sns = new AWS.SNS({endpoint});
@@ -24,7 +24,7 @@ export class Topic {
       );
     }
 
-    return new Topic(topicResponse.TopicArn, topicName, subjectName, endpoint);
+    return new Topic(topicResponse.TopicArn, subjectName, topicName, endpoint);
   }
 
   async push(evt: unknown, subject?: string) {
