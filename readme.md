@@ -21,4 +21,5 @@ await topic2.push({ test: "test2" }, 'test subject2');
 const listener = new QueueSubjectListener(queue);
 listener.handlers = [handlerFunction];
 listener.listen();
+
 ```
