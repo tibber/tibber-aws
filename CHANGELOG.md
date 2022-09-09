@@ -4,6 +4,19 @@
 ### Bug Fixes
 
 * retry release... ([e25ae11](https://github.com/tibber/tibber-aws/commit/e25ae11e6062abcf80e3eb4b4221abff42f6bebb))
+* trigger release after fixing invalid tags ([a0be716](https://github.com/tibber/tibber-aws/commit/a0be71684f563ff8edb462e33622bc63f9cfde37))
+
+
+### Features
+
+* dont require default subject name when creating topic ([85202f5](https://github.com/tibber/tibber-aws/commit/85202f509384ce789ce4543e39d28f9623e79710))
+
+# [5.5.0](https://github.com/tibber/tibber-aws/compare/v5.4.11...v5.5.0) (2022-09-09)
+
+
+### Bug Fixes
+
+* retry release... ([e25ae11](https://github.com/tibber/tibber-aws/commit/e25ae11e6062abcf80e3eb4b4221abff42f6bebb))
 
 
 ### Features
