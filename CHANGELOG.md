@@ -1,3 +1,10 @@
+# [5.5.0](https://github.com/tibber/tibber-aws/compare/v5.4.11...v5.5.0) (2022-09-09)
+
+
+### Features
+
+* dont require default subject name when creating topic ([85202f5](https://github.com/tibber/tibber-aws/commit/85202f509384ce789ce4543e39d28f9623e79710))
+
 # [5.5.0-dont-require-default-subject.1](https://github.com/tibber/tibber-aws/compare/v5.4.11...v5.5.0-dont-require-default-subject.1) (2022-09-09)
 
 
