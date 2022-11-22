@@ -1,3 +1,10 @@
+# [5.6.0](https://github.com/tibber/tibber-aws/compare/v5.5.0...v5.6.0) (2022-11-22)
+
+
+### Features
+
+* Make subject name optional when Topic is created through QueueSubjectListenerBuilder ([b732cbf](https://github.com/tibber/tibber-aws/commit/b732cbf347f30faa2fe45c6753f31286a87ce411))
+
 # [5.5.0](https://github.com/tibber/tibber-aws/compare/v5.4.11...v5.5.0) (2022-09-09)
 
 
