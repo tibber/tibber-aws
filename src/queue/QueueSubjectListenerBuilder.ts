@@ -5,7 +5,7 @@ import {Topic} from './Topic';
 
 interface ITopic {
   name: string;
-  subject: string;
+  subject?: string;
 }
 
 export class QueueSubjectListenerBuilder {
