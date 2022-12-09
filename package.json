@@ -5,7 +5,7 @@
   "main": "./dist/src/index.js",
   "scripts": {
     "start": "ts-node -T samples/sample1.ts",
-    "test": "jest  --verbose",
+    "test": "jest --verbose",
     "lint": "gts lint",
     "clean": "gts clean",
     "compile": "tsc",
@@ -33,6 +33,7 @@
   "devDependencies": {
     "@semantic-release/changelog": "^5.0.1",
     "@semantic-release/git": "^10.0.0",
+    "@thadeu/jest-localstack-preset": "^1.0.10",
     "@types/jest": "^27.0.2",
     "@types/node": "^16.9.4",
     "@types/randomstring": "^1.1.7",

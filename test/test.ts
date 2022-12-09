@@ -69,19 +69,20 @@ describe('getBucket', () => {
     }
   });
 
+  let randomObjectName;
   it('should be able to check wheter object is available in S3', async () => {
     const bucket = await S3Bucket.getBucket(testBucketName);
     const buffer = Buffer.from([8, 6, 7, 5, 3, 0, 9]);
 
-    let name = rand.generate();
+    randomObjectName = rand.generate();
 
-    await bucket.putObject(name, buffer, 'image/png');
-    let result = await bucket.objectAvailable(name);
+    await bucket.putObject(randomObjectName, buffer, 'image/png');
+    let result = await bucket.objectAvailable(randomObjectName);
     expect(result).toBe(true);
 
-    name = rand.generate();
+    const anotherName = rand.generate();
 
-    result = await bucket.objectAvailable(name);
+    result = await bucket.objectAvailable(anotherName);
     expect(result).toBe(false);
   });
 
@@ -92,7 +93,7 @@ describe('getBucket', () => {
 
     const contents = res.Contents || [];
 
-    expect(contents.length).toBeGreaterThan(10);
+    expect(contents).toHaveLength(2);
   });
 
   it('should be able to list objects with prefix', async () => {
@@ -102,7 +103,7 @@ describe('getBucket', () => {
 
     const contents = res.Contents || [];
 
-    expect(contents).toHaveLength(2);
+    expect(contents).toHaveLength(1);
   });
 
   it('should be able to list after a given key', async () => {

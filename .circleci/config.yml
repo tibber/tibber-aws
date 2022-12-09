@@ -13,11 +13,14 @@ jobs:
       - image: circleci/node:16
     steps:
       - checkout
+      - setup_remote_docker
       - run:
-
-          name: Deploy Package
+          name: Build and run tests
           command: |
             export GH_TOKEN=$GITHUB_AUTH_TOKEN
             yarn
             yarn test
+      - run:
+          name: Deploy Package
+          command: |
             yarn release
