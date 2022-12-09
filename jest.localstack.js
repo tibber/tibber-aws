@@ -1,6 +1,6 @@
 module.exports = {
   services: ['s3'],
-  showLog: false,
+  showLog: true,
   readyTimeout: 10000,
   autoPullImage: true,
   S3Buckets: [
