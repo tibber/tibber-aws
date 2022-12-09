@@ -16,6 +16,9 @@ jobs:
       - setup_remote_docker
       - run:
           name: Build and run tests
+          environment:
+            LOCALSTACK_DEBUG: true
+            JEST_LOCALSTACK_AUTO_PULLING: true
           command: |
             export GH_TOKEN=$GITHUB_AUTH_TOKEN
             yarn
