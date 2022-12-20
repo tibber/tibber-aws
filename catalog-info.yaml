@@ -1,0 +1,9 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: tibber-aws
+  annotations:
+    github.com/project-slug: tibber/tibber-aws
+spec:
+  type: library
+  lifecycle: production
