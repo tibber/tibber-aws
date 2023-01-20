@@ -21,7 +21,19 @@ export class S3Bucket {
     });
   }
 
+  static async getExistingBucket(bucketName: string, endpoint?: string) {
+    const buckets = await S3Bucket.getBuckets(endpoint);
+    return buckets.find(b => b.name === bucketName);
+  }
+
+  /**
+   * @deprecated Either use `getExistingBucket` or `getOrCreateBucket` instead since it is not obvious this always tries to create a bucket, potentially causing resource contention
+   */
   static async getBucket(bucketName: string, endpoint?: string) {
+    return await this.getOrCreateBucket(bucketName, endpoint);
+  }
+
+  static async getOrCreateBucket(bucketName: string, endpoint?: string) {
     try {
       const s3 = new AWS.S3({
         apiVersion: '2006-03-01',
@@ -39,9 +51,9 @@ export class S3Bucket {
       );
     } catch (err) {
       if (err.code === 'BucketAlreadyOwnedByYou') {
-        return (await S3Bucket.getBuckets(endpoint)).filter(
+        return (await S3Bucket.getBuckets(endpoint)).find(
           b => b.name === bucketName
-        )[0];
+        );
       }
       console.log(err);
       throw err;
