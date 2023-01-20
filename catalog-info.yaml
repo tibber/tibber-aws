@@ -4,6 +4,8 @@ metadata:
   name: tibber-aws
   annotations:
     github.com/project-slug: tibber/tibber-aws
+  tags:
+  - typescript
 spec:
   type: library
   lifecycle: production
