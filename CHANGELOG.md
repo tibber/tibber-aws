@@ -1,3 +1,10 @@
+# [5.7.0](https://github.com/tibber/tibber-aws/compare/v5.6.0...v5.7.0) (2023-01-20)
+
+
+### Features
+
+* **s3:** deprecate `getBucket`; add `getExistingBucket`; add `getOrCreateBucket` ([7798d22](https://github.com/tibber/tibber-aws/commit/7798d221f0322d88fda8e7177995892d40d49767))
+
 # [5.6.0](https://github.com/tibber/tibber-aws/compare/v5.5.0...v5.6.0) (2022-11-22)
 
 
