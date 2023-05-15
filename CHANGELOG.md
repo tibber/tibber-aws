@@ -1,3 +1,12 @@
+## [5.7.1](https://github.com/tibber/tibber-aws/compare/v5.7.0...v5.7.1) (2023-05-15)
+
+
+### Bug Fixes
+
+* **deps:** bump aws-sdk from 2.1154.0 to 2.1377.0 ([2910776](https://github.com/tibber/tibber-aws/commit/29107766ca7ba79db6c76446461debc1555c7aed))
+* **deps:** bump http-cache-semantics from 4.1.0 to 4.1.1 ([1b07318](https://github.com/tibber/tibber-aws/commit/1b07318e6cec60161cdcabbba16e738f36f09105))
+* **deps:** bump json5 from 2.1.3 to 2.2.3 ([692c8b2](https://github.com/tibber/tibber-aws/commit/692c8b2e7886a6e3c02bfeca0432c60dcfe4cc49))
+
 # [5.7.0](https://github.com/tibber/tibber-aws/compare/v5.6.0...v5.7.0) (2023-01-20)
 
 
