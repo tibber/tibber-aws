@@ -31,7 +31,7 @@ export class Topic {
     evt: unknown,
     subject?: string,
     messageAttributes?: AWS.SNS.MessageAttributeMap
-    ) {
+  ) {
     const payload = {
       Message: JSON.stringify(evt),
       MessageAttributes: messageAttributes,
