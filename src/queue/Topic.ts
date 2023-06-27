@@ -27,9 +27,10 @@ export class Topic {
     return new Topic(topicResponse.TopicArn, topicName, subjectName, endpoint);
   }
 
-  async push(evt: unknown, subject?: string) {
+  async push(evt: unknown, subject?: string, messageAttributes?: unknown) {
     const payload = {
       Message: JSON.stringify(evt),
+      MessageAttributes: messageAttributes,
       Subject: subject || this.subject,
       TopicArn: this.topicArn,
     };
