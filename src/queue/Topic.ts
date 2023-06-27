@@ -27,9 +27,14 @@ export class Topic {
     return new Topic(topicResponse.TopicArn, topicName, subjectName, endpoint);
   }
 
-  async push(evt: unknown, subject?: string) {
+  async push(
+    evt: unknown,
+    subject?: string,
+    messageAttributes?: AWS.SNS.MessageAttributeMap
+  ) {
     const payload = {
       Message: JSON.stringify(evt),
+      MessageAttributes: messageAttributes,
       Subject: subject || this.subject,
       TopicArn: this.topicArn,
     };
