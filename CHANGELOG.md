@@ -1,3 +1,10 @@
+# [5.8.0](https://github.com/tibber/tibber-aws/compare/v5.7.1...v5.8.0) (2023-06-28)
+
+
+### Features
+
+* support for SNS message attributes ([789c1b3](https://github.com/tibber/tibber-aws/commit/789c1b300d6828f30b861ebf7d67f962598c6e6b))
+
 ## [5.7.1](https://github.com/tibber/tibber-aws/compare/v5.7.0...v5.7.1) (2023-05-15)
 
 
