@@ -4,7 +4,7 @@ metadata:
   name: tibber-aws
   annotations:
     github.com/project-slug: tibber/tibber-aws
-    circleci.com/project-slug: gh/tibber/aws
+    circleci.com/project-slug: gh/tibber/tibber-aws
   tags:
   - typescript
 spec:
