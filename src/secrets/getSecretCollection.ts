@@ -1,19 +1,23 @@
-import AWS from 'aws-sdk';
 const rpc = require('sync-rpc');
 import {SyncSecretsResolved} from './types';
 
 const cache: Record<string, unknown> = {};
 
 export const getSecretCollection = function <TData = Record<string, string>>(
-  secretName: string
+  secretName: string,
+  endpoint?: string
 ): TData | undefined {
   if (cache[secretName]) return cache[secretName] as TData;
 
   try {
-    const client: SyncSecretsResolved = rpc(__dirname + '/syncSecrets.js');
+    // const client: SyncSecretsResolved = rpc(__dirname + '/syncSecrets.js');
+    const client: SyncSecretsResolved = rpc(
+      '/Users/fimmi/code/tibber-aws/dist/src/secrets/syncSecrets.js'
+    );
     const secretString = client({
-      region: AWS.config.region,
+      region: process.env.AWS_REGION,
       secret: secretName,
+      endpoint,
     }).SecretString;
 
     if (!secretString)

@@ -3,7 +3,7 @@ import {ILogger} from './ILogger';
 export class LoggerWrapper implements ILogger {
   private _logger: Partial<ILogger>;
 
-  constructor(logger?: ILogger | undefined | null) {
+  constructor(logger?: undefined | null | ILogger) {
     this._logger = logger || {};
   }
 

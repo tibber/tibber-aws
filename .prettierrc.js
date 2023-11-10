@@ -1,4 +1,3 @@
 module.exports = {
-  ...require('gts/.prettierrc.json'),
-  endOfLine: "auto"
+  ...require('gts/.prettierrc.json')
 }

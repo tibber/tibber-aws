@@ -1,24 +1,34 @@
-import AWS from 'aws-sdk';
+import {Lambda} from '@aws-sdk/client-lambda';
 
 type GetLambdaFunc = {
-  <TResult>(funcName: string): {
+  <TResult>(
+    funcName: string,
+    endpoint?: string
+  ): {
     <TRequest>(payload: TRequest): Promise<TResult>;
   };
 };
 
-export const getLambdaFunc: GetLambdaFunc = funcName => {
-  const lambda = new AWS.Lambda();
+export const getLambdaFunc: GetLambdaFunc = (
+  funcName: string,
+  endpoint?: string
+) => {
+  const lambda = new Lambda({
+    endpoint,
+  });
   return async payload => {
-    const result = await lambda
-      .invoke({FunctionName: funcName, Payload: JSON.stringify(payload)})
-      .promise();
+    const result = await lambda.invoke({
+      FunctionName: funcName,
+      Payload: JSON.stringify(payload),
+    });
 
-    if (typeof result.Payload !== 'string') {
+    try {
+      const stringResult = result.Payload?.transformToString();
+      return stringResult ? JSON.parse(stringResult) : null;
+    } catch {
       throw Error(
-        'lambda result was not a string. Only string results are currently supported.'
+        'Unable to transform response to string. Only string results are currently supported.'
       );
     }
-
-    return result.Payload ? JSON.parse(JSON.parse(result.Payload)) : null;
   };
 };
