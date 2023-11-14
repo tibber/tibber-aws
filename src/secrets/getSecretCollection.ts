@@ -10,10 +10,7 @@ export const getSecretCollection = function <TData = Record<string, string>>(
   if (cache[secretName]) return cache[secretName] as TData;
 
   try {
-    // const client: SyncSecretsResolved = rpc(__dirname + '/syncSecrets.js');
-    const client: SyncSecretsResolved = rpc(
-      '/Users/fimmi/code/tibber-aws/dist/src/secrets/syncSecrets.js'
-    );
+    const client: SyncSecretsResolved = rpc(__dirname + '/syncSecrets.js');
     const secretString = client({
       region: process.env.AWS_REGION,
       secret: secretName,

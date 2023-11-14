@@ -1,6 +1,9 @@
 import rand from 'randomstring';
 import {S3Bucket, configure} from '../src';
 
+const localstackEndpoint =
+  process.env.LOCALSTACK_ENDPOINT || 'http://localhost:4566';
+
 const generateRandomBucketName = () =>
   rand.generate({
     capitalization: 'lowercase',
@@ -16,7 +19,7 @@ describe('getOrCreateBucket', () => {
   it('should be able to create bucket', async () => {
     const result = await S3Bucket.getOrCreateBucket(
       generateRandomBucketName(),
-      'http://localhost:4566'
+      localstackEndpoint
     );
     expect(typeof result).toBe('object');
   });
@@ -26,9 +29,9 @@ describe('getBuckets', () => {
   it('getBuckets should return array', async () => {
     await S3Bucket.getOrCreateBucket(
       generateRandomBucketName(),
-      'http://localhost:4566'
+      localstackEndpoint
     );
-    const result = await S3Bucket.getBuckets('http://localhost:4566');
+    const result = await S3Bucket.getBuckets(localstackEndpoint);
 
     expect(Array.isArray(result)).toBe(true);
     expect(result.length).toBeGreaterThan(0);
@@ -38,10 +41,10 @@ describe('getBuckets', () => {
 describe('getExistingBucket', () => {
   it('should return bucket if it exists', async () => {
     const testBucketName = generateRandomBucketName();
-    await S3Bucket.getOrCreateBucket(testBucketName, 'http://localhost:4566');
+    await S3Bucket.getOrCreateBucket(testBucketName, localstackEndpoint);
     const result = await S3Bucket.getExistingBucket(
       testBucketName,
-      'http://localhost:4566'
+      localstackEndpoint
     );
     expect(result?.name).toBe(testBucketName);
   });
@@ -50,7 +53,7 @@ describe('getExistingBucket', () => {
     const testBucketName = generateRandomBucketName();
     const result = await S3Bucket.getExistingBucket(
       testBucketName,
-      'http://localhost:4566'
+      localstackEndpoint
     );
     expect(result).toBeUndefined();
   });
@@ -59,10 +62,10 @@ describe('getExistingBucket', () => {
 describe('deleteIfExsists', () => {
   it('should be able to delete bucket', async () => {
     const testBucketName = generateRandomBucketName();
-    await S3Bucket.getOrCreateBucket(testBucketName, 'http://localhost:4566');
+    await S3Bucket.getOrCreateBucket(testBucketName, localstackEndpoint);
     const result = await S3Bucket.deleteIfExsists(
       testBucketName,
-      'http://localhost:4566'
+      localstackEndpoint
     );
     expect(result).toBe(true);
   });
@@ -71,7 +74,7 @@ describe('deleteIfExsists', () => {
     const testBucketName = generateRandomBucketName();
     const result = await S3Bucket.deleteIfExsists(
       testBucketName,
-      'http://localhost:4566'
+      localstackEndpoint
     );
     expect(result).toBe(false);
   });
@@ -82,11 +85,11 @@ describe('getOrCreateBucket', () => {
     const testBucketName = generateRandomBucketName();
     const result = await S3Bucket.getOrCreateBucket(
       testBucketName,
-      'http://localhost:4566'
+      localstackEndpoint
     );
     const result2 = await S3Bucket.getOrCreateBucket(
       testBucketName,
-      'http://localhost:4566'
+      localstackEndpoint
     );
     expect(result?.name).toBe(result2?.name);
   });
@@ -94,7 +97,7 @@ describe('getOrCreateBucket', () => {
   it('should be able to put object without content type', async () => {
     const bucket = await S3Bucket.getOrCreateBucket(
       generateRandomBucketName(),
-      'http://localhost:4566'
+      localstackEndpoint
     );
     const buffer = Buffer.from([8, 6, 7, 5, 3, 0, 9]);
     bucket!.putObject('test', buffer);
@@ -103,7 +106,7 @@ describe('getOrCreateBucket', () => {
   it('should be able to put object with content type', async () => {
     const bucket = await S3Bucket.getOrCreateBucket(
       generateRandomBucketName(),
-      'http://localhost:4566'
+      localstackEndpoint
     );
     const buffer = Buffer.from([8, 6, 7, 5, 3, 0, 9]);
     await bucket!.putObject('test', buffer, 'image/png');
@@ -112,7 +115,7 @@ describe('getOrCreateBucket', () => {
   it('should be able to retrieve object', async () => {
     const bucket = await S3Bucket.getOrCreateBucket(
       generateRandomBucketName(),
-      'http://localhost:4566'
+      localstackEndpoint
     );
     const buffer = Buffer.from([8, 6, 7, 5, 3, 0, 9]);
     await bucket!.putObject('test', buffer, 'image/png');
@@ -122,7 +125,7 @@ describe('getOrCreateBucket', () => {
   it('should be able to retrieve object as stream', async () => {
     const bucket = await S3Bucket.getOrCreateBucket(
       generateRandomBucketName(),
-      'http://localhost:4566'
+      localstackEndpoint
     );
     const buffer = Buffer.from([8, 6, 7, 5, 3, 0, 9]);
     await bucket!.putObject('test', buffer, 'image/png');
@@ -133,7 +136,7 @@ describe('getOrCreateBucket', () => {
   it('should be able to retrieve object as stream 2', async () => {
     const bucket = await S3Bucket.getOrCreateBucket(
       generateRandomBucketName(),
-      'http://localhost:4566'
+      localstackEndpoint
     );
     const buffer = Buffer.from([8, 6, 7, 5, 3, 0, 9]);
     await bucket!.putObject('test', buffer, 'image/png');
@@ -145,7 +148,7 @@ describe('getOrCreateBucket', () => {
   it('should be able to actually retrieve object as stream', async () => {
     const bucket = await S3Bucket.getOrCreateBucket(
       generateRandomBucketName(),
-      'http://localhost:4566'
+      localstackEndpoint
     );
     const data = new Uint8Array([8, 6, 7, 5, 3, 0, 9]);
     const buffer = Buffer.from(data);
@@ -164,7 +167,7 @@ describe('getOrCreateBucket', () => {
   it('should be able to handle missing key exception', async () => {
     const bucket = await S3Bucket.getOrCreateBucket(
       generateRandomBucketName(),
-      'http://localhost:4566'
+      localstackEndpoint
     );
     const name = generateRandomBucketName();
 
@@ -178,7 +181,7 @@ describe('getOrCreateBucket', () => {
   it('should be able to check whether object is available in S3', async () => {
     const bucket = await S3Bucket.getOrCreateBucket(
       generateRandomBucketName(),
-      'http://localhost:4566'
+      localstackEndpoint
     );
     const buffer = Buffer.from([8, 6, 7, 5, 3, 0, 9]);
 
@@ -199,7 +202,7 @@ describe('getOrCreateBucket', () => {
 
     const bucket = await S3Bucket.getOrCreateBucket(
       generateRandomBucketName(),
-      'http://localhost:4566'
+      localstackEndpoint
     );
 
     for (let index = 0; index < 10; index++) {
@@ -217,7 +220,7 @@ describe('getOrCreateBucket', () => {
     const buffer = Buffer.from([8, 6, 7, 5, 3, 0, 9]);
     const bucket = await S3Bucket.getOrCreateBucket(
       generateRandomBucketName(),
-      'http://localhost:4566'
+      localstackEndpoint
     );
     await bucket?.putObject('item1', buffer);
     await bucket?.putObject('item2', buffer);
@@ -233,7 +236,7 @@ describe('getOrCreateBucket', () => {
   it('should be able to list after a given key', async () => {
     const bucket = await S3Bucket.getOrCreateBucket(
       generateRandomBucketName(),
-      'http://localhost:4566'
+      localstackEndpoint
     );
 
     const buffer = Buffer.from([8, 6, 7, 5, 3, 0, 9]);

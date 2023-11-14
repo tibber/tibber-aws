@@ -8,6 +8,9 @@ import {
   getSecret,
 } from '../src';
 
+const localstackEndpoint =
+  process.env.LOCALSTACK_ENDPOINT || 'http://localhost:4566';
+
 beforeAll(async () => {
   configure({region: 'eu-west-1'});
 });
@@ -27,7 +30,7 @@ describe('QueueSubjectListener', () => {
     const queueName = 'test-queueName';
     const subjectName = 'test_subject';
     const topicName = 'test_topic';
-    const queue = await Queue.createQueue(queueName, 'http://localhost:4566');
+    const queue = await Queue.createQueue(queueName, localstackEndpoint);
     const listener = new QueueSubjectListener(queue, null, {
       maxConcurrentMessage: 1,
       visibilityTimeout: 1,
@@ -43,7 +46,7 @@ describe('QueueSubjectListener', () => {
     const topic = await Topic.createTopic(
       topicName,
       subjectName,
-      'http://localhost:4566'
+      localstackEndpoint
     );
     await queue.subscribeTopic(topic);
     const event = {id: '123', test: 'test'};
@@ -68,14 +71,13 @@ awslocal lambda create-function \
     --handler index.handler \
     --role arn:aws:iam::000000000000:role/lambda-role
  */
-  configure({region: 'eu-west-1'});
   const func = getLambdaFunc(
     'localstack-lambda-url-example',
-    'http://localhost:4566'
+    localstackEndpoint
   );
   const payload = {num1: 324, num2: 36};
 
-  const res = await func({body: JSON.stringify(payload)});
+  const res = await func(JSON.stringify(payload));
 
   expect(res).toBeTruthy();
   expect(res).toEqual({
@@ -88,14 +90,14 @@ awslocal lambda create-function \
 
 it('getSecret', async () => {
   //aws --profile localstack secretsmanager create-secret --name my-secret --secret-string '{"PG_PASSWORD":"stacy"}'
-  const res = getSecret('my-secret', 'PG_PASSWORD', 'http://localhost:4566');
+  const res = getSecret('my-secret', 'PG_PASSWORD', localstackEndpoint);
   expect(res).toEqual('stacy');
 });
 
 it('should be able to send message to queue', async () => {
   const queue = await Queue.createQueue(
     'test-tibber-aws-queue',
-    'http://localhost:4566'
+    localstackEndpoint
   );
   const res = await queue.send('Test', {property: 'test'});
 
