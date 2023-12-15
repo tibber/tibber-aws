@@ -6,6 +6,7 @@
   "scripts": {
     "start": "ts-node -T samples/sample1.ts",
     "test": "jest --verbose --coverage --runInBand --detectOpenHandles",
+    "test-local": "AWS_ACCESS_KEY_ID=test AWS_SECRET_ACCESS_KEY=test AWS_REGION=eu-west-1 jest --verbose --coverage --runInBand --detectOpenHandles",
     "lint": "gts lint",
     "clean": "gts clean",
     "compile": "tsc --build",
@@ -50,14 +51,14 @@
     "typescript": "~5.2.0"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=18.0.0"
   },
   "dependencies": {
-    "@aws-sdk/client-lambda": "^3.446.0",
-    "@aws-sdk/client-s3": "^3.445.0",
-    "@aws-sdk/client-secrets-manager": "^3.445.0",
-    "@aws-sdk/client-sns": "^3.445.0",
-    "@aws-sdk/client-sqs": "3.410.0",
+    "@aws-sdk/client-lambda": "^3.474.0",
+    "@aws-sdk/client-s3": "^3.474.0",
+    "@aws-sdk/client-secrets-manager": "^3.474.0",
+    "@aws-sdk/client-sns": "^3.474.0",
+    "@aws-sdk/client-sqs": "^3.474.0",
     "make-synchronous": "^1.0.0",
     "sync-rpc": "^1.3.6"
   },
