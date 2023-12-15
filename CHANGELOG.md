@@ -1,3 +1,15 @@
+# [6.0.0](https://github.com/tibber/tibber-aws/compare/v5.8.0...v6.0.0) (2023-12-15)
+
+
+### Features
+
+* aws-sdk3, removed ecs api ([0384523](https://github.com/tibber/tibber-aws/commit/0384523c7bf9855a80b4bf2f2e253062b21bd5fa))
+
+
+### BREAKING CHANGES
+
+* aws sdk 3, removed ECS API
+
 # [5.8.0](https://github.com/tibber/tibber-aws/compare/v5.7.1...v5.8.0) (2023-06-28)
 
 
