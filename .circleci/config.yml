@@ -1,4 +1,6 @@
 version: 2.1
+orbs:
+  platform: localstack/platform@2.1.0
 workflows:
   build_and_deploy:
     jobs:
@@ -14,9 +16,9 @@ jobs:
       - image: cimg/node:18.19.0
     steps:
       - checkout
+      - localstack/startup
       - run:
-
-          name: Deploy Package
+          name: Test and Deploy Package
           command: |
             export GH_TOKEN=$GITHUB_AUTH_TOKEN
             yarn
