@@ -16,6 +16,11 @@ jobs:
       - image: ubuntu:20.04
     steps:
       - checkout
+      - run:
+          name: Install pip3
+          command: |
+            apt-get update
+            apt-get install -y python3-pip
       - localstack/startup
       - run:
           name: Test and Deploy Package
