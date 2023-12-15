@@ -12,8 +12,6 @@ workflows:
 jobs:
   build:
     working_directory: ~/package
-    docker:
-      - image: cimg/node:18.19.0
     steps:
       - checkout
       - localstack/startup
