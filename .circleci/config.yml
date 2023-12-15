@@ -18,6 +18,15 @@ jobs:
       - checkout
       - localstack/startup
       - run:
+          name: Setup Localstack resources
+          command: |
+            echo "Creating test resources"
+            awslocal secretsmanager create-secret --name my-secret --secret-string '{"PG_PASSWORD":"stacy"}'
+            cd test/lambda
+            awslocal lambda create-function --function-name localstack-lambda-url-example --runtime nodejs18.x --zip-file fileb://function.zip --handler index.handler --role arn:aws:iam::000000000000:role/lambda-role
+            cd ../..
+            echo "Done creating test resources" 
+      - run:
           name: Test and Deploy Package
           command: |
             export GH_TOKEN=$GITHUB_AUTH_TOKEN
