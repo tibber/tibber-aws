@@ -12,6 +12,8 @@ workflows:
 jobs:
   build:
     working_directory: ~/package
+    docker:
+      - image: ubuntu-2204:2023.02.1
     steps:
       - checkout
       - localstack/startup
