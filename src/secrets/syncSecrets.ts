@@ -1,11 +1,13 @@
-import AWS from 'aws-sdk';
+import {SecretsManager} from '@aws-sdk/client-secrets-manager';
 import {SyncSecretsInit} from './types';
 
 const init: SyncSecretsInit = () => {
   return request => {
-    AWS.config.region = request.region;
-    const client = new AWS.SecretsManager();
-    return client.getSecretValue({SecretId: request.secret}).promise();
+    const client = new SecretsManager({
+      region: request.region,
+      endpoint: request.endpoint,
+    });
+    return client.getSecretValue({SecretId: request.secret});
   };
 };
 

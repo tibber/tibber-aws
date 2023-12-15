@@ -1,11 +1,19 @@
-import AWS from 'aws-sdk';
-import {CreationDate} from 'aws-sdk/clients/s3';
+import {
+  Bucket,
+  ListBucketsCommand,
+  PutObjectCommandInput,
+  S3,
+  BucketAlreadyOwnedByYou,
+} from '@aws-sdk/client-s3';
 
 export class S3Bucket {
   public name: string;
-  public creationDate: CreationDate;
-  private s3: AWS.S3;
-  constructor(private bucket: AWS.S3.Bucket, public endpoint?: string) {
+  public creationDate: Date;
+  private s3: S3;
+  constructor(
+    bucket: Bucket,
+    public endpoint?: string
+  ) {
     if (bucket.Name === undefined)
       throw Error("Property 'Name' on 'bucket' was undefined.");
 
@@ -14,10 +22,10 @@ export class S3Bucket {
 
     this.name = bucket.Name;
     this.creationDate = bucket.CreationDate;
-    this.s3 = new AWS.S3({
+    this.s3 = new S3({
       apiVersion: '2006-03-01',
       endpoint: this.endpoint,
-      s3ForcePathStyle: !!endpoint,
+      forcePathStyle: !!endpoint,
     });
   }
 
@@ -26,21 +34,14 @@ export class S3Bucket {
     return buckets.find(b => b.name === bucketName);
   }
 
-  /**
-   * @deprecated Either use `getExistingBucket` or `getOrCreateBucket` instead since it is not obvious this always tries to create a bucket, potentially causing resource contention
-   */
-  static async getBucket(bucketName: string, endpoint?: string) {
-    return await this.getOrCreateBucket(bucketName, endpoint);
-  }
-
   static async getOrCreateBucket(bucketName: string, endpoint?: string) {
     try {
-      const s3 = new AWS.S3({
+      const s3 = new S3({
         apiVersion: '2006-03-01',
         endpoint,
-        s3ForcePathStyle: !!endpoint,
+        forcePathStyle: !!endpoint,
       });
-      await s3.createBucket({Bucket: bucketName}).promise();
+      await s3.createBucket({Bucket: bucketName});
 
       return new S3Bucket(
         {
@@ -50,25 +51,22 @@ export class S3Bucket {
         endpoint
       );
     } catch (err) {
-      if (err.code === 'BucketAlreadyOwnedByYou') {
+      if (err instanceof BucketAlreadyOwnedByYou) {
         return (await S3Bucket.getBuckets(endpoint)).find(
           b => b.name === bucketName
         );
       }
-      console.log(err);
       throw err;
     }
   }
 
   static async getBuckets(endpoint?: string) {
     try {
-      const result = await new AWS.S3({
+      const result = await new S3({
         apiVersion: '2006-03-01',
         endpoint,
-        s3ForcePathStyle: !!endpoint,
-      })
-        .listBuckets()
-        .promise();
+        forcePathStyle: !!endpoint,
+      }).listBuckets(new ListBucketsCommand({}));
 
       if (!result.Buckets)
         throw Error("Property 'Buckets' was undefined on 'result'.");
@@ -81,13 +79,11 @@ export class S3Bucket {
 
   static async deleteIfExsists(bucketName: string, endpoint?: string) {
     try {
-      await new AWS.S3({
+      await new S3({
         apiVersion: '2006-03-01',
         endpoint,
-        s3ForcePathStyle: !!endpoint,
-      })
-        .deleteBucket({Bucket: bucketName})
-        .promise();
+        forcePathStyle: !!endpoint,
+      }).deleteBucket({Bucket: bucketName});
       return true;
     } catch (err) {
       return false;
@@ -96,21 +92,19 @@ export class S3Bucket {
 
   async putObject(
     key: string,
-    body: AWS.S3.PutObjectRequest['Body'],
-    contentType?: AWS.S3.PutObjectRequest['ContentType']
+    body: PutObjectCommandInput['Body'],
+    contentType?: PutObjectCommandInput['ContentType']
   ) {
-    return await this.s3
-      .putObject({
-        Bucket: this.name,
-        Key: key,
-        Body: body,
-        ContentType: contentType,
-      })
-      .promise();
+    return await this.s3.putObject({
+      Body: body,
+      Bucket: this.name,
+      ContentType: contentType,
+      Key: key,
+    });
   }
 
   async getObject(key: string) {
-    return await this.s3.getObject({Bucket: this.name, Key: key}).promise();
+    return await this.s3.getObject({Bucket: this.name, Key: key});
   }
 
   getObjectAsStream(key: string) {
@@ -121,14 +115,14 @@ export class S3Bucket {
     if (!(await this.objectAvailable(key))) {
       throw new Error('Object not available');
     }
-    return await this.s3
-      .getObject({Bucket: this.name, Key: key})
-      .createReadStream();
+    return (
+      await this.s3.getObject({Bucket: this.name, Key: key})
+    ).Body?.transformToWebStream();
   }
 
   async objectAvailable(key: string) {
     try {
-      await this.s3.headObject({Bucket: this.name, Key: key}).promise();
+      await this.s3.headObject({Bucket: this.name, Key: key});
       return true;
     } catch (err) {
       return false;
@@ -136,12 +130,10 @@ export class S3Bucket {
   }
 
   async listObjects(prefix?: string, startAfter?: string) {
-    return await this.s3
-      .listObjectsV2({
-        Bucket: this.name,
-        Prefix: prefix,
-        StartAfter: startAfter,
-      })
-      .promise();
+    return await this.s3.listObjectsV2({
+      Bucket: this.name,
+      Prefix: prefix,
+      StartAfter: startAfter,
+    });
   }
 }

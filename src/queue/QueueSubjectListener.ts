@@ -1,4 +1,4 @@
-import {ReceiveMessageRequest} from 'aws-sdk/clients/sqs';
+import {ReceiveMessageCommandInput} from '@aws-sdk/client-sqs';
 import {ILogger} from '../ILogger';
 import {LoggerWrapper} from '../LoggerWrapper';
 import {Queue} from './Queue';
@@ -23,7 +23,7 @@ export class QueueSubjectListener {
 
   constructor(
     public queue: Queue,
-    logger?: ILogger | undefined | null,
+    logger?: undefined | null | ILogger,
     public options: QueueSubjectListenerOptions = {
       maxConcurrentMessage: 1,
       waitTimeSeconds: 10,
@@ -42,7 +42,7 @@ export class QueueSubjectListener {
     this.handlers[subjectName].push(handler);
   }
 
-  listen(params?: ReceiveMessageRequest) {
+  listen(params?: ReceiveMessageCommandInput) {
     const MaxNumberOfMessages =
       params?.MaxNumberOfMessages ?? this.options.maxConcurrentMessage;
     const VisibilityTimeout =
@@ -110,7 +110,7 @@ export class QueueSubjectListener {
                     try {
                       await h(message, subject);
                     } catch (error) {
-                      this.logger.error(error);
+                      typeof error === 'string' && this.logger.error(error);
                     }
                   })
               );
@@ -124,7 +124,7 @@ export class QueueSubjectListener {
               `Message with subject "${m.message.subject}" deleted`
             );
           } catch (error) {
-            this.logger.error(error);
+            typeof error === 'string' && this.logger.error(error);
           } finally {
             cntInFlight--;
           }
@@ -134,7 +134,7 @@ export class QueueSubjectListener {
           await Promise.race(promises);
         }
       } catch (err) {
-        this.logger.error(err);
+        typeof err === 'string' && this.logger.error(err);
       }
       setTimeout(handlerFunc, (receiveTimeout && receiveTimeout()) || 10);
     };
