@@ -159,9 +159,7 @@ describe('getOrCreateBucket', () => {
       throw new Error('result is undefined');
     }
 
-    //Read the stream and compare the result to the original buffer
-    const readResult = await result.getReader().read();
-    expect(readResult.value).toEqual(data);
+    expect(await result.transformToByteArray()).toEqual(data);
   });
 
   it('should be able to handle missing key exception', async () => {

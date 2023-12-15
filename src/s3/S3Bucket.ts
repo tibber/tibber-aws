@@ -115,9 +115,7 @@ export class S3Bucket {
     if (!(await this.objectAvailable(key))) {
       throw new Error('Object not available');
     }
-    return (
-      await this.s3.getObject({Bucket: this.name, Key: key})
-    ).Body?.transformToWebStream();
+    return (await this.s3.getObject({Bucket: this.name, Key: key})).Body;
   }
 
   async objectAvailable(key: string) {
