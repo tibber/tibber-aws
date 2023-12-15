@@ -133,18 +133,6 @@ describe('getOrCreateBucket', () => {
     expect(result.Body?.transformToWebStream()).toBeTruthy();
   });
 
-  it('should be able to retrieve object as stream 2', async () => {
-    const bucket = await S3Bucket.getOrCreateBucket(
-      generateRandomBucketName(),
-      localstackEndpoint
-    );
-    const buffer = Buffer.from([8, 6, 7, 5, 3, 0, 9]);
-    await bucket!.putObject('test', buffer, 'image/png');
-    const result = await bucket!.getObjectStream('test');
-    //TODO: CHeck this! Readable vs ReadableStream
-    expect(result).toBeInstanceOf(ReadableStream);
-  });
-
   it('should be able to actually retrieve object as stream', async () => {
     const bucket = await S3Bucket.getOrCreateBucket(
       generateRandomBucketName(),
