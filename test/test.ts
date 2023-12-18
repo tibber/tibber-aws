@@ -15,7 +15,7 @@ beforeAll(async () => {
   configure({region: 'eu-west-1'});
 });
 
-it('should be able to assign several topics to buildererrr', () => {
+it('should be able to assign several topics to builderer', () => {
   const builder = new QueueSubjectListenerBuilder(
     'test-queueName',
     null,
