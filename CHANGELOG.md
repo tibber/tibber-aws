@@ -1,3 +1,10 @@
+## [6.0.1](https://github.com/tibber/tibber-aws/compare/v6.0.0...v6.0.1) (2023-12-18)
+
+
+### Bug Fixes
+
+* fix handling of s3 as stream ([c7d94f9](https://github.com/tibber/tibber-aws/commit/c7d94f9a18f5c05c48f299085c311ae7d3f4206a))
+
 # [6.0.0](https://github.com/tibber/tibber-aws/compare/v5.8.0...v6.0.0) (2023-12-15)
 
 
