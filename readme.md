@@ -1,5 +1,11 @@
 # tibber-aws
 
+## Version 6.x.x changes
+- Migrated to aws sdk 3.x
+- Removed ECS Api
+
+## Usage
+
 ```
 import {Topic, Queue} from 'tibber-aws';
 
