@@ -134,4 +134,8 @@ export class S3Bucket {
       StartAfter: startAfter,
     });
   }
+
+  async deleteObject(key: string) {
+    return await this.s3.deleteObject({Bucket: this.name, Key: key});
+  }
 }

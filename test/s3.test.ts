@@ -1,5 +1,6 @@
 import rand from 'randomstring';
 import {S3Bucket, configure} from '../src';
+import {NoSuchKey} from '@aws-sdk/client-s3';
 
 const localstackEndpoint =
   process.env.LOCALSTACK_ENDPOINT || 'http://localhost:4566';
@@ -56,6 +57,36 @@ describe('getExistingBucket', () => {
       localstackEndpoint
     );
     expect(result).toBeUndefined();
+  });
+});
+
+describe('deleteObject', () => {
+  it('should be able to delete object', async () => {
+    const bucket = await S3Bucket.getOrCreateBucket(
+      generateRandomBucketName(),
+      localstackEndpoint
+    );
+    const buffer = Buffer.from([8, 6, 7, 5, 3, 0, 9]);
+    await bucket!.putObject('test', buffer, 'image/png');
+    const buffer2 = Buffer.from([8, 6, 7, 5, 3, 0, 9]);
+    await bucket!.putObject('test2', buffer2, 'image/png');
+
+    let list = await bucket?.listObjects();
+    expect(list?.Contents?.length).toBe(2);
+
+    await bucket!.deleteObject('test');
+
+    list = await bucket?.listObjects();
+    expect(list?.Contents?.length).toBe(1);
+
+    expect(async () => {
+      await bucket?.getObject('test');
+    }).rejects.toThrow(NoSuchKey);
+
+    await bucket!.deleteObject('test2');
+
+    list = await bucket?.listObjects();
+    expect(list?.Contents).toBe(undefined);
   });
 });
 
