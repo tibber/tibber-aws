@@ -1,3 +1,10 @@
+# [6.1.0](https://github.com/tibber/tibber-aws/compare/v6.0.1...v6.1.0) (2023-12-20)
+
+
+### Features
+
+* added deleteObject to S3 API ([e260138](https://github.com/tibber/tibber-aws/commit/e260138ed2fb09276ae5b09286b87fde978e3bba))
+
 ## [6.0.1](https://github.com/tibber/tibber-aws/compare/v6.0.0...v6.0.1) (2023-12-18)
 
 
