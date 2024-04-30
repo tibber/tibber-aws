@@ -1,3 +1,10 @@
+## [6.1.2](https://github.com/tibber/tibber-aws/compare/v6.1.1...v6.1.2) (2024-04-30)
+
+
+### Bug Fixes
+
+* **deps:** bump ip from 2.0.0 to 2.0.1 ([aeadfdf](https://github.com/tibber/tibber-aws/commit/aeadfdf6946596ad3a2fb0e326c74b7614197b9d))
+
 ## [6.1.1](https://github.com/tibber/tibber-aws/compare/v6.1.0...v6.1.1) (2024-04-30)
 
 
