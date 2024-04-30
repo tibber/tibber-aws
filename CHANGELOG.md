@@ -1,3 +1,10 @@
+## [6.1.1](https://github.com/tibber/tibber-aws/compare/v6.1.0...v6.1.1) (2024-04-30)
+
+
+### Bug Fixes
+
+* **deps:** bump tar from 6.2.0 to 6.2.1 ([6962d89](https://github.com/tibber/tibber-aws/commit/6962d89a7e0b5220ebe06c03b8531c511eefb51d))
+
 # [6.1.0](https://github.com/tibber/tibber-aws/compare/v6.0.1...v6.1.0) (2023-12-20)
 
 
