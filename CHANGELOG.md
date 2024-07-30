@@ -1,3 +1,10 @@
+## [6.1.3](https://github.com/tibber/tibber-aws/compare/v6.1.2...v6.1.3) (2024-07-30)
+
+
+### Bug Fixes
+
+* **deps:** bump braces from 3.0.2 to 3.0.3 ([b7e2120](https://github.com/tibber/tibber-aws/commit/b7e21206eb7e3762da6c8a7469f6d514b212242a))
+
 ## [6.1.2](https://github.com/tibber/tibber-aws/compare/v6.1.1...v6.1.2) (2024-04-30)
 
 
