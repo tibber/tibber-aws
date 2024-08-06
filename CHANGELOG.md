@@ -1,3 +1,10 @@
+## [6.1.4](https://github.com/tibber/tibber-aws/compare/v6.1.3...v6.1.4) (2024-08-06)
+
+
+### Bug Fixes
+
+* **deps:** Bump aws-sdk packages from 3.474.0 to 3.621.0 ([f1390e8](https://github.com/tibber/tibber-aws/commit/f1390e818cb7bc334329a9b69c9b1ce4cc233453))
+
 ## [6.1.3](https://github.com/tibber/tibber-aws/compare/v6.1.2...v6.1.3) (2024-07-30)
 
 
