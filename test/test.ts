@@ -58,6 +58,42 @@ describe('QueueSubjectListener', () => {
 
     listener.stop();
   });
+
+  it('should be able to listen to queue and call handler with retry', async () => {
+    const queueName = 'test-retry-queueName';
+    const subjectName = 'test_retry_subject';
+    const topicName = 'test_retry_topic';
+    const queue = await Queue.createQueue(queueName, localstackEndpoint);
+    const listener = new QueueSubjectListener(queue, null, {
+      maxConcurrentMessage: 1,
+      visibilityTimeout: 0,
+      waitTimeSeconds: 0,
+    });
+
+    const handler = jest.fn(() => Promise.reject('error'));
+
+    listener.onSubject(subjectName, handler, {
+      maxAttempts: 2,
+      backoffDelaySeconds: 0,
+    });
+
+    listener.listen();
+
+    const topic = await Topic.createTopic(
+      topicName,
+      subjectName,
+      localstackEndpoint
+    );
+    await queue.subscribeTopic(topic);
+    const event = {id: '123', test: 'test'};
+    await topic.push(event);
+
+    await new Promise(resolve => setTimeout(resolve, 4000));
+    expect(handler).toHaveBeenCalledTimes(2);
+    expect(handler).toHaveBeenCalledWith(event, subjectName);
+
+    listener.stop();
+  }, 10000);
 });
 
 it('should run lambda func', async () => {
