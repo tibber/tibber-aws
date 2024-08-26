@@ -220,7 +220,7 @@ export class QueueSubjectListener {
             }
 
             this.logger.debug(
-              `Message with subject "${m.message.subject}" kept`
+              `Message with subject "${m.message.subject}" kept, visibilityTimeout: ${visibilityTimeout}`
             );
           } catch (error) {
             typeof error === 'string' && this.logger.error(error);
