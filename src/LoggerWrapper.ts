@@ -19,6 +19,10 @@ export class LoggerWrapper implements ILogger {
     this._logger?.info && this._logger.info(message);
   }
 
+  warn(message: string) {
+    this._logger?.warn && this._logger.warn(message);
+  }
+
   error(message: string) {
     this._logger?.error ? this._logger.error(message) : console.log(message);
   }
