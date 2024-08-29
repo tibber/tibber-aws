@@ -1,3 +1,10 @@
+# [6.2.0](https://github.com/tibber/tibber-aws/compare/v6.1.4...v6.2.0) (2024-08-29)
+
+
+### Features
+
+* Support for retrying to deliver SQS message ([#304](https://github.com/tibber/tibber-aws/issues/304)) ([08bd12a](https://github.com/tibber/tibber-aws/commit/08bd12afe59c52ab7534644de7bbd844a8d15603))
+
 ## [6.1.4](https://github.com/tibber/tibber-aws/compare/v6.1.3...v6.1.4) (2024-08-06)
 
 
