@@ -1,4 +1,7 @@
-import {ReceiveMessageCommandInput} from '@aws-sdk/client-sqs';
+import {
+  ReceiveMessageCommandInput,
+  QueueAttributeName,
+} from '@aws-sdk/client-sqs';
 import {ILogger} from '../ILogger';
 import {LoggerWrapper} from '../LoggerWrapper';
 import {Queue} from './Queue';
@@ -11,12 +14,37 @@ export type QueueSubjectListenerOptions = {
 };
 
 export type QueueSubjectListenerMessageHandler = {
-  (message: unknown, subject: string): void;
+  (message: unknown, subject: string): Promise<void>;
 };
 
+export type QueueSubjectListenerRetryPolicyOptions = {
+  maxAttempts: number;
+  backoffDelaySeconds: number;
+  retryPolicy?: (
+    attempt: number,
+    backoffDelaySeconds: number,
+    error: unknown
+  ) => number;
+};
+
+export const LinearRetryPolicy = (
+  attempt: number,
+  backoffDelaySeconds: number
+): number => backoffDelaySeconds * attempt;
+
+export const ExponentialRetryPolicy = (
+  attempt: number,
+  backoffDelaySeconds: number
+) => Math.pow(attempt, backoffDelaySeconds);
+
 export class QueueSubjectListener {
-  public handlers: Record<string, Array<QueueSubjectListenerMessageHandler>> =
-    {};
+  public handlers: Record<
+    string,
+    Array<{
+      handler: QueueSubjectListenerMessageHandler;
+      retryPolicyOptions?: QueueSubjectListenerRetryPolicyOptions;
+    }>
+  > = {};
   public isStopped = false;
 
   public logger: ILogger;
@@ -37,9 +65,22 @@ export class QueueSubjectListener {
     this.isStopped = true;
   }
 
-  onSubject(subjectName: string, handler: QueueSubjectListenerMessageHandler) {
+  onSubject(
+    subjectName: string,
+    handler: QueueSubjectListenerMessageHandler,
+    retryPolicyOptions?: QueueSubjectListenerRetryPolicyOptions
+  ) {
     this.handlers[subjectName] = this.handlers[subjectName] || [];
-    this.handlers[subjectName].push(handler);
+    this.handlers[subjectName].push({
+      handler,
+      retryPolicyOptions: retryPolicyOptions
+        ? {
+            maxAttempts: retryPolicyOptions.maxAttempts || 3,
+            backoffDelaySeconds: retryPolicyOptions.backoffDelaySeconds || 10,
+            retryPolicy: retryPolicyOptions.retryPolicy || LinearRetryPolicy,
+          }
+        : undefined,
+    });
   }
 
   listen(params?: ReceiveMessageCommandInput) {
@@ -66,6 +107,7 @@ export class QueueSubjectListener {
           MaxNumberOfMessages: maxNumberOfMessagesOrUndefined,
           VisibilityTimeout,
           WaitTimeSeconds,
+          AttributeNames: [QueueAttributeName.All],
         };
 
         const response = await this.queue.receiveMessage(currentParams);
@@ -89,6 +131,7 @@ export class QueueSubjectListener {
               message: {
                 message: JSON.parse(json.Message),
                 subject: json.Subject,
+                attributes: m.Attributes,
               },
             };
           } catch (error) {
@@ -100,28 +143,84 @@ export class QueueSubjectListener {
         cntInFlight += messages.length;
 
         const promises = messages.map(async m => {
-          const {message, subject} = m.message;
+          const {message, subject, attributes} = m.message;
+          let shouldRetry = false;
+          let visibilityTimeout: number | undefined;
           try {
             if (this.handlers[subject] || this.handlers['*']) {
+              const subjectHandlers = (this.handlers[subject] || []).concat(
+                this.handlers['*'] || []
+              );
               await Promise.all(
-                (this.handlers[subject] || [])
-                  .concat(this.handlers['*'] || [])
-                  .map(async h => {
-                    try {
-                      await h(message, subject);
-                    } catch (error) {
-                      typeof error === 'string' && this.logger.error(error);
+                subjectHandlers.map(async h => {
+                  try {
+                    shouldRetry = false;
+                    await h.handler(message, subject);
+                  } catch (error) {
+                    typeof error === 'string' && this.logger.error(error);
+
+                    if (!h.retryPolicyOptions) return;
+
+                    if (Object.keys(subjectHandlers).length > 1) {
+                      this.logger.info(
+                        `Multiple handlers for message with subject "${m.message.subject}"`
+                      );
+                      return;
                     }
-                  })
+
+                    const {maxAttempts, backoffDelaySeconds, retryPolicy} =
+                      h.retryPolicyOptions;
+                    const attempt = parseInt(
+                      attributes?.ApproximateReceiveCount || '1'
+                    );
+
+                    if (attempt < maxAttempts) {
+                      shouldRetry = true;
+                      visibilityTimeout = retryPolicy?.(
+                        attempt,
+                        backoffDelaySeconds,
+                        error
+                      );
+
+                      this.logger.debug(
+                        `Message with subject "${m.message.subject}" will be retried`
+                      );
+                    }
+                  }
+                })
               );
             }
             if (!m.handle)
               throw Error("'handle' property on message was undefined.");
 
-            await this.queue.deleteMessage(m.handle);
+            if (!shouldRetry) {
+              await this.queue.deleteMessage(m.handle);
+
+              this.logger.debug(
+                `Message with subject "${m.message.subject}" deleted`
+              );
+              return;
+            }
+
+            if (
+              typeof visibilityTimeout === 'number' &&
+              visibilityTimeout >= 0 &&
+              visibilityTimeout !== currentParams.VisibilityTimeout
+            ) {
+              if (visibilityTimeout >= 0 && visibilityTimeout <= 43200) {
+                await this.queue.changeMessageVisibility(
+                  m.handle,
+                  visibilityTimeout
+                );
+              } else {
+                this.logger.warn(
+                  `Invalid visibilityTimeout value: ${visibilityTimeout}`
+                );
+              }
+            }
 
             this.logger.debug(
-              `Message with subject "${m.message.subject}" deleted`
+              `Message with subject "${m.message.subject}" kept, visibilityTimeout: ${visibilityTimeout}`
             );
           } catch (error) {
             typeof error === 'string' && this.logger.error(error);

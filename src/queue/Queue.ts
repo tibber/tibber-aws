@@ -1,5 +1,6 @@
 import {SNS} from '@aws-sdk/client-sns';
 import {
+  ChangeMessageVisibilityCommandInput,
   DeleteMessageCommandInput,
   ReceiveMessageCommandInput,
   SendMessageCommandInput,
@@ -158,5 +159,17 @@ export class Queue {
       ReceiptHandle: receiptHandle,
     };
     await this.sqs.deleteMessage(request);
+  }
+
+  async changeMessageVisibility(
+    receiptHandle: string,
+    visibilityTimeout: number
+  ) {
+    const request: ChangeMessageVisibilityCommandInput = {
+      QueueUrl: this.queueUrl,
+      ReceiptHandle: receiptHandle,
+      VisibilityTimeout: visibilityTimeout,
+    };
+    await this.sqs.changeMessageVisibility(request);
   }
 }
