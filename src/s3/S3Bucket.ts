@@ -60,6 +60,10 @@ export class S3Bucket {
     }
   }
 
+  /**
+   * Requires s3:ListAllMyBuckets permission
+   * @param endpoint
+   */
   static async getBuckets(endpoint?: string) {
     try {
       const result = await new S3({
