@@ -128,6 +128,7 @@ export class QueueSubjectListener {
           try {
             return {
               handle: m.ReceiptHandle,
+              isValidJson: true,
               message: {
                 message: JSON.parse(json.Message),
                 subject: json.Subject,
@@ -135,8 +136,14 @@ export class QueueSubjectListener {
               },
             };
           } catch (error) {
-            this.logger.error('Not able to parse event as json');
-            return {handle: m.ReceiptHandle, message: {subject: 'Delete Me'}};
+            this.logger.error(
+              `Not able to parse event as json: ${json.Message}`
+            );
+            return {
+              handle: m.ReceiptHandle,
+              isValidJson: false,
+              message: {subject: 'Delete Me'},
+            };
           }
         });
 
@@ -147,7 +154,10 @@ export class QueueSubjectListener {
           let shouldRetry = false;
           let visibilityTimeout: number | undefined;
           try {
-            if (this.handlers[subject] || this.handlers['*']) {
+            if (
+              m.isValidJson &&
+              (this.handlers[subject] || this.handlers['*'])
+            ) {
               const subjectHandlers = (this.handlers[subject] || []).concat(
                 this.handlers['*'] || []
               );
