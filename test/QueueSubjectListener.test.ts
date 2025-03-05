@@ -40,6 +40,41 @@ describe('QueueSubjectListener', () => {
       expect(queueMock.deleteMessage).toHaveBeenCalledTimes(1);
     });
 
+    it('should delete messages that are not valid JSON', async () => {
+      const queueMock = {
+        receiveMessage: jest.fn().mockResolvedValueOnce({
+          Messages: [
+            {
+              Body: JSON.stringify({
+                Subject: 'test',
+                Message: '{"corruptJSON:',
+              }),
+              ReceiptHandle: 'test',
+            },
+          ],
+        }),
+        deleteMessage: jest.fn(Promise.resolve),
+      } as unknown as Queue;
+
+      const sut = new QueueSubjectListener(queueMock, null, {
+        maxConcurrentMessage: 1,
+        waitTimeSeconds: 0,
+        visibilityTimeout: 0,
+        receiveTimeout: () => 0,
+      });
+
+      const handler = jest.fn(() => Promise.resolve());
+
+      sut.onSubject('test', handler);
+      sut.listen();
+
+      await new Promise(resolve => setTimeout(resolve, 10));
+      sut.stop();
+
+      expect(handler).toHaveBeenCalledTimes(0);
+      expect(queueMock.deleteMessage).toHaveBeenCalledTimes(1);
+    });
+
     it('should be able to listen to queue and call handler with retry', async () => {
       const queueMock = {
         receiveMessage: jest.fn().mockResolvedValueOnce({
