@@ -1,3 +1,10 @@
+## [6.2.1](https://github.com/tibber/tibber-aws/compare/v6.2.0...v6.2.1) (2025-03-06)
+
+
+### Bug Fixes
+
+* **queuesubjectlistener:** Should not publish messages that aren't valid json ([afa2bcd](https://github.com/tibber/tibber-aws/commit/afa2bcd32506d852a55f0b9d50084b14abe26523))
+
 # [6.2.0](https://github.com/tibber/tibber-aws/compare/v6.1.4...v6.2.0) (2024-08-29)
 
 
