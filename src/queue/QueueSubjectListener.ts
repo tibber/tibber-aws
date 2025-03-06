@@ -245,6 +245,7 @@ export class QueueSubjectListener {
       } catch (err) {
         typeof err === 'string' && this.logger.error(err);
       }
+
       setTimeout(handlerFunc, (receiveTimeout && receiveTimeout()) || 10);
     };
     setTimeout(handlerFunc, (receiveTimeout && receiveTimeout()) || 10);
