@@ -1,3 +1,11 @@
+## [6.2.2](https://github.com/tibber/tibber-aws/compare/v6.2.1...v6.2.2) (2025-09-24)
+
+
+### Bug Fixes
+
+* **deps:** bump @octokit/request-error from 5.0.1 to 5.1.1 ([97195ba](https://github.com/tibber/tibber-aws/commit/97195baeae19bb7680940148d96ac42e451f1609))
+* **deps:** bump cross-spawn from 7.0.3 to 7.0.6 ([df346f4](https://github.com/tibber/tibber-aws/commit/df346f42634837e5eb682eb7d781e48d188e6b32))
+
 ## [6.2.1](https://github.com/tibber/tibber-aws/compare/v6.2.0...v6.2.1) (2025-03-06)
 
 
