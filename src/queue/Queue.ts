@@ -1,9 +1,12 @@
-import AWS from 'aws-sdk';
+import {SNS} from '@aws-sdk/client-sns';
 import {
-  DeleteMessageRequest,
-  ReceiveMessageRequest,
-  SendMessageRequest,
-} from 'aws-sdk/clients/sqs';
+  ChangeMessageVisibilityCommandInput,
+  DeleteMessageCommandInput,
+  ReceiveMessageCommandInput,
+  SendMessageCommandInput,
+  SQS,
+} from '@aws-sdk/client-sqs';
+
 import {Topic} from './Topic';
 
 /**
@@ -14,16 +17,16 @@ import {Topic} from './Topic';
  */
 type PolicyTemplate = {
   Statement: Array<{
-    Sid: string;
+    Action: string[];
+    Condition?: {
+      ArnLike?: Record<string, string[]>;
+    };
     Effect: 'Allow';
     Principal: {
       AWS: '*';
     };
-    Action: string[];
     Resource?: string;
-    Condition?: {
-      ArnLike?: Record<string, string[]>;
-    };
+    Sid: string;
   }>;
   Version: '2012-10-17';
 };
@@ -43,15 +46,18 @@ const policyTemplate: PolicyTemplate = {
 };
 
 export class Queue {
-  public sqs = new AWS.SQS({endpoint: this.endpoint});
-  public sns = new AWS.SNS({endpoint: this.endpoint});
   public _arnMap: Record<string, boolean> = {};
+  public sqs: SQS;
+  public sns: SNS;
 
   constructor(
     public queueUrl: string,
     public queueArn: string,
     public endpoint?: string
-  ) {}
+  ) {
+    this.sqs = new SQS({endpoint: this.endpoint});
+    this.sns = new SNS({endpoint: this.endpoint});
+  }
 
   async subscribeTopic(topic: Topic) {
     if (this._arnMap[topic.topicArn]) {
@@ -66,15 +72,13 @@ export class Queue {
         Protocol: 'sqs',
         TopicArn: topic.topicArn,
       };
-      return await this.sns.subscribe(params).promise();
+      return await this.sns.subscribe(params);
     };
 
-    const response = await this.sqs
-      .getQueueAttributes({
-        QueueUrl: this.queueUrl,
-        AttributeNames: ['All'],
-      })
-      .promise();
+    const response = await this.sqs.getQueueAttributes({
+      AttributeNames: ['All'],
+      QueueUrl: this.queueUrl,
+    });
 
     let policy = policyTemplate;
 
@@ -104,18 +108,16 @@ export class Queue {
 
     sourceArns.push(topic.topicArn);
 
-    await this.sqs
-      .setQueueAttributes({
-        QueueUrl: this.queueUrl,
-        Attributes: {Policy: JSON.stringify(policy)},
-      })
-      .promise();
+    await this.sqs.setQueueAttributes({
+      Attributes: {Policy: JSON.stringify(policy)},
+      QueueUrl: this.queueUrl,
+    });
 
     await subFunc();
   }
 
   async send(subject: string, message: unknown, delaySeconds = 0) {
-    const payload: SendMessageRequest = {
+    const payload: SendMessageCommandInput = {
       DelaySeconds: delaySeconds,
       MessageBody: JSON.stringify({
         Message: JSON.stringify(message),
@@ -123,22 +125,20 @@ export class Queue {
       }),
       QueueUrl: this.queueUrl,
     };
-    return await this.sqs.sendMessage(payload).promise();
+    return await this.sqs.sendMessage(payload);
   }
 
   static async createQueue(queueName: string, endpoint?: string) {
-    const sqs = new AWS.SQS({endpoint});
-    const queue = await sqs.createQueue({QueueName: queueName}).promise();
+    const sqs = new SQS({endpoint});
+    const queue = await sqs.createQueue({QueueName: queueName});
 
     if (!queue.QueueUrl)
       throw Error("Expected QueueUrl to be set on 'queue' instance.");
 
-    const response = await sqs
-      .getQueueAttributes({
-        QueueUrl: queue.QueueUrl,
-        AttributeNames: ['QueueArn', 'Policy'],
-      })
-      .promise();
+    const response = await sqs.getQueueAttributes({
+      AttributeNames: ['QueueArn', 'Policy'],
+      QueueUrl: queue.QueueUrl,
+    });
 
     if (!response.Attributes?.QueueArn)
       throw Error("Expected QueueArn to be set on 'response' instance.");
@@ -146,17 +146,30 @@ export class Queue {
     return new Queue(queue.QueueUrl, response.Attributes.QueueArn, endpoint);
   }
 
-  async receiveMessage(params: Omit<ReceiveMessageRequest, 'QueueUrl'>) {
-    return await this.sqs
-      .receiveMessage({...params, ...{QueueUrl: this.queueUrl}})
-      .promise();
+  async receiveMessage(params: Omit<ReceiveMessageCommandInput, 'QueueUrl'>) {
+    return await this.sqs.receiveMessage({
+      ...params,
+      ...{QueueUrl: this.queueUrl},
+    });
   }
 
   async deleteMessage(receiptHandle: string) {
-    const request: DeleteMessageRequest = {
+    const request: DeleteMessageCommandInput = {
       QueueUrl: this.queueUrl,
       ReceiptHandle: receiptHandle,
     };
-    await this.sqs.deleteMessage(request).promise();
+    await this.sqs.deleteMessage(request);
+  }
+
+  async changeMessageVisibility(
+    receiptHandle: string,
+    visibilityTimeout: number
+  ) {
+    const request: ChangeMessageVisibilityCommandInput = {
+      QueueUrl: this.queueUrl,
+      ReceiptHandle: receiptHandle,
+      VisibilityTimeout: visibilityTimeout,
+    };
+    await this.sqs.changeMessageVisibility(request);
   }
 }

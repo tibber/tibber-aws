@@ -1,3 +1,87 @@
+## [6.2.3](https://github.com/tibber/tibber-aws/compare/v6.2.2...v6.2.3) (2025-09-24)
+
+
+### Bug Fixes
+
+* **deps:** bump aws-sdk from 2.1377.0 to 2.1451.0 ([0df8d4d](https://github.com/tibber/tibber-aws/commit/0df8d4db731342f226d27b472c7f54ea65625d01))
+* **deps:** bump word-wrap from 1.2.3 to 1.2.4 ([b37c477](https://github.com/tibber/tibber-aws/commit/b37c477ccfc39287611bf8bfc70713d88a778d47))
+
+## [6.2.2](https://github.com/tibber/tibber-aws/compare/v6.2.1...v6.2.2) (2025-09-24)
+
+
+### Bug Fixes
+
+* **deps:** bump @octokit/request-error from 5.0.1 to 5.1.1 ([97195ba](https://github.com/tibber/tibber-aws/commit/97195baeae19bb7680940148d96ac42e451f1609))
+* **deps:** bump cross-spawn from 7.0.3 to 7.0.6 ([df346f4](https://github.com/tibber/tibber-aws/commit/df346f42634837e5eb682eb7d781e48d188e6b32))
+
+## [6.2.1](https://github.com/tibber/tibber-aws/compare/v6.2.0...v6.2.1) (2025-03-06)
+
+
+### Bug Fixes
+
+* **queuesubjectlistener:** Should not publish messages that aren't valid json ([afa2bcd](https://github.com/tibber/tibber-aws/commit/afa2bcd32506d852a55f0b9d50084b14abe26523))
+
+# [6.2.0](https://github.com/tibber/tibber-aws/compare/v6.1.4...v6.2.0) (2024-08-29)
+
+
+### Features
+
+* Support for retrying to deliver SQS message ([#304](https://github.com/tibber/tibber-aws/issues/304)) ([08bd12a](https://github.com/tibber/tibber-aws/commit/08bd12afe59c52ab7534644de7bbd844a8d15603))
+
+## [6.1.4](https://github.com/tibber/tibber-aws/compare/v6.1.3...v6.1.4) (2024-08-06)
+
+
+### Bug Fixes
+
+* **deps:** Bump aws-sdk packages from 3.474.0 to 3.621.0 ([f1390e8](https://github.com/tibber/tibber-aws/commit/f1390e818cb7bc334329a9b69c9b1ce4cc233453))
+
+## [6.1.3](https://github.com/tibber/tibber-aws/compare/v6.1.2...v6.1.3) (2024-07-30)
+
+
+### Bug Fixes
+
+* **deps:** bump braces from 3.0.2 to 3.0.3 ([b7e2120](https://github.com/tibber/tibber-aws/commit/b7e21206eb7e3762da6c8a7469f6d514b212242a))
+
+## [6.1.2](https://github.com/tibber/tibber-aws/compare/v6.1.1...v6.1.2) (2024-04-30)
+
+
+### Bug Fixes
+
+* **deps:** bump ip from 2.0.0 to 2.0.1 ([aeadfdf](https://github.com/tibber/tibber-aws/commit/aeadfdf6946596ad3a2fb0e326c74b7614197b9d))
+
+## [6.1.1](https://github.com/tibber/tibber-aws/compare/v6.1.0...v6.1.1) (2024-04-30)
+
+
+### Bug Fixes
+
+* **deps:** bump tar from 6.2.0 to 6.2.1 ([6962d89](https://github.com/tibber/tibber-aws/commit/6962d89a7e0b5220ebe06c03b8531c511eefb51d))
+
+# [6.1.0](https://github.com/tibber/tibber-aws/compare/v6.0.1...v6.1.0) (2023-12-20)
+
+
+### Features
+
+* added deleteObject to S3 API ([e260138](https://github.com/tibber/tibber-aws/commit/e260138ed2fb09276ae5b09286b87fde978e3bba))
+
+## [6.0.1](https://github.com/tibber/tibber-aws/compare/v6.0.0...v6.0.1) (2023-12-18)
+
+
+### Bug Fixes
+
+* fix handling of s3 as stream ([c7d94f9](https://github.com/tibber/tibber-aws/commit/c7d94f9a18f5c05c48f299085c311ae7d3f4206a))
+
+# [6.0.0](https://github.com/tibber/tibber-aws/compare/v5.8.0...v6.0.0) (2023-12-15)
+
+
+### Features
+
+* aws-sdk3, removed ecs api ([0384523](https://github.com/tibber/tibber-aws/commit/0384523c7bf9855a80b4bf2f2e253062b21bd5fa))
+
+
+### BREAKING CHANGES
+
+* aws sdk 3, removed ECS API
+
 # [5.8.0](https://github.com/tibber/tibber-aws/compare/v5.7.1...v5.8.0) (2023-06-28)
 
 

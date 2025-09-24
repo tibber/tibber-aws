@@ -1,4 +1,6 @@
 version: 2.1
+orbs:
+  localstack: localstack/platform@2.1.0
 workflows:
   build_and_deploy:
     jobs:
@@ -10,13 +12,22 @@ workflows:
 jobs:
   build:
     working_directory: ~/package
-    docker:
-      - image: circleci/node:16
+    machine:
+      image: ubuntu-2204:2023.10.1
     steps:
       - checkout
+      - localstack/startup
       - run:
-
-          name: Deploy Package
+          name: Setup Localstack resources
+          command: |
+            echo "Creating test resources"
+            awslocal secretsmanager create-secret --name my-secret --secret-string '{"PG_PASSWORD":"stacy"}'
+            cd test/lambda
+            awslocal lambda create-function --function-name localstack-lambda-url-example --runtime nodejs18.x --zip-file fileb://function.zip --handler index.handler --role arn:aws:iam::000000000000:role/lambda-role
+            cd ../..
+            echo "Done creating test resources" 
+      - run:
+          name: Test and Deploy Package
           command: |
             export GH_TOKEN=$GITHUB_AUTH_TOKEN
             yarn
