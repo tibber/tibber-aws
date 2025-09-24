@@ -1,3 +1,11 @@
+## [6.2.3](https://github.com/tibber/tibber-aws/compare/v6.2.2...v6.2.3) (2025-09-24)
+
+
+### Bug Fixes
+
+* **deps:** bump aws-sdk from 2.1377.0 to 2.1451.0 ([0df8d4d](https://github.com/tibber/tibber-aws/commit/0df8d4db731342f226d27b472c7f54ea65625d01))
+* **deps:** bump word-wrap from 1.2.3 to 1.2.4 ([b37c477](https://github.com/tibber/tibber-aws/commit/b37c477ccfc39287611bf8bfc70713d88a778d47))
+
 ## [6.2.2](https://github.com/tibber/tibber-aws/compare/v6.2.1...v6.2.2) (2025-09-24)
 
 
