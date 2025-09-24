@@ -1,7 +1,4 @@
-import AWS from 'aws-sdk';
 import {Queue, Topic} from '../src/index';
-
-AWS.config.region = 'eu-west-1';
 
 async function sample() {
   //create (or get) topics

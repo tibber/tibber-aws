@@ -1,23 +1,15 @@
-import {SecretsManager} from 'aws-sdk';
-import {AWSError} from 'aws-sdk/lib/error';
-import {PromiseResult} from 'aws-sdk/lib/request';
+import {GetSecretValueCommandOutput} from '@aws-sdk/client-secrets-manager';
 
 export type SyncSecretsRequest = {
   region: undefined | string;
   secret: string;
+  endpoint?: string;
 };
 
 export type SyncSecretsInit = {
-  (): (
-    request: SyncSecretsRequest
-  ) => Promise<
-    PromiseResult<SecretsManager.Types.GetSecretValueResponse, AWSError>
-  >;
+  (): (request: SyncSecretsRequest) => Promise<GetSecretValueCommandOutput>;
 };
 
 export type SyncSecretsResolved = {
-  (request: SyncSecretsRequest): PromiseResult<
-    SecretsManager.Types.GetSecretValueResponse,
-    AWSError
-  >;
+  (request: SyncSecretsRequest): Awaited<GetSecretValueCommandOutput>;
 };

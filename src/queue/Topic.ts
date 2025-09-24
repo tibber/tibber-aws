@@ -1,22 +1,26 @@
-import AWS from 'aws-sdk';
+import {MessageAttributeValue, SNS} from '@aws-sdk/client-sns';
 
 export class Topic {
-  public sns = new AWS.SNS({endpoint: this.endpoint});
+  public sns: SNS;
 
   private constructor(
     public topicArn: string,
     public name: string,
     public subject?: string,
     public endpoint?: string
-  ) {}
+  ) {
+    this.sns = new SNS({endpoint: this.endpoint});
+  }
 
   static async createTopic(
     topicName: string,
     subjectName?: string,
     endpoint?: string
   ) {
-    const sns = new AWS.SNS({endpoint});
-    const topicResponse = await sns.createTopic({Name: topicName}).promise();
+    const sns = new SNS({
+      endpoint,
+    });
+    const topicResponse = await sns.createTopic({Name: topicName});
 
     if (!topicResponse.TopicArn) {
       throw Error(
@@ -30,7 +34,7 @@ export class Topic {
   async push(
     evt: unknown,
     subject?: string,
-    messageAttributes?: AWS.SNS.MessageAttributeMap
+    messageAttributes?: Record<string, MessageAttributeValue>
   ) {
     const payload = {
       Message: JSON.stringify(evt),
@@ -39,6 +43,6 @@ export class Topic {
       TopicArn: this.topicArn,
     };
 
-    return await this.sns.publish(payload).promise();
+    return await this.sns.publish(payload);
   }
 }
