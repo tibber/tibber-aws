@@ -1,3 +1,10 @@
+## [6.2.4](https://github.com/tibber/tibber-aws/compare/v6.2.3...v6.2.4) (2025-09-24)
+
+
+### Bug Fixes
+
+* **deps:** bump semver from 5.7.1 to 5.7.2 ([3690135](https://github.com/tibber/tibber-aws/commit/3690135b8ae5880259d2e44cfece522f5cf85eb1))
+
 ## [6.2.3](https://github.com/tibber/tibber-aws/compare/v6.2.2...v6.2.3) (2025-09-24)
 
 
