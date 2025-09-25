@@ -31,7 +31,7 @@ export class S3Bucket {
 
   static async getExistingBucket(bucketName: string, endpoint?: string) {
     const buckets = await S3Bucket.getBuckets(endpoint);
-    return buckets.find(b => b.name === bucketName);
+    return buckets.find((b: S3Bucket) => b.name === bucketName);
   }
 
   static async getOrCreateBucket(bucketName: string, endpoint?: string) {
@@ -53,7 +53,7 @@ export class S3Bucket {
     } catch (err) {
       if (err instanceof BucketAlreadyOwnedByYou) {
         return (await S3Bucket.getBuckets(endpoint)).find(
-          b => b.name === bucketName
+          (b: S3Bucket) => b.name === bucketName
         );
       }
       throw err;
@@ -70,7 +70,7 @@ export class S3Bucket {
         apiVersion: '2006-03-01',
         endpoint,
         forcePathStyle: !!endpoint,
-      }).listBuckets(new ListBucketsCommand({}));
+      }).send(new ListBucketsCommand({}));
 
       if (!result.Buckets)
         throw Error("Property 'Buckets' was undefined on 'result'.");
