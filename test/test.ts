@@ -8,6 +8,7 @@ import {
   getSecret,
 } from '../src';
 
+
 const localstackEndpoint =
   process.env.LOCALSTACK_ENDPOINT || 'http://localhost:4566';
 
