@@ -1,3 +1,19 @@
+## [6.2.5](https://github.com/tibber/tibber-aws/compare/v6.2.4...v6.2.5) (2025-10-21)
+
+
+### Bug Fixes
+
+* **deps:** bump @aws-sdk/client-lambda from 3.896.0 to 3.899.0 ([96e5042](https://github.com/tibber/tibber-aws/commit/96e5042919fbc8dc3cdb5050fe5cae6116102bd9))
+* **deps:** bump @aws-sdk/client-lambda from 3.899.0 to 3.901.0 ([e675023](https://github.com/tibber/tibber-aws/commit/e675023e4ac00cd054b3a95518990ff84699c1da))
+* **deps:** bump @aws-sdk/client-s3 from 3.621.0 to 3.896.0 ([64280f6](https://github.com/tibber/tibber-aws/commit/64280f646d6497f62efd268d29c1679b9556fdc8))
+* **deps:** bump @aws-sdk/client-secrets-manager from 3.896.0 to 3.899.0 ([6c6734c](https://github.com/tibber/tibber-aws/commit/6c6734c1d2c54bf73bfd8f129313f56016fc8210))
+* **deps:** bump @aws-sdk/client-secrets-manager from 3.899.0 to 3.901.0 ([144c6c6](https://github.com/tibber/tibber-aws/commit/144c6c678d308089c49500ebb363d5a50d616c4a))
+* **deps:** bump @aws-sdk/client-sns from 3.896.0 to 3.899.0 ([a333545](https://github.com/tibber/tibber-aws/commit/a333545ed0580e0eba4fc4eda7ce085d580f97d7))
+* **deps:** bump @aws-sdk/client-sns from 3.899.0 to 3.901.0 ([2b6f6a9](https://github.com/tibber/tibber-aws/commit/2b6f6a9fc9e8c2c80bab43b4d5001a9769764006))
+* **deps:** bump @aws-sdk/client-sqs from 3.896.0 to 3.899.0 ([c83c769](https://github.com/tibber/tibber-aws/commit/c83c769be3e0fff2ba5d0e8aca397d50dd9ed10c))
+* **deps:** bump @aws-sdk/client-sqs from 3.899.0 to 3.901.0 ([e123f04](https://github.com/tibber/tibber-aws/commit/e123f0469220378bf111c788e08c5ad5b5d3a57d))
+* **deps:** bump @aws-sdk/client-sqs from 3.901.0 to 3.913.0 ([31fd04d](https://github.com/tibber/tibber-aws/commit/31fd04d0bc3f47693ddebae77bb62dfd2d814bdb))
+
 ## [6.2.4](https://github.com/tibber/tibber-aws/compare/v6.2.3...v6.2.4) (2025-09-24)
 
 
