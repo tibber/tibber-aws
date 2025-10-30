@@ -1,3 +1,12 @@
+## [6.2.7](https://github.com/tibber/tibber-aws/compare/v6.2.6...v6.2.7) (2025-10-30)
+
+
+### Bug Fixes
+
+* **deps:** bump @aws-sdk/client-secrets-manager from 3.901.0 to 3.920.0 ([#373](https://github.com/tibber/tibber-aws/issues/373)) ([7760cc5](https://github.com/tibber/tibber-aws/commit/7760cc5918972c4a64f9c1a8426c497715fc41c4))
+* **deps:** bump @aws-sdk/client-sns from 3.901.0 to 3.920.0 ([#375](https://github.com/tibber/tibber-aws/issues/375)) ([a8911bd](https://github.com/tibber/tibber-aws/commit/a8911bda4d0418e3f0d5bb08128b492d7f53f801))
+* **deps:** bump @aws-sdk/client-sqs from 3.913.0 to 3.920.0 ([#376](https://github.com/tibber/tibber-aws/issues/376)) ([9585404](https://github.com/tibber/tibber-aws/commit/958540494f25bf4413c6ab0ba525af61ad1298fa))
+
 ## [6.2.6](https://github.com/tibber/tibber-aws/compare/v6.2.5...v6.2.6) (2025-10-21)
 
 
