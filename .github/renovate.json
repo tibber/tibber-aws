@@ -1,0 +1,20 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "dependencyDashboard": true,
+  "enabledManagers": ["dockerfile"],
+  "packageRules": [
+      {
+        "pinDigests": true,
+        "matchUpdateTypes": [
+          "major"
+        ],
+        "enabled": false
+      },    
+      {
+        "description": "AWS SDK client packages",
+        "matchManagers": ["npm"],
+        "matchPackagePrefixes": ["@aws-sdk/client-"],
+        "groupName": "aws-sdk-clients"
+      }
+  ]
+}
