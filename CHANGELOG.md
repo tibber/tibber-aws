@@ -1,3 +1,10 @@
+## [6.2.9](https://github.com/tibber/tibber-aws/compare/v6.2.8...v6.2.9) (2025-11-20)
+
+
+### Bug Fixes
+
+* **deps:** bump @aws-sdk/client-sqs from 3.920.0 to 3.921.0 ([#380](https://github.com/tibber/tibber-aws/issues/380)) ([33d4471](https://github.com/tibber/tibber-aws/commit/33d4471a3ae4d50bd3e93c4e4f18d0a921c0386a))
+
 ## [6.2.8](https://github.com/tibber/tibber-aws/compare/v6.2.7...v6.2.8) (2025-10-30)
 
 
