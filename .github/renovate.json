@@ -9,6 +9,12 @@
           "major"
         ],
         "enabled": false
-      }  
+      },    
+      {
+        "description": "AWS SDK client packages",
+        "matchManagers": ["npm"],
+        "matchPackagePrefixes": ["@aws-sdk/client-"],
+        "groupName": "aws-sdk-clients"
+      }
   ]
 }
