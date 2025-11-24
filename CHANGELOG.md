@@ -1,3 +1,10 @@
+## [6.2.11](https://github.com/tibber/tibber-aws/compare/v6.2.10...v6.2.11) (2025-11-24)
+
+
+### Bug Fixes
+
+* **deps:** bump @aws-sdk/client-lambda from 3.920.0 to 3.936.0 ([5633726](https://github.com/tibber/tibber-aws/commit/56337265139df97f891401af6b908ad613764399))
+
 ## [6.2.10](https://github.com/tibber/tibber-aws/compare/v6.2.9...v6.2.10) (2025-11-24)
 
 
