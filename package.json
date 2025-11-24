@@ -1,6 +1,6 @@
 {
   "name": "tibber-aws",
-  "version": "6.2.11",
+  "version": "6.2.12",
   "description": "",
   "main": "./dist/src/index.js",
   "scripts": {
