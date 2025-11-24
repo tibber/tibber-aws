@@ -274,49 +274,49 @@
     tslib "^2.6.2"
 
 "@aws-sdk/client-sqs@^3.621.0":
-  version "3.921.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/client-sqs/-/client-sqs-3.921.0.tgz#cb6ec7f022d4b7c31bc2ba28277703a1ce937883"
-  integrity sha512-hfz6zwixL50nqyD7fo4gFJJ8MJ+8xW9pKrKIILBO8l7Z2ynaCeeCAIjqIY1kbXHblgr4sBaSSRUblHRyJxldSQ==
+  version "3.936.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/client-sqs/-/client-sqs-3.936.0.tgz#6ecd9f02a33d9a182facbb08ca9870761f13c866"
+  integrity sha512-JDYdeGV8L+zXr9Ce7gVeleQB2z0F3YWWmNvbE6cS20fR9E0XVIsYw5Grymjw9/3AG4wbOIQJ5Nayy+HgxKANjA==
   dependencies:
     "@aws-crypto/sha256-browser" "5.2.0"
     "@aws-crypto/sha256-js" "5.2.0"
-    "@aws-sdk/core" "3.921.0"
-    "@aws-sdk/credential-provider-node" "3.921.0"
-    "@aws-sdk/middleware-host-header" "3.921.0"
-    "@aws-sdk/middleware-logger" "3.921.0"
-    "@aws-sdk/middleware-recursion-detection" "3.921.0"
-    "@aws-sdk/middleware-sdk-sqs" "3.921.0"
-    "@aws-sdk/middleware-user-agent" "3.921.0"
-    "@aws-sdk/region-config-resolver" "3.921.0"
-    "@aws-sdk/types" "3.921.0"
-    "@aws-sdk/util-endpoints" "3.921.0"
-    "@aws-sdk/util-user-agent-browser" "3.921.0"
-    "@aws-sdk/util-user-agent-node" "3.921.0"
-    "@smithy/config-resolver" "^4.4.1"
-    "@smithy/core" "^3.17.2"
-    "@smithy/fetch-http-handler" "^5.3.5"
-    "@smithy/hash-node" "^4.2.4"
-    "@smithy/invalid-dependency" "^4.2.4"
-    "@smithy/md5-js" "^4.2.4"
-    "@smithy/middleware-content-length" "^4.2.4"
-    "@smithy/middleware-endpoint" "^4.3.6"
-    "@smithy/middleware-retry" "^4.4.6"
-    "@smithy/middleware-serde" "^4.2.4"
-    "@smithy/middleware-stack" "^4.2.4"
-    "@smithy/node-config-provider" "^4.3.4"
-    "@smithy/node-http-handler" "^4.4.4"
-    "@smithy/protocol-http" "^5.3.4"
-    "@smithy/smithy-client" "^4.9.2"
-    "@smithy/types" "^4.8.1"
-    "@smithy/url-parser" "^4.2.4"
+    "@aws-sdk/core" "3.936.0"
+    "@aws-sdk/credential-provider-node" "3.936.0"
+    "@aws-sdk/middleware-host-header" "3.936.0"
+    "@aws-sdk/middleware-logger" "3.936.0"
+    "@aws-sdk/middleware-recursion-detection" "3.936.0"
+    "@aws-sdk/middleware-sdk-sqs" "3.936.0"
+    "@aws-sdk/middleware-user-agent" "3.936.0"
+    "@aws-sdk/region-config-resolver" "3.936.0"
+    "@aws-sdk/types" "3.936.0"
+    "@aws-sdk/util-endpoints" "3.936.0"
+    "@aws-sdk/util-user-agent-browser" "3.936.0"
+    "@aws-sdk/util-user-agent-node" "3.936.0"
+    "@smithy/config-resolver" "^4.4.3"
+    "@smithy/core" "^3.18.5"
+    "@smithy/fetch-http-handler" "^5.3.6"
+    "@smithy/hash-node" "^4.2.5"
+    "@smithy/invalid-dependency" "^4.2.5"
+    "@smithy/md5-js" "^4.2.5"
+    "@smithy/middleware-content-length" "^4.2.5"
+    "@smithy/middleware-endpoint" "^4.3.12"
+    "@smithy/middleware-retry" "^4.4.12"
+    "@smithy/middleware-serde" "^4.2.6"
+    "@smithy/middleware-stack" "^4.2.5"
+    "@smithy/node-config-provider" "^4.3.5"
+    "@smithy/node-http-handler" "^4.4.5"
+    "@smithy/protocol-http" "^5.3.5"
+    "@smithy/smithy-client" "^4.9.8"
+    "@smithy/types" "^4.9.0"
+    "@smithy/url-parser" "^4.2.5"
     "@smithy/util-base64" "^4.3.0"
     "@smithy/util-body-length-browser" "^4.2.0"
     "@smithy/util-body-length-node" "^4.2.1"
-    "@smithy/util-defaults-mode-browser" "^4.3.5"
-    "@smithy/util-defaults-mode-node" "^4.2.7"
-    "@smithy/util-endpoints" "^3.2.4"
-    "@smithy/util-middleware" "^4.2.4"
-    "@smithy/util-retry" "^4.2.4"
+    "@smithy/util-defaults-mode-browser" "^4.3.11"
+    "@smithy/util-defaults-mode-node" "^4.2.14"
+    "@smithy/util-endpoints" "^3.2.5"
+    "@smithy/util-middleware" "^4.2.5"
+    "@smithy/util-retry" "^4.2.5"
     "@smithy/util-utf8" "^4.2.0"
     tslib "^2.6.2"
 
@@ -362,50 +362,6 @@
     "@smithy/util-middleware" "^4.1.1"
     "@smithy/util-retry" "^4.1.2"
     "@smithy/util-utf8" "^4.1.0"
-    tslib "^2.6.2"
-
-"@aws-sdk/client-sso@3.921.0":
-  version "3.921.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/client-sso/-/client-sso-3.921.0.tgz#b67d5beb4d8b16671897fd5896359ff36e116cf0"
-  integrity sha512-qWyT7WikdkPRAMuWidZ2l8jcQAPwNjvLcFZ/8K+oCAaMLt0LKLd7qeTwZ5tZFNqRNPXKfE8MkvAjyqSpE3i2yg==
-  dependencies:
-    "@aws-crypto/sha256-browser" "5.2.0"
-    "@aws-crypto/sha256-js" "5.2.0"
-    "@aws-sdk/core" "3.921.0"
-    "@aws-sdk/middleware-host-header" "3.921.0"
-    "@aws-sdk/middleware-logger" "3.921.0"
-    "@aws-sdk/middleware-recursion-detection" "3.921.0"
-    "@aws-sdk/middleware-user-agent" "3.921.0"
-    "@aws-sdk/region-config-resolver" "3.921.0"
-    "@aws-sdk/types" "3.921.0"
-    "@aws-sdk/util-endpoints" "3.921.0"
-    "@aws-sdk/util-user-agent-browser" "3.921.0"
-    "@aws-sdk/util-user-agent-node" "3.921.0"
-    "@smithy/config-resolver" "^4.4.1"
-    "@smithy/core" "^3.17.2"
-    "@smithy/fetch-http-handler" "^5.3.5"
-    "@smithy/hash-node" "^4.2.4"
-    "@smithy/invalid-dependency" "^4.2.4"
-    "@smithy/middleware-content-length" "^4.2.4"
-    "@smithy/middleware-endpoint" "^4.3.6"
-    "@smithy/middleware-retry" "^4.4.6"
-    "@smithy/middleware-serde" "^4.2.4"
-    "@smithy/middleware-stack" "^4.2.4"
-    "@smithy/node-config-provider" "^4.3.4"
-    "@smithy/node-http-handler" "^4.4.4"
-    "@smithy/protocol-http" "^5.3.4"
-    "@smithy/smithy-client" "^4.9.2"
-    "@smithy/types" "^4.8.1"
-    "@smithy/url-parser" "^4.2.4"
-    "@smithy/util-base64" "^4.3.0"
-    "@smithy/util-body-length-browser" "^4.2.0"
-    "@smithy/util-body-length-node" "^4.2.1"
-    "@smithy/util-defaults-mode-browser" "^4.3.5"
-    "@smithy/util-defaults-mode-node" "^4.2.7"
-    "@smithy/util-endpoints" "^3.2.4"
-    "@smithy/util-middleware" "^4.2.4"
-    "@smithy/util-retry" "^4.2.4"
-    "@smithy/util-utf8" "^4.2.0"
     tslib "^2.6.2"
 
 "@aws-sdk/client-sso@3.936.0":
@@ -471,25 +427,6 @@
     "@smithy/util-utf8" "^4.1.0"
     tslib "^2.6.2"
 
-"@aws-sdk/core@3.921.0":
-  version "3.921.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/core/-/core-3.921.0.tgz#ec82c66799ae03424599c49588102f61e5a4edd1"
-  integrity sha512-1eiD9ZO9cvEHdQUn/pwJVGN9LXg6D0O7knGVA0TA/v7nFSYy0n8RYG8vdnlcoYYnV1BcHgaf4KmRVMOszafNZQ==
-  dependencies:
-    "@aws-sdk/types" "3.921.0"
-    "@aws-sdk/xml-builder" "3.921.0"
-    "@smithy/core" "^3.17.2"
-    "@smithy/node-config-provider" "^4.3.4"
-    "@smithy/property-provider" "^4.2.4"
-    "@smithy/protocol-http" "^5.3.4"
-    "@smithy/signature-v4" "^5.3.4"
-    "@smithy/smithy-client" "^4.9.2"
-    "@smithy/types" "^4.8.1"
-    "@smithy/util-base64" "^4.3.0"
-    "@smithy/util-middleware" "^4.2.4"
-    "@smithy/util-utf8" "^4.2.0"
-    tslib "^2.6.2"
-
 "@aws-sdk/core@3.936.0":
   version "3.936.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/core/-/core-3.936.0.tgz#410b26b85ad019495d21d9e14d6446b0119caa31"
@@ -520,17 +457,6 @@
     "@smithy/types" "^4.5.0"
     tslib "^2.6.2"
 
-"@aws-sdk/credential-provider-env@3.921.0":
-  version "3.921.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/credential-provider-env/-/credential-provider-env-3.921.0.tgz#9dc3afe0d323d98aecb221c03d800a304eb97b59"
-  integrity sha512-RGG+zZdOYGJBQ8+L7BI6v41opoF8knErMtBZAUGcD3gvWEhjatc7lSbIpBeYWbTaWPPLHQU+ZVbmQ/jRLBgefw==
-  dependencies:
-    "@aws-sdk/core" "3.921.0"
-    "@aws-sdk/types" "3.921.0"
-    "@smithy/property-provider" "^4.2.4"
-    "@smithy/types" "^4.8.1"
-    tslib "^2.6.2"
-
 "@aws-sdk/credential-provider-env@3.936.0":
   version "3.936.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/credential-provider-env/-/credential-provider-env-3.936.0.tgz#3574fa6de7110a94342f55e78748e25c82a294c8"
@@ -556,22 +482,6 @@
     "@smithy/smithy-client" "^4.6.4"
     "@smithy/types" "^4.5.0"
     "@smithy/util-stream" "^4.3.2"
-    tslib "^2.6.2"
-
-"@aws-sdk/credential-provider-http@3.921.0":
-  version "3.921.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/credential-provider-http/-/credential-provider-http-3.921.0.tgz#4bb5d2688d774dcfa9cfe56e506b925b618ab57b"
-  integrity sha512-TAv08Ow0oF/olV4DTLoPDj46KMk35bL1IUCfToESDrWk1TOSur7d4sCL0p/7dUsAxS244cEgeyIIijKNtxj2AA==
-  dependencies:
-    "@aws-sdk/core" "3.921.0"
-    "@aws-sdk/types" "3.921.0"
-    "@smithy/fetch-http-handler" "^5.3.5"
-    "@smithy/node-http-handler" "^4.4.4"
-    "@smithy/property-provider" "^4.2.4"
-    "@smithy/protocol-http" "^5.3.4"
-    "@smithy/smithy-client" "^4.9.2"
-    "@smithy/types" "^4.8.1"
-    "@smithy/util-stream" "^4.5.5"
     tslib "^2.6.2"
 
 "@aws-sdk/credential-provider-http@3.936.0":
@@ -607,25 +517,6 @@
     "@smithy/property-provider" "^4.1.1"
     "@smithy/shared-ini-file-loader" "^4.2.0"
     "@smithy/types" "^4.5.0"
-    tslib "^2.6.2"
-
-"@aws-sdk/credential-provider-ini@3.921.0":
-  version "3.921.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/credential-provider-ini/-/credential-provider-ini-3.921.0.tgz#bd807eb41155c2c9a1fd86783309efbb5044d33e"
-  integrity sha512-MUSRYGiMRq5NRGPRgJ7Nuh7GqXzE9iteAwdbzMJ4pnImgr7CjeWDihCIGk+gKLSG+NoRVVJM0V9PA4rxFir0Pg==
-  dependencies:
-    "@aws-sdk/core" "3.921.0"
-    "@aws-sdk/credential-provider-env" "3.921.0"
-    "@aws-sdk/credential-provider-http" "3.921.0"
-    "@aws-sdk/credential-provider-process" "3.921.0"
-    "@aws-sdk/credential-provider-sso" "3.921.0"
-    "@aws-sdk/credential-provider-web-identity" "3.921.0"
-    "@aws-sdk/nested-clients" "3.921.0"
-    "@aws-sdk/types" "3.921.0"
-    "@smithy/credential-provider-imds" "^4.2.4"
-    "@smithy/property-provider" "^4.2.4"
-    "@smithy/shared-ini-file-loader" "^4.3.4"
-    "@smithy/types" "^4.8.1"
     tslib "^2.6.2"
 
 "@aws-sdk/credential-provider-ini@3.936.0":
@@ -680,24 +571,6 @@
     "@smithy/types" "^4.5.0"
     tslib "^2.6.2"
 
-"@aws-sdk/credential-provider-node@3.921.0":
-  version "3.921.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/credential-provider-node/-/credential-provider-node-3.921.0.tgz#7a4c26b60a32495f9777c6fdfc59aac74cc10e4e"
-  integrity sha512-bxUAqRyo49WzKWn/XS0d8QXT9GydY/ew5m58PYfSMwYfmwBZXx1GLSWe3tZnefm6santFiqmIWfMmeRWdygKmQ==
-  dependencies:
-    "@aws-sdk/credential-provider-env" "3.921.0"
-    "@aws-sdk/credential-provider-http" "3.921.0"
-    "@aws-sdk/credential-provider-ini" "3.921.0"
-    "@aws-sdk/credential-provider-process" "3.921.0"
-    "@aws-sdk/credential-provider-sso" "3.921.0"
-    "@aws-sdk/credential-provider-web-identity" "3.921.0"
-    "@aws-sdk/types" "3.921.0"
-    "@smithy/credential-provider-imds" "^4.2.4"
-    "@smithy/property-provider" "^4.2.4"
-    "@smithy/shared-ini-file-loader" "^4.3.4"
-    "@smithy/types" "^4.8.1"
-    tslib "^2.6.2"
-
 "@aws-sdk/credential-provider-node@3.936.0":
   version "3.936.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/credential-provider-node/-/credential-provider-node-3.936.0.tgz#d4d880d20ea5afa9b0ab666b83697a33c4b4856d"
@@ -728,18 +601,6 @@
     "@smithy/types" "^4.5.0"
     tslib "^2.6.2"
 
-"@aws-sdk/credential-provider-process@3.921.0":
-  version "3.921.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/credential-provider-process/-/credential-provider-process-3.921.0.tgz#a0931c812db7d30e04cb1f7f6298b45676c88eda"
-  integrity sha512-DM62ooWI/aZ+ENBcLszuKmOkiICf6p4vYO2HgA3Cy2OEsTsjb67NEcntksxpZkD3mSIrCy/Qi4Z7tc77gle2Nw==
-  dependencies:
-    "@aws-sdk/core" "3.921.0"
-    "@aws-sdk/types" "3.921.0"
-    "@smithy/property-provider" "^4.2.4"
-    "@smithy/shared-ini-file-loader" "^4.3.4"
-    "@smithy/types" "^4.8.1"
-    tslib "^2.6.2"
-
 "@aws-sdk/credential-provider-process@3.936.0":
   version "3.936.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/credential-provider-process/-/credential-provider-process-3.936.0.tgz#869146534991a491a8b71d75bf27127fdabc384c"
@@ -764,20 +625,6 @@
     "@smithy/property-provider" "^4.1.1"
     "@smithy/shared-ini-file-loader" "^4.2.0"
     "@smithy/types" "^4.5.0"
-    tslib "^2.6.2"
-
-"@aws-sdk/credential-provider-sso@3.921.0":
-  version "3.921.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/credential-provider-sso/-/credential-provider-sso-3.921.0.tgz#879f7face7d335958f73375daed87f8f80a312e4"
-  integrity sha512-Nh5jPJ6Y6nu3cHzZnq394lGXE5YO8Szke5zlATbNI7Tl0QJR65GE0IZsBcjzRMGpYX6ENCqPDK8FmklkmCYyVQ==
-  dependencies:
-    "@aws-sdk/client-sso" "3.921.0"
-    "@aws-sdk/core" "3.921.0"
-    "@aws-sdk/token-providers" "3.921.0"
-    "@aws-sdk/types" "3.921.0"
-    "@smithy/property-provider" "^4.2.4"
-    "@smithy/shared-ini-file-loader" "^4.3.4"
-    "@smithy/types" "^4.8.1"
     tslib "^2.6.2"
 
 "@aws-sdk/credential-provider-sso@3.936.0":
@@ -805,19 +652,6 @@
     "@smithy/property-provider" "^4.1.1"
     "@smithy/shared-ini-file-loader" "^4.2.0"
     "@smithy/types" "^4.5.0"
-    tslib "^2.6.2"
-
-"@aws-sdk/credential-provider-web-identity@3.921.0":
-  version "3.921.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/credential-provider-web-identity/-/credential-provider-web-identity-3.921.0.tgz#ed4abc1f8de3341f2a954c5b691eb2f09cff7590"
-  integrity sha512-VWcbgB2/shPPK674roHV4s8biCtvn0P/05EbTqy9WeyM5Oblx291gRGccyDhQbJbOL/6diRPBM08tlKPlBKNfw==
-  dependencies:
-    "@aws-sdk/core" "3.921.0"
-    "@aws-sdk/nested-clients" "3.921.0"
-    "@aws-sdk/types" "3.921.0"
-    "@smithy/property-provider" "^4.2.4"
-    "@smithy/shared-ini-file-loader" "^4.3.4"
-    "@smithy/types" "^4.8.1"
     tslib "^2.6.2"
 
 "@aws-sdk/credential-provider-web-identity@3.936.0":
@@ -885,16 +719,6 @@
     "@smithy/types" "^4.5.0"
     tslib "^2.6.2"
 
-"@aws-sdk/middleware-host-header@3.921.0":
-  version "3.921.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/middleware-host-header/-/middleware-host-header-3.921.0.tgz#cb29a0edbdd60c32e7a962d0dfae0c1246b7216f"
-  integrity sha512-eX1Ka29XzuEcXG4YABTwyLtPLchjmcjSjaq4irKJTFkxSYzX7gjoKt18rh/ZzOWOSqi23+cpjvBacL4VBKvE2Q==
-  dependencies:
-    "@aws-sdk/types" "3.921.0"
-    "@smithy/protocol-http" "^5.3.4"
-    "@smithy/types" "^4.8.1"
-    tslib "^2.6.2"
-
 "@aws-sdk/middleware-host-header@3.936.0":
   version "3.936.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/middleware-host-header/-/middleware-host-header-3.936.0.tgz#ef1144d175f1f499afbbd92ad07e24f8ccc9e9ce"
@@ -923,15 +747,6 @@
     "@smithy/types" "^4.5.0"
     tslib "^2.6.2"
 
-"@aws-sdk/middleware-logger@3.921.0":
-  version "3.921.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/middleware-logger/-/middleware-logger-3.921.0.tgz#b4ac8f2f8cadb84940324639a8fc09282355663b"
-  integrity sha512-14Qqp8wisKGj/2Y22OfO5jTBG5Xez+p3Zr2piAtz7AcbY8vBEoZbd6f+9lwwVFC73Aobkau223wzKbGT8HYQMw==
-  dependencies:
-    "@aws-sdk/types" "3.921.0"
-    "@smithy/types" "^4.8.1"
-    tslib "^2.6.2"
-
 "@aws-sdk/middleware-logger@3.936.0":
   version "3.936.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/middleware-logger/-/middleware-logger-3.936.0.tgz#691093bebb708b994be10f19358e8699af38a209"
@@ -950,17 +765,6 @@
     "@aws/lambda-invoke-store" "^0.0.1"
     "@smithy/protocol-http" "^5.2.1"
     "@smithy/types" "^4.5.0"
-    tslib "^2.6.2"
-
-"@aws-sdk/middleware-recursion-detection@3.921.0":
-  version "3.921.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/middleware-recursion-detection/-/middleware-recursion-detection-3.921.0.tgz#70d26f858f8d94b631a2084710be9f2208049b03"
-  integrity sha512-MYU5oI2b97M7u1dC1nt7SiGEvvLrQDlzV6hq9CB5TYX2glgbyvkaS//1Tjm87VF6qVSf5jYfwFDPeFGd8O1NrQ==
-  dependencies:
-    "@aws-sdk/types" "3.921.0"
-    "@aws/lambda-invoke-store" "^0.1.1"
-    "@smithy/protocol-http" "^5.3.4"
-    "@smithy/types" "^4.8.1"
     tslib "^2.6.2"
 
 "@aws-sdk/middleware-recursion-detection@3.936.0":
@@ -994,14 +798,14 @@
     "@smithy/util-utf8" "^4.1.0"
     tslib "^2.6.2"
 
-"@aws-sdk/middleware-sdk-sqs@3.921.0":
-  version "3.921.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/middleware-sdk-sqs/-/middleware-sdk-sqs-3.921.0.tgz#f5ff26c60e161bd24d4912ab5b0c371d8d2c483c"
-  integrity sha512-CwgAiropNQfo0+aqLk9WxbRX8H2QMz+icxRZnEi+LqoqvkqLWluW8Y2QavR1CcHBjdQ7vEN8ADAVS2BIDoPAxA==
+"@aws-sdk/middleware-sdk-sqs@3.936.0":
+  version "3.936.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/middleware-sdk-sqs/-/middleware-sdk-sqs-3.936.0.tgz#881af4e37ec1378d49773b5a50b8bbd53384c7c1"
+  integrity sha512-39WohFCCPeD6LV8zLQq7CyYbIieetEDDNLsEPeGJSh2Uv9qpY9r6zJRSTjb8hTuQbHDSEOGntHMYKpLoHdoxdQ==
   dependencies:
-    "@aws-sdk/types" "3.921.0"
-    "@smithy/smithy-client" "^4.9.2"
-    "@smithy/types" "^4.8.1"
+    "@aws-sdk/types" "3.936.0"
+    "@smithy/smithy-client" "^4.9.8"
+    "@smithy/types" "^4.9.0"
     "@smithy/util-hex-encoding" "^4.2.0"
     "@smithy/util-utf8" "^4.2.0"
     tslib "^2.6.2"
@@ -1026,19 +830,6 @@
     "@smithy/core" "^3.12.0"
     "@smithy/protocol-http" "^5.2.1"
     "@smithy/types" "^4.5.0"
-    tslib "^2.6.2"
-
-"@aws-sdk/middleware-user-agent@3.921.0":
-  version "3.921.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/middleware-user-agent/-/middleware-user-agent-3.921.0.tgz#74abf0afd2b2cd6ba7516cba9cf820950ea9d60f"
-  integrity sha512-gXgokMBTPZAbQMm1+JOxItqA81aSFK6n7V2mAwxdmHjzCUZacX5RzkVPNbSaPPgDkroYnIzK09EusIpM6dLaqw==
-  dependencies:
-    "@aws-sdk/core" "3.921.0"
-    "@aws-sdk/types" "3.921.0"
-    "@aws-sdk/util-endpoints" "3.921.0"
-    "@smithy/core" "^3.17.2"
-    "@smithy/protocol-http" "^5.3.4"
-    "@smithy/types" "^4.8.1"
     tslib "^2.6.2"
 
 "@aws-sdk/middleware-user-agent@3.936.0":
@@ -1098,50 +889,6 @@
     "@smithy/util-utf8" "^4.1.0"
     tslib "^2.6.2"
 
-"@aws-sdk/nested-clients@3.921.0":
-  version "3.921.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/nested-clients/-/nested-clients-3.921.0.tgz#cc3b709c261a221237e932ff37567f81a75a7c5e"
-  integrity sha512-GV9aV8WqH/EWo4x3T5BrYb2ph1yfYuzUXZc0hhvxbFbDKD8m2fX9menao3Mgm7E5C68Su392u+MD9SGmGCmfKQ==
-  dependencies:
-    "@aws-crypto/sha256-browser" "5.2.0"
-    "@aws-crypto/sha256-js" "5.2.0"
-    "@aws-sdk/core" "3.921.0"
-    "@aws-sdk/middleware-host-header" "3.921.0"
-    "@aws-sdk/middleware-logger" "3.921.0"
-    "@aws-sdk/middleware-recursion-detection" "3.921.0"
-    "@aws-sdk/middleware-user-agent" "3.921.0"
-    "@aws-sdk/region-config-resolver" "3.921.0"
-    "@aws-sdk/types" "3.921.0"
-    "@aws-sdk/util-endpoints" "3.921.0"
-    "@aws-sdk/util-user-agent-browser" "3.921.0"
-    "@aws-sdk/util-user-agent-node" "3.921.0"
-    "@smithy/config-resolver" "^4.4.1"
-    "@smithy/core" "^3.17.2"
-    "@smithy/fetch-http-handler" "^5.3.5"
-    "@smithy/hash-node" "^4.2.4"
-    "@smithy/invalid-dependency" "^4.2.4"
-    "@smithy/middleware-content-length" "^4.2.4"
-    "@smithy/middleware-endpoint" "^4.3.6"
-    "@smithy/middleware-retry" "^4.4.6"
-    "@smithy/middleware-serde" "^4.2.4"
-    "@smithy/middleware-stack" "^4.2.4"
-    "@smithy/node-config-provider" "^4.3.4"
-    "@smithy/node-http-handler" "^4.4.4"
-    "@smithy/protocol-http" "^5.3.4"
-    "@smithy/smithy-client" "^4.9.2"
-    "@smithy/types" "^4.8.1"
-    "@smithy/url-parser" "^4.2.4"
-    "@smithy/util-base64" "^4.3.0"
-    "@smithy/util-body-length-browser" "^4.2.0"
-    "@smithy/util-body-length-node" "^4.2.1"
-    "@smithy/util-defaults-mode-browser" "^4.3.5"
-    "@smithy/util-defaults-mode-node" "^4.2.7"
-    "@smithy/util-endpoints" "^3.2.4"
-    "@smithy/util-middleware" "^4.2.4"
-    "@smithy/util-retry" "^4.2.4"
-    "@smithy/util-utf8" "^4.2.0"
-    tslib "^2.6.2"
-
 "@aws-sdk/nested-clients@3.936.0":
   version "3.936.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/nested-clients/-/nested-clients-3.936.0.tgz#4efb9647f03d6ddaa76286cf92ad276e89ca0d68"
@@ -1198,17 +945,6 @@
     "@smithy/util-middleware" "^4.1.1"
     tslib "^2.6.2"
 
-"@aws-sdk/region-config-resolver@3.921.0":
-  version "3.921.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/region-config-resolver/-/region-config-resolver-3.921.0.tgz#4e161cb6714611c77ce769814aa3a0f50c35744d"
-  integrity sha512-cSycw4wXcvsrssUdcEaeYQhQcZYVsBwHtgATh9HcIm01PrMV0lV71vcoyZ+9vUhwHwchRT6dItAyTHSQxwjvjg==
-  dependencies:
-    "@aws-sdk/types" "3.921.0"
-    "@smithy/config-resolver" "^4.4.1"
-    "@smithy/node-config-provider" "^4.3.4"
-    "@smithy/types" "^4.8.1"
-    tslib "^2.6.2"
-
 "@aws-sdk/region-config-resolver@3.936.0":
   version "3.936.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/region-config-resolver/-/region-config-resolver-3.936.0.tgz#b02f20c4d62973731d42da1f1239a27fbbe53c0a"
@@ -1245,19 +981,6 @@
     "@smithy/types" "^4.5.0"
     tslib "^2.6.2"
 
-"@aws-sdk/token-providers@3.921.0":
-  version "3.921.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/token-providers/-/token-providers-3.921.0.tgz#a5b343debc3a6e8e7aebe662b7e2782d839c427a"
-  integrity sha512-d+w6X7ykqXirFBF+dYyK5Ntw0KmO2sgMj+JLR/vAe1vaR8/Fuqs3yOAFU7yNEzpcnbLJmMznxKpht03CSEMh4Q==
-  dependencies:
-    "@aws-sdk/core" "3.921.0"
-    "@aws-sdk/nested-clients" "3.921.0"
-    "@aws-sdk/types" "3.921.0"
-    "@smithy/property-provider" "^4.2.4"
-    "@smithy/shared-ini-file-loader" "^4.3.4"
-    "@smithy/types" "^4.8.1"
-    tslib "^2.6.2"
-
 "@aws-sdk/token-providers@3.936.0":
   version "3.936.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/token-providers/-/token-providers-3.936.0.tgz#6f2ef85e93f910e69f4095f254fb038b71a99f45"
@@ -1277,14 +1000,6 @@
   integrity sha512-Aht1nn5SnA0N+Tjv0dzhAY7CQbxVtmq1bBR6xI0MhG7p2XYVh1wXuKTzrldEvQWwA3odOYunAfT9aBiKZx9qIg==
   dependencies:
     "@smithy/types" "^4.5.0"
-    tslib "^2.6.2"
-
-"@aws-sdk/types@3.921.0":
-  version "3.921.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/types/-/types-3.921.0.tgz#c96917564415d61b6c59caf66e000f2a31ffc63f"
-  integrity sha512-mqEG8+vFh5w0ZZC+R8VCOdSk998Hy93pIDuwYpfMAWgYwVhFaIMOLn1fZw0w2DhTs5+ONHHwMJ6uVXtuuqOLQQ==
-  dependencies:
-    "@smithy/types" "^4.8.1"
     tslib "^2.6.2"
 
 "@aws-sdk/types@3.936.0", "@aws-sdk/types@^3.222.0":
@@ -1311,17 +1026,6 @@
     "@smithy/types" "^4.5.0"
     "@smithy/url-parser" "^4.1.1"
     "@smithy/util-endpoints" "^3.1.2"
-    tslib "^2.6.2"
-
-"@aws-sdk/util-endpoints@3.921.0":
-  version "3.921.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/util-endpoints/-/util-endpoints-3.921.0.tgz#5d6a0a08a8992969f98b90c867ea1c48a458b8bb"
-  integrity sha512-kuJYRqug6V8gOg401BuK4w4IAVO3575VDR8iYiFw0gPwNIfOXvdlChfsJQoREqwJfif45J4eSmUsFtMfx87BQg==
-  dependencies:
-    "@aws-sdk/types" "3.921.0"
-    "@smithy/types" "^4.8.1"
-    "@smithy/url-parser" "^4.2.4"
-    "@smithy/util-endpoints" "^3.2.4"
     tslib "^2.6.2"
 
 "@aws-sdk/util-endpoints@3.936.0":
@@ -1352,16 +1056,6 @@
     bowser "^2.11.0"
     tslib "^2.6.2"
 
-"@aws-sdk/util-user-agent-browser@3.921.0":
-  version "3.921.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/util-user-agent-browser/-/util-user-agent-browser-3.921.0.tgz#729c0fb60e3b046b6137b9397819891305ffaf4e"
-  integrity sha512-buhv/ICWr4Nt8bquHOejCiVikBsfEYw4/HSc9U050QebRXIakt50zKYaWDQw4iCMeeqCiwE9mElEaXJAysythg==
-  dependencies:
-    "@aws-sdk/types" "3.921.0"
-    "@smithy/types" "^4.8.1"
-    bowser "^2.11.0"
-    tslib "^2.6.2"
-
 "@aws-sdk/util-user-agent-browser@3.936.0":
   version "3.936.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/util-user-agent-browser/-/util-user-agent-browser-3.936.0.tgz#cbfcaeaba6d843b060183638699c0f20dcaed774"
@@ -1381,17 +1075,6 @@
     "@aws-sdk/types" "3.893.0"
     "@smithy/node-config-provider" "^4.2.2"
     "@smithy/types" "^4.5.0"
-    tslib "^2.6.2"
-
-"@aws-sdk/util-user-agent-node@3.921.0":
-  version "3.921.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/util-user-agent-node/-/util-user-agent-node-3.921.0.tgz#c52ff8ca3835da1c3bcb8a317f97c6a3d82c33c3"
-  integrity sha512-Ilftai6AMAU1cEaUqIiTxkyj1NupLhP9Eq8HRfVuIH8489J2wLCcOyiLklAgSzBNmrxW+fagxkY+Dg0lFwmcVA==
-  dependencies:
-    "@aws-sdk/middleware-user-agent" "3.921.0"
-    "@aws-sdk/types" "3.921.0"
-    "@smithy/node-config-provider" "^4.3.4"
-    "@smithy/types" "^4.8.1"
     tslib "^2.6.2"
 
 "@aws-sdk/util-user-agent-node@3.936.0":
@@ -1414,15 +1097,6 @@
     fast-xml-parser "5.2.5"
     tslib "^2.6.2"
 
-"@aws-sdk/xml-builder@3.921.0":
-  version "3.921.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/xml-builder/-/xml-builder-3.921.0.tgz#e4d4d21b09341648b598d720c602ee76d7a84594"
-  integrity sha512-LVHg0jgjyicKKvpNIEMXIMr1EBViESxcPkqfOlT+X1FkmUMTNZEEVF18tOJg4m4hV5vxtkWcqtr4IEeWa1C41Q==
-  dependencies:
-    "@smithy/types" "^4.8.1"
-    fast-xml-parser "5.2.5"
-    tslib "^2.6.2"
-
 "@aws-sdk/xml-builder@3.930.0":
   version "3.930.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/xml-builder/-/xml-builder-3.930.0.tgz#949a35219ca52cc769ffbfbf38f3324178ba74f9"
@@ -1436,11 +1110,6 @@
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/@aws/lambda-invoke-store/-/lambda-invoke-store-0.0.1.tgz#92d792a7dda250dfcb902e13228f37a81be57c8f"
   integrity sha512-ORHRQ2tmvnBXc8t/X9Z8IcSbBA4xTLKuN873FopzklHMeqBst7YG0d+AX97inkvDX+NChYtSr+qGfcqGFaI8Zw==
-
-"@aws/lambda-invoke-store@^0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@aws/lambda-invoke-store/-/lambda-invoke-store-0.1.1.tgz#2e67f17040b930bde00a79ffb484eb9e77472b06"
-  integrity sha512-RcLam17LdlbSOSp9VxmUu1eI6Mwxp+OwhD2QhiSNmNCzoDb0EeUXTD2n/WbcnrAYMGlmf05th6QYq23VqvJqpA==
 
 "@aws/lambda-invoke-store@^0.2.0":
   version "0.2.1"
@@ -2627,7 +2296,7 @@
   dependencies:
     tslib "^2.6.2"
 
-"@smithy/config-resolver@^4.2.2", "@smithy/config-resolver@^4.4.1", "@smithy/config-resolver@^4.4.3":
+"@smithy/config-resolver@^4.2.2", "@smithy/config-resolver@^4.4.3":
   version "4.4.3"
   resolved "https://registry.yarnpkg.com/@smithy/config-resolver/-/config-resolver-4.4.3.tgz#37b0e3cba827272e92612e998a2b17e841e20bab"
   integrity sha512-ezHLe1tKLUxDJo2LHtDuEDyWXolw8WGOR92qb4bQdWq/zKenO5BvctZGrVJBK08zjezSk7bmbKFOXIVyChvDLw==
@@ -2639,7 +2308,7 @@
     "@smithy/util-middleware" "^4.2.5"
     tslib "^2.6.2"
 
-"@smithy/core@^3.12.0", "@smithy/core@^3.17.2", "@smithy/core@^3.18.5":
+"@smithy/core@^3.12.0", "@smithy/core@^3.18.5":
   version "3.18.5"
   resolved "https://registry.yarnpkg.com/@smithy/core/-/core-3.18.5.tgz#c304d185e2335cbef9b39431a53a67c84972c27f"
   integrity sha512-6gnIz3h+PEPQGDj8MnRSjDvKBah042jEoPgjFGJ4iJLBE78L4lY/n98x14XyPF4u3lN179Ub/ZKFY5za9GeLQw==
@@ -2664,17 +2333,6 @@
     "@smithy/property-provider" "^4.1.1"
     "@smithy/types" "^4.5.0"
     "@smithy/url-parser" "^4.1.1"
-    tslib "^2.6.2"
-
-"@smithy/credential-provider-imds@^4.2.4":
-  version "4.2.4"
-  resolved "https://registry.yarnpkg.com/@smithy/credential-provider-imds/-/credential-provider-imds-4.2.4.tgz#eb2ab999136c97d942e69638e6126a3c4d8cf79d"
-  integrity sha512-YVNMjhdz2pVto5bRdux7GMs0x1m0Afz3OcQy/4Yf9DH4fWOtroGH7uLvs7ZmDyoBJzLdegtIPpXrpJOZWvUXdw==
-  dependencies:
-    "@smithy/node-config-provider" "^4.3.4"
-    "@smithy/property-provider" "^4.2.4"
-    "@smithy/types" "^4.8.1"
-    "@smithy/url-parser" "^4.2.4"
     tslib "^2.6.2"
 
 "@smithy/credential-provider-imds@^4.2.5":
@@ -2733,7 +2391,7 @@
     "@smithy/types" "^4.9.0"
     tslib "^2.6.2"
 
-"@smithy/fetch-http-handler@^5.2.1", "@smithy/fetch-http-handler@^5.3.5", "@smithy/fetch-http-handler@^5.3.6":
+"@smithy/fetch-http-handler@^5.2.1", "@smithy/fetch-http-handler@^5.3.6":
   version "5.3.6"
   resolved "https://registry.yarnpkg.com/@smithy/fetch-http-handler/-/fetch-http-handler-5.3.6.tgz#d9dcb8d8ca152918224492f4d1cc1b50df93ae13"
   integrity sha512-3+RG3EA6BBJ/ofZUeTFJA7mHfSYrZtQIrDP9dI8Lf7X6Jbos2jptuLrAAteDiFVrmbEmLSuRG/bUKzfAXk7dhg==
@@ -2754,7 +2412,7 @@
     "@smithy/types" "^4.5.0"
     tslib "^2.6.2"
 
-"@smithy/hash-node@^4.1.1", "@smithy/hash-node@^4.2.4", "@smithy/hash-node@^4.2.5":
+"@smithy/hash-node@^4.1.1", "@smithy/hash-node@^4.2.5":
   version "4.2.5"
   resolved "https://registry.yarnpkg.com/@smithy/hash-node/-/hash-node-4.2.5.tgz#fb751ec4a4c6347612458430f201f878adc787f6"
   integrity sha512-DpYX914YOfA3UDT9CN1BM787PcHfWRBB43fFGCYrZFUH0Jv+5t8yYl+Pd5PW4+QzoGEDvn5d5QIO4j2HyYZQSA==
@@ -2773,7 +2431,7 @@
     "@smithy/util-utf8" "^4.1.0"
     tslib "^2.6.2"
 
-"@smithy/invalid-dependency@^4.1.1", "@smithy/invalid-dependency@^4.2.4", "@smithy/invalid-dependency@^4.2.5":
+"@smithy/invalid-dependency@^4.1.1", "@smithy/invalid-dependency@^4.2.5":
   version "4.2.5"
   resolved "https://registry.yarnpkg.com/@smithy/invalid-dependency/-/invalid-dependency-4.2.5.tgz#58d997e91e7683ffc59882d8fcb180ed9aa9c7dd"
   integrity sha512-2L2erASEro1WC5nV+plwIMxrTXpvpfzl4e+Nre6vBVRR2HKeGGcvpJyyL3/PpiSg+cJG2KpTmZmq934Olb6e5A==
@@ -2802,16 +2460,16 @@
   dependencies:
     tslib "^2.6.2"
 
-"@smithy/md5-js@^4.1.1", "@smithy/md5-js@^4.2.4":
-  version "4.2.4"
-  resolved "https://registry.yarnpkg.com/@smithy/md5-js/-/md5-js-4.2.4.tgz#e012464383ffde0bd423d38ef9b5caf720ee90eb"
-  integrity sha512-h7kzNWZuMe5bPnZwKxhVbY1gan5+TZ2c9JcVTHCygB14buVGOZxLl+oGfpY2p2Xm48SFqEWdghpvbBdmaz3ncQ==
+"@smithy/md5-js@^4.1.1", "@smithy/md5-js@^4.2.5":
+  version "4.2.5"
+  resolved "https://registry.yarnpkg.com/@smithy/md5-js/-/md5-js-4.2.5.tgz#ca16f138dd0c4e91a61d3df57e8d4d15d1ddc97e"
+  integrity sha512-Bt6jpSTMWfjCtC0s79gZ/WZ1w90grfmopVOWqkI2ovhjpD5Q2XRXuecIPB9689L2+cCySMbaXDhBPU56FKNDNg==
   dependencies:
-    "@smithy/types" "^4.8.1"
+    "@smithy/types" "^4.9.0"
     "@smithy/util-utf8" "^4.2.0"
     tslib "^2.6.2"
 
-"@smithy/middleware-content-length@^4.1.1", "@smithy/middleware-content-length@^4.2.4", "@smithy/middleware-content-length@^4.2.5":
+"@smithy/middleware-content-length@^4.1.1", "@smithy/middleware-content-length@^4.2.5":
   version "4.2.5"
   resolved "https://registry.yarnpkg.com/@smithy/middleware-content-length/-/middleware-content-length-4.2.5.tgz#a6942ce2d7513b46f863348c6c6a8177e9ace752"
   integrity sha512-Y/RabVa5vbl5FuHYV2vUCwvh/dqzrEY/K2yWPSqvhFUwIY0atLqO4TienjBXakoy4zrKAMCZwg+YEqmH7jaN7A==
@@ -2820,7 +2478,7 @@
     "@smithy/types" "^4.9.0"
     tslib "^2.6.2"
 
-"@smithy/middleware-endpoint@^4.2.4", "@smithy/middleware-endpoint@^4.3.12", "@smithy/middleware-endpoint@^4.3.6":
+"@smithy/middleware-endpoint@^4.2.4", "@smithy/middleware-endpoint@^4.3.12":
   version "4.3.12"
   resolved "https://registry.yarnpkg.com/@smithy/middleware-endpoint/-/middleware-endpoint-4.3.12.tgz#97c432eec17398277f626b8d2abff9278b89d2ac"
   integrity sha512-9pAX/H+VQPzNbouhDhkW723igBMLgrI8OtX+++M7iKJgg/zY/Ig3i1e6seCcx22FWhE6Q/S61BRdi2wXBORT+A==
@@ -2834,7 +2492,7 @@
     "@smithy/util-middleware" "^4.2.5"
     tslib "^2.6.2"
 
-"@smithy/middleware-retry@^4.3.0", "@smithy/middleware-retry@^4.4.12", "@smithy/middleware-retry@^4.4.6":
+"@smithy/middleware-retry@^4.3.0", "@smithy/middleware-retry@^4.4.12":
   version "4.4.12"
   resolved "https://registry.yarnpkg.com/@smithy/middleware-retry/-/middleware-retry-4.4.12.tgz#a53f301ce10df29a3c65a0bc4f84a866adf2fe97"
   integrity sha512-S4kWNKFowYd0lID7/DBqWHOQxmxlsf0jBaos9chQZUWTVOjSW1Ogyh8/ib5tM+agFDJ/TCxuCTvrnlc+9cIBcQ==
@@ -2849,7 +2507,7 @@
     "@smithy/uuid" "^1.1.0"
     tslib "^2.6.2"
 
-"@smithy/middleware-serde@^4.1.1", "@smithy/middleware-serde@^4.2.4", "@smithy/middleware-serde@^4.2.6":
+"@smithy/middleware-serde@^4.1.1", "@smithy/middleware-serde@^4.2.6":
   version "4.2.6"
   resolved "https://registry.yarnpkg.com/@smithy/middleware-serde/-/middleware-serde-4.2.6.tgz#7e710f43206e13a8c081a372b276e7b2c51bff5b"
   integrity sha512-VkLoE/z7e2g8pirwisLz8XJWedUSY8my/qrp81VmAdyrhi94T+riBfwP+AOEEFR9rFTSonC/5D2eWNmFabHyGQ==
@@ -2858,7 +2516,7 @@
     "@smithy/types" "^4.9.0"
     tslib "^2.6.2"
 
-"@smithy/middleware-stack@^4.1.1", "@smithy/middleware-stack@^4.2.4", "@smithy/middleware-stack@^4.2.5":
+"@smithy/middleware-stack@^4.1.1", "@smithy/middleware-stack@^4.2.5":
   version "4.2.5"
   resolved "https://registry.yarnpkg.com/@smithy/middleware-stack/-/middleware-stack-4.2.5.tgz#2d13415ed3561c882594c8e6340b801d9a2eb222"
   integrity sha512-bYrutc+neOyWxtZdbB2USbQttZN0mXaOyYLIsaTbJhFsfpXyGWUxJpEuO1rJ8IIJm2qH4+xJT0mxUSsEDTYwdQ==
@@ -2866,7 +2524,7 @@
     "@smithy/types" "^4.9.0"
     tslib "^2.6.2"
 
-"@smithy/node-config-provider@^4.2.2", "@smithy/node-config-provider@^4.3.4", "@smithy/node-config-provider@^4.3.5":
+"@smithy/node-config-provider@^4.2.2", "@smithy/node-config-provider@^4.3.5":
   version "4.3.5"
   resolved "https://registry.yarnpkg.com/@smithy/node-config-provider/-/node-config-provider-4.3.5.tgz#c09137a79c2930dcc30e6c8bb4f2608d72c1e2c9"
   integrity sha512-UTurh1C4qkVCtqggI36DGbLB2Kv8UlcFdMXDcWMbqVY2uRg0XmT9Pb4Vj6oSQ34eizO1fvR0RnFV4Axw4IrrAg==
@@ -2876,7 +2534,7 @@
     "@smithy/types" "^4.9.0"
     tslib "^2.6.2"
 
-"@smithy/node-http-handler@^4.2.1", "@smithy/node-http-handler@^4.4.4", "@smithy/node-http-handler@^4.4.5":
+"@smithy/node-http-handler@^4.2.1", "@smithy/node-http-handler@^4.4.5":
   version "4.4.5"
   resolved "https://registry.yarnpkg.com/@smithy/node-http-handler/-/node-http-handler-4.4.5.tgz#2aea598fdf3dc4e32667d673d48abd4a073665f4"
   integrity sha512-CMnzM9R2WqlqXQGtIlsHMEZfXKJVTIrqCNoSd/QpAyp+Dw0a1Vps13l6ma1fH8g7zSPNsA59B/kWgeylFuA/lw==
@@ -2895,14 +2553,6 @@
     "@smithy/types" "^4.5.0"
     tslib "^2.6.2"
 
-"@smithy/property-provider@^4.2.4":
-  version "4.2.4"
-  resolved "https://registry.yarnpkg.com/@smithy/property-provider/-/property-provider-4.2.4.tgz#ea36ed8f1e282060aaf5cd220f2b428682d52775"
-  integrity sha512-g2DHo08IhxV5GdY3Cpt/jr0mkTlAD39EJKN27Jb5N8Fb5qt8KG39wVKTXiTRCmHHou7lbXR8nKVU14/aRUf86w==
-  dependencies:
-    "@smithy/types" "^4.8.1"
-    tslib "^2.6.2"
-
 "@smithy/property-provider@^4.2.5":
   version "4.2.5"
   resolved "https://registry.yarnpkg.com/@smithy/property-provider/-/property-provider-4.2.5.tgz#f75dc5735d29ca684abbc77504be9246340a43f0"
@@ -2911,7 +2561,7 @@
     "@smithy/types" "^4.9.0"
     tslib "^2.6.2"
 
-"@smithy/protocol-http@^5.2.1", "@smithy/protocol-http@^5.3.4", "@smithy/protocol-http@^5.3.5":
+"@smithy/protocol-http@^5.2.1", "@smithy/protocol-http@^5.3.5":
   version "5.3.5"
   resolved "https://registry.yarnpkg.com/@smithy/protocol-http/-/protocol-http-5.3.5.tgz#a8f4296dd6d190752589e39ee95298d5c65a60db"
   integrity sha512-RlaL+sA0LNMp03bf7XPbFmT5gN+w3besXSWMkA8rcmxLSVfiEXElQi4O2IWwPfxzcHkxqrwBFMbngB8yx/RvaQ==
@@ -2951,14 +2601,6 @@
     "@smithy/types" "^4.5.0"
     tslib "^2.6.2"
 
-"@smithy/shared-ini-file-loader@^4.3.4":
-  version "4.3.4"
-  resolved "https://registry.yarnpkg.com/@smithy/shared-ini-file-loader/-/shared-ini-file-loader-4.3.4.tgz#ba0707daba05d7705ae120abdc27dbfa5b5b9049"
-  integrity sha512-y5ozxeQ9omVjbnJo9dtTsdXj9BEvGx2X8xvRgKnV+/7wLBuYJQL6dOa/qMY6omyHi7yjt1OA97jZLoVRYi8lxA==
-  dependencies:
-    "@smithy/types" "^4.8.1"
-    tslib "^2.6.2"
-
 "@smithy/shared-ini-file-loader@^4.4.0":
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/@smithy/shared-ini-file-loader/-/shared-ini-file-loader-4.4.0.tgz#a2f8282f49982f00bafb1fa8cb7fc188a202a594"
@@ -2981,20 +2623,6 @@
     "@smithy/util-utf8" "^4.1.0"
     tslib "^2.6.2"
 
-"@smithy/signature-v4@^5.3.4":
-  version "5.3.4"
-  resolved "https://registry.yarnpkg.com/@smithy/signature-v4/-/signature-v4-5.3.4.tgz#d2233c39ce0b02041a11c5cfd210f3e61982931a"
-  integrity sha512-ScDCpasxH7w1HXHYbtk3jcivjvdA1VICyAdgvVqKhKKwxi+MTwZEqFw0minE+oZ7F07oF25xh4FGJxgqgShz0A==
-  dependencies:
-    "@smithy/is-array-buffer" "^4.2.0"
-    "@smithy/protocol-http" "^5.3.4"
-    "@smithy/types" "^4.8.1"
-    "@smithy/util-hex-encoding" "^4.2.0"
-    "@smithy/util-middleware" "^4.2.4"
-    "@smithy/util-uri-escape" "^4.2.0"
-    "@smithy/util-utf8" "^4.2.0"
-    tslib "^2.6.2"
-
 "@smithy/signature-v4@^5.3.5":
   version "5.3.5"
   resolved "https://registry.yarnpkg.com/@smithy/signature-v4/-/signature-v4-5.3.5.tgz#13ab710653f9f16c325ee7e0a102a44f73f2643f"
@@ -3009,7 +2637,7 @@
     "@smithy/util-utf8" "^4.2.0"
     tslib "^2.6.2"
 
-"@smithy/smithy-client@^4.6.4", "@smithy/smithy-client@^4.9.2", "@smithy/smithy-client@^4.9.8":
+"@smithy/smithy-client@^4.6.4", "@smithy/smithy-client@^4.9.8":
   version "4.9.8"
   resolved "https://registry.yarnpkg.com/@smithy/smithy-client/-/smithy-client-4.9.8.tgz#a6845215c982cd6331f485c5d7f23bc0b4f498f3"
   integrity sha512-8xgq3LgKDEFoIrLWBho/oYKyWByw9/corz7vuh1upv7ZBm0ZMjGYBhbn6v643WoIqA9UTcx5A5htEp/YatUwMA==
@@ -3022,14 +2650,14 @@
     "@smithy/util-stream" "^4.5.6"
     tslib "^2.6.2"
 
-"@smithy/types@^4.5.0", "@smithy/types@^4.8.1", "@smithy/types@^4.9.0":
+"@smithy/types@^4.5.0", "@smithy/types@^4.9.0":
   version "4.9.0"
   resolved "https://registry.yarnpkg.com/@smithy/types/-/types-4.9.0.tgz#c6636ddfa142e1ddcb6e4cf5f3e1a628d420486f"
   integrity sha512-MvUbdnXDTwykR8cB1WZvNNwqoWVaTRA0RLlLmf/cIFNMM2cKWz01X4Ly6SMC4Kks30r8tT3Cty0jmeWfiuyHTA==
   dependencies:
     tslib "^2.6.2"
 
-"@smithy/url-parser@^4.1.1", "@smithy/url-parser@^4.2.4", "@smithy/url-parser@^4.2.5":
+"@smithy/url-parser@^4.1.1", "@smithy/url-parser@^4.2.5":
   version "4.2.5"
   resolved "https://registry.yarnpkg.com/@smithy/url-parser/-/url-parser-4.2.5.tgz#2fea006108f17f7761432c7ef98d6aa003421487"
   integrity sha512-VaxMGsilqFnK1CeBX+LXnSuaMx4sTL/6znSZh2829txWieazdVxr54HmiyTsIbpOTLcf5nYpq9lpzmwRdxj6rQ==
@@ -3091,7 +2719,7 @@
   dependencies:
     tslib "^2.6.2"
 
-"@smithy/util-defaults-mode-browser@^4.1.4", "@smithy/util-defaults-mode-browser@^4.3.11", "@smithy/util-defaults-mode-browser@^4.3.5":
+"@smithy/util-defaults-mode-browser@^4.1.4", "@smithy/util-defaults-mode-browser@^4.3.11":
   version "4.3.11"
   resolved "https://registry.yarnpkg.com/@smithy/util-defaults-mode-browser/-/util-defaults-mode-browser-4.3.11.tgz#d44b9ee59cf1850e7cf5fb75741840241de33e76"
   integrity sha512-yHv+r6wSQXEXTPVCIQTNmXVWs7ekBTpMVErjqZoWkYN75HIFN5y9+/+sYOejfAuvxWGvgzgxbTHa/oz61YTbKw==
@@ -3101,7 +2729,7 @@
     "@smithy/types" "^4.9.0"
     tslib "^2.6.2"
 
-"@smithy/util-defaults-mode-node@^4.1.4", "@smithy/util-defaults-mode-node@^4.2.14", "@smithy/util-defaults-mode-node@^4.2.7":
+"@smithy/util-defaults-mode-node@^4.1.4", "@smithy/util-defaults-mode-node@^4.2.14":
   version "4.2.14"
   resolved "https://registry.yarnpkg.com/@smithy/util-defaults-mode-node/-/util-defaults-mode-node-4.2.14.tgz#e9e7c8bd2705535445e811d78e37575b26b7e5ba"
   integrity sha512-ljZN3iRvaJUgulfvobIuG97q1iUuCMrvXAlkZ4msY+ZuVHQHDIqn7FKZCEj+bx8omz6kF5yQXms/xhzjIO5XiA==
@@ -3114,7 +2742,7 @@
     "@smithy/types" "^4.9.0"
     tslib "^2.6.2"
 
-"@smithy/util-endpoints@^3.1.2", "@smithy/util-endpoints@^3.2.4", "@smithy/util-endpoints@^3.2.5":
+"@smithy/util-endpoints@^3.1.2", "@smithy/util-endpoints@^3.2.5":
   version "3.2.5"
   resolved "https://registry.yarnpkg.com/@smithy/util-endpoints/-/util-endpoints-3.2.5.tgz#9e0fc34e38ddfbbc434d23a38367638dc100cb14"
   integrity sha512-3O63AAWu2cSNQZp+ayl9I3NapW1p1rR5mlVHcF6hAB1dPZUQFfRPYtplWX/3xrzWthPGj5FqB12taJJCfH6s8A==
@@ -3137,7 +2765,7 @@
   dependencies:
     tslib "^2.6.2"
 
-"@smithy/util-middleware@^4.1.1", "@smithy/util-middleware@^4.2.4", "@smithy/util-middleware@^4.2.5":
+"@smithy/util-middleware@^4.1.1", "@smithy/util-middleware@^4.2.5":
   version "4.2.5"
   resolved "https://registry.yarnpkg.com/@smithy/util-middleware/-/util-middleware-4.2.5.tgz#1ace865afe678fd4b0f9217197e2fe30178d4835"
   integrity sha512-6Y3+rvBF7+PZOc40ybeZMcGln6xJGVeY60E7jy9Mv5iKpMJpHgRE6dKy9ScsVxvfAYuEX4Q9a65DQX90KaQ3bA==
@@ -3145,7 +2773,7 @@
     "@smithy/types" "^4.9.0"
     tslib "^2.6.2"
 
-"@smithy/util-retry@^4.1.2", "@smithy/util-retry@^4.2.4", "@smithy/util-retry@^4.2.5":
+"@smithy/util-retry@^4.1.2", "@smithy/util-retry@^4.2.5":
   version "4.2.5"
   resolved "https://registry.yarnpkg.com/@smithy/util-retry/-/util-retry-4.2.5.tgz#70fe4fbbfb9ad43a9ce2ba4ed111ff7b30d7b333"
   integrity sha512-GBj3+EZBbN4NAqJ/7pAhsXdfzdlznOh8PydUijy6FpNIMnHPSMO2/rP4HKu+UFeikJxShERk528oy7GT79YiJg==
@@ -3154,7 +2782,7 @@
     "@smithy/types" "^4.9.0"
     tslib "^2.6.2"
 
-"@smithy/util-stream@^4.3.2", "@smithy/util-stream@^4.5.5", "@smithy/util-stream@^4.5.6":
+"@smithy/util-stream@^4.3.2", "@smithy/util-stream@^4.5.6":
   version "4.5.6"
   resolved "https://registry.yarnpkg.com/@smithy/util-stream/-/util-stream-4.5.6.tgz#ebee9e52adeb6f88337778b2f3356a2cc615298c"
   integrity sha512-qWw/UM59TiaFrPevefOZ8CNBKbYEP6wBAIlLqxn3VAIo9rgnTNc4ASbVrqDmhuwI87usnjhdQrxodzAGFFzbRQ==
