@@ -1,3 +1,10 @@
+## [6.2.10](https://github.com/tibber/tibber-aws/compare/v6.2.9...v6.2.10) (2025-11-24)
+
+
+### Bug Fixes
+
+* **deps:** bump @aws-sdk/client-secrets-manager from 3.920.0 to 3.936.0 ([b739fb1](https://github.com/tibber/tibber-aws/commit/b739fb1a6724349b6845d6f642456541af3ec959))
+
 ## [6.2.9](https://github.com/tibber/tibber-aws/compare/v6.2.8...v6.2.9) (2025-11-20)
 
 
