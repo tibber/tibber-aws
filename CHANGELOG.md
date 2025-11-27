@@ -1,3 +1,10 @@
+## [6.2.13](https://github.com/tibber/tibber-aws/compare/v6.2.12...v6.2.13) (2025-11-27)
+
+
+### Bug Fixes
+
+* **deps:** bump tar from 7.5.1 to 7.5.2 ([c0c3dea](https://github.com/tibber/tibber-aws/commit/c0c3dea4275e87f31df51cc62abe0f6addb4d33e))
+
 ## [6.2.12](https://github.com/tibber/tibber-aws/compare/v6.2.11...v6.2.12) (2025-11-24)
 
 
