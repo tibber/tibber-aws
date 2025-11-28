@@ -16,10 +16,7 @@
     "posttest": "yarn run lint",
     "release": "semantic-release",
     "release:local": "dotenv semantic-release",
-    "release:preview": "npm pack && tar -xvzf *.tgz && rm -rf package *.tgz",
-    "cz": "git status && cz",
-    "cz:all": "git add . && git status && cz",
-    "cz:init": "commitizen init cz-conventional-changelog --yarn --dev --exact"
+    "release:preview": "npm pack && tar -xvzf *.tgz && rm -rf package *.tgz"
   },
   "files": [
     "/dist/src"
@@ -37,8 +34,6 @@
     "@types/jest": "^29.5.8",
     "@types/node": "20.8.2",
     "@types/randomstring": "^1.1.11",
-    "commitizen": "^4.3.1",
-    "cz-conventional-changelog": "^3.0.1",
     "dotenv-cli": "^4.0.0",
     "gts": "^5.2.0",
     "husky": "^8.0.3",
@@ -59,11 +54,7 @@
     "@aws-sdk/client-secrets-manager": "^3.621.0",
     "@aws-sdk/client-sns": "^3.621.0",
     "@aws-sdk/client-sqs": "^3.621.0",
-    "sync-rpc": "^1.3.6"
-  },
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
+    "sync-rpc": "^1.3.6",
+    "yarn": "^1.22.22"
   }
 }
