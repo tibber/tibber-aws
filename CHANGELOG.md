@@ -1,3 +1,10 @@
+## [6.2.14](https://github.com/tibber/tibber-aws/compare/v6.2.13...v6.2.14) (2025-12-01)
+
+
+### Bug Fixes
+
+* **deps:** bump @aws-sdk/client-sns from 3.936.0 to 3.939.0 ([d5fe37a](https://github.com/tibber/tibber-aws/commit/d5fe37acfc0fd09d8443f26f05a065a42d5eca5e))
+
 ## [6.2.13](https://github.com/tibber/tibber-aws/compare/v6.2.12...v6.2.13) (2025-11-27)
 
 
