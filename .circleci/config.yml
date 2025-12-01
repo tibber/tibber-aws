@@ -8,7 +8,6 @@ workflows:
           context:
             - GITHUB
             - NPM
-            - AWS
 jobs:
   build:
     working_directory: ~/package
