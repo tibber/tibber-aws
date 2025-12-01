@@ -5,8 +5,7 @@
   "main": "./dist/src/index.js",
   "scripts": {
     "start": "ts-node -T samples/sample1.ts",
-    "test": "jest --verbose --coverage --runInBand --detectOpenHandles",
-    "test-local": "AWS_ACCESS_KEY_ID=test AWS_SECRET_ACCESS_KEY=test AWS_REGION=eu-west-1 jest --verbose --coverage --runInBand --detectOpenHandles",
+    "test": "AWS_ACCESS_KEY_ID=test AWS_SECRET_ACCESS_KEY=test AWS_REGION=eu-west-1 jest --verbose --coverage --runInBand --detectOpenHandles",
     "lint": "gts lint",
     "clean": "gts clean",
     "compile": "tsc --build",
