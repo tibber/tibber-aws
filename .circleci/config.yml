@@ -18,11 +18,13 @@ jobs:
       - localstack/startup
       - run:
           name: Setup Localstack resources
+          environment:
+            AWS_REGION: eu-west-1
           command: |
             echo "Creating test resources"
-            awslocal secretsmanager create-secret --name my-secret --secret-string '{"PG_PASSWORD":"stacy"}'
+            awslocal secretsmanager create-secret --region $AWS_REGION --name my-secret --secret-string '{"PG_PASSWORD":"stacy"}'
             cd test/lambda
-            awslocal lambda create-function --function-name localstack-lambda-url-example --runtime nodejs18.x --zip-file fileb://function.zip --handler index.handler --role arn:aws:iam::000000000000:role/lambda-role
+            awslocal lambda create-function --region $AWS_REGION --function-name localstack-lambda-url-example --runtime nodejs18.x --zip-file fileb://function.zip --handler index.handler --role arn:aws:iam::000000000000:role/lambda-role
             cd ../..
             echo "Done creating test resources" 
       - run:
