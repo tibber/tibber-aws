@@ -1,3 +1,7 @@
+# Dependabot version updates are disabled (open-pull-requests-limit: 0)
+# Regular dependency updates are handled by Renovate instead
+# Security updates are enabled via "Dependabot security updates" in repo settings
+# "Dependabot alerts" will continue to notify about vulnerabilities
 version: 2
 updates:
   - package-ecosystem: "npm"
@@ -8,5 +12,6 @@ updates:
       prefix: "fix"
       prefix-development: "build"
       include: "scope"
+    open-pull-requests-limit: 0
     allow:
       - dependency-type: "production"
