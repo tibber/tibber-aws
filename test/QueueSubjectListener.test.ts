@@ -228,5 +228,30 @@ describe('QueueSubjectListener', () => {
       expect(queueMock.changeMessageVisibility).toHaveBeenCalledTimes(1);
       expect(retryPolicy).toHaveBeenCalledTimes(1);
     });
+
+    it('should default waitTimeSeconds to 20', async () => {
+      const queueMock = {
+        receiveMessage: jest.fn().mockResolvedValueOnce({
+          Messages: messages,
+        }),
+        deleteMessage: jest.fn(Promise.resolve),
+      } as unknown as Queue;
+
+      const sut = new QueueSubjectListener(queueMock, null);
+      sut.onSubject(
+        'test',
+        jest.fn(() => Promise.resolve())
+      );
+      sut.listen();
+
+      await new Promise(resolve => setTimeout(resolve, 10));
+      sut.stop();
+
+      expect(queueMock.receiveMessage).toHaveBeenCalledWith(
+        expect.objectContaining({
+          WaitTimeSeconds: 20,
+        })
+      );
+    });
   });
 });

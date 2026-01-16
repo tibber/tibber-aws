@@ -54,7 +54,7 @@ export class QueueSubjectListener {
     logger?: undefined | null | ILogger,
     public options: QueueSubjectListenerOptions = {
       maxConcurrentMessage: 1,
-      waitTimeSeconds: 10,
+      waitTimeSeconds: 20,
       visibilityTimeout: 30,
     }
   ) {
