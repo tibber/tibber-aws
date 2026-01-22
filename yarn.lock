@@ -98,7 +98,7 @@
     "@smithy/util-utf8" "^2.0.0"
     tslib "^2.6.2"
 
-"@aws-sdk/client-lambda@^3.621.0":
+"@aws-sdk/client-lambda@^3.972.0":
   version "3.972.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/client-lambda/-/client-lambda-3.972.0.tgz#4bd68abfad2bafae11ddad45b95447f011bc4b3a"
   integrity sha512-0wrTTn5fIIU0LfbqKn8e/SFTaBkA+AHPsvELOU7unTxNfkxlg1KXGHynm4O/aNxNeElO73NrYp4s+lIQ558OiA==
@@ -148,7 +148,7 @@
     "@smithy/util-waiter" "^4.2.8"
     tslib "^2.6.2"
 
-"@aws-sdk/client-s3@^3.621.0":
+"@aws-sdk/client-s3@^3.972.0":
   version "3.972.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/client-s3/-/client-s3-3.972.0.tgz#a1d748c6870232d53192b2022280aad73966c713"
   integrity sha512-ghpDQtjZvbhbnHWymq/V5TL8NppdAGF2THAxYRRBLCJ5JRlq71T24NdovAzvzYaGdH7HtcRkgErBRsFT1gtq4g==
@@ -209,7 +209,7 @@
     "@smithy/util-waiter" "^4.2.8"
     tslib "^2.6.2"
 
-"@aws-sdk/client-secrets-manager@^3.621.0":
+"@aws-sdk/client-secrets-manager@^3.972.0":
   version "3.972.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/client-secrets-manager/-/client-secrets-manager-3.972.0.tgz#4b625c839e83a17d3f23a4c01b2b0cf2df3b1998"
   integrity sha512-uL7ompIv+LzlV0pOrF9z42uhkXveQAItqiEP5ujgWMFwsTJ7g5Ei8QsofI4tjbnNialkA3SRDO/Qqk4+oExYRA==
@@ -254,7 +254,7 @@
     "@smithy/util-utf8" "^4.2.0"
     tslib "^2.6.2"
 
-"@aws-sdk/client-sns@^3.621.0":
+"@aws-sdk/client-sns@^3.972.0":
   version "3.972.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/client-sns/-/client-sns-3.972.0.tgz#6046e78b49786f871bcfc888e14cc6c2eed4f0ce"
   integrity sha512-Uog78etErJlHfoSZzWJb96PQcsxdVuNLEDk+oBa+GHI8FBWQAazRIAkeBC3P4xP5qDN7OlH0E4Wy6X4D09kLFQ==
@@ -299,7 +299,7 @@
     "@smithy/util-utf8" "^4.2.0"
     tslib "^2.6.2"
 
-"@aws-sdk/client-sqs@^3.621.0":
+"@aws-sdk/client-sqs@^3.972.0":
   version "3.972.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/client-sqs/-/client-sqs-3.972.0.tgz#aad710e8c1da3ca7715f8cd7a73d20babf26ea47"
   integrity sha512-hNXJjqQLjGqq4a+MQy9xl2poVAlHnjFEA26ik+y5ktn2yNZ8SMbyY+Tdn2Ki06XS/yNHubHFdIQomqbcE4t22Q==
