@@ -1,3 +1,12 @@
+## [6.2.21](https://github.com/tibber/tibber-aws/compare/v6.2.20...v6.2.21) (2026-01-22)
+
+
+### Bug Fixes
+
+* **deps:** bump lodash from 4.17.21 to 4.17.23 ([#419](https://github.com/tibber/tibber-aws/issues/419)) ([50ae76f](https://github.com/tibber/tibber-aws/commit/50ae76f929288f459874a11057513112c55c90af))
+* **deps:** bump lodash-es from 4.17.21 to 4.17.23 ([#418](https://github.com/tibber/tibber-aws/issues/418)) ([0298c91](https://github.com/tibber/tibber-aws/commit/0298c91abecfe1547ce24c85901b2537fbb2e455))
+* **deps:** bump tar from 7.5.3 to 7.5.6 ([#417](https://github.com/tibber/tibber-aws/issues/417)) ([29e51d9](https://github.com/tibber/tibber-aws/commit/29e51d9caa6c8863502a3f2f7a15839805b62d78))
+
 ## [6.2.20](https://github.com/tibber/tibber-aws/compare/v6.2.19...v6.2.20) (2026-01-19)
 
 
