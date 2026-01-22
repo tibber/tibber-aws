@@ -1,3 +1,10 @@
+## [6.2.22](https://github.com/tibber/tibber-aws/compare/v6.2.21...v6.2.22) (2026-01-22)
+
+
+### Bug Fixes
+
+* upgrade AWS SDK packages to 3.972.0 to resolve CVE GHSA-6475-r3vj-m8vf ([bb5676a](https://github.com/tibber/tibber-aws/commit/bb5676a2f81a319510159c21270dea2555bfadd3))
+
 ## [6.2.21](https://github.com/tibber/tibber-aws/compare/v6.2.20...v6.2.21) (2026-01-22)
 
 
