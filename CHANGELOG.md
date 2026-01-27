@@ -1,3 +1,10 @@
+# [6.3.0](https://github.com/tibber/tibber-aws/compare/v6.2.22...v6.3.0) (2026-01-27)
+
+
+### Features
+
+* remove yarn dependency 🤩 ([0a70d24](https://github.com/tibber/tibber-aws/commit/0a70d244fa86526c150ef4aa505f63261f2735f2))
+
 ## [6.2.22](https://github.com/tibber/tibber-aws/compare/v6.2.21...v6.2.22) (2026-01-22)
 
 
