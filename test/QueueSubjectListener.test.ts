@@ -282,7 +282,15 @@ describe('QueueSubjectListener', () => {
         deleteMessage: jest.fn(Promise.resolve),
       } as unknown as Queue;
 
-      const sut = new QueueSubjectListener(queueMock, null, {
+      const logger = {
+        debug: jest.fn(),
+        info: jest.fn(),
+        log: jest.fn(),
+        error: jest.fn(),
+        warn: jest.fn(),
+      };
+
+      const sut = new QueueSubjectListener(queueMock, logger, {
         maxConcurrentMessage: 1,
         waitTimeSeconds: 0,
         visibilityTimeout: 0,
@@ -294,9 +302,10 @@ describe('QueueSubjectListener', () => {
       sut.onSubject('test', handler);
       sut.listen();
 
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await new Promise(resolve => setTimeout(resolve, 100));
       sut.stop();
 
+      expect(logger.error).not.toHaveBeenCalled();
       expect(handler).toHaveBeenCalledTimes(1);
       expect(handler).toHaveBeenCalledWith(messagePayload, 'test');
       expect(queueMock.deleteMessage).toHaveBeenCalledTimes(1);
@@ -329,7 +338,15 @@ describe('QueueSubjectListener', () => {
         deleteMessage: jest.fn(Promise.resolve),
       } as unknown as Queue;
 
-      const sut = new QueueSubjectListener(queueMock, null, {
+      const logger = {
+        debug: jest.fn(),
+        info: jest.fn(),
+        log: jest.fn(),
+        error: jest.fn(),
+        warn: jest.fn(),
+      };
+
+      const sut = new QueueSubjectListener(queueMock, logger, {
         maxConcurrentMessage: 1,
         waitTimeSeconds: 0,
         visibilityTimeout: 0,
@@ -341,9 +358,10 @@ describe('QueueSubjectListener', () => {
       sut.onSubject('test', handler);
       sut.listen();
 
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await new Promise(resolve => setTimeout(resolve, 100));
       sut.stop();
 
+      expect(logger.error).not.toHaveBeenCalled();
       expect(handler).toHaveBeenCalledTimes(1);
       expect(handler).toHaveBeenCalledWith(messagePayload, 'test');
       expect(queueMock.deleteMessage).toHaveBeenCalledTimes(1);

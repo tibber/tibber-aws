@@ -5,7 +5,8 @@ import {
 import {ILogger} from '../ILogger';
 import {LoggerWrapper} from '../LoggerWrapper';
 import {Queue} from './Queue';
-import {brotliDecompressSync, gunzipSync} from 'zlib';
+import {brotliDecompress, gunzip} from 'zlib';
+import {promisify} from 'util';
 
 const MESSAGE_ATTRIBUTE_CONTENT_TYPE = 'contentType';
 const COMPRESSTION_METHOD_BROTLI = 'brotli';
@@ -42,15 +43,18 @@ export const ExponentialRetryPolicy = (
   backoffDelaySeconds: number
 ) => Math.pow(attempt, backoffDelaySeconds);
 
-const decompressBrotli = (base64Message: string) => {
+const brotliDecompressAsync = promisify(brotliDecompress);
+const gunzipAsync = promisify(gunzip);
+
+const decompressBrotli = async (base64Message: string) => {
   const buffer = Buffer.from(base64Message, 'base64');
-  const decompressed = brotliDecompressSync(Uint8Array.from(buffer));
+  const decompressed = await brotliDecompressAsync(Uint8Array.from(buffer));
   return JSON.parse(decompressed.toString('utf-8'));
 };
 
-const decompressGzip = (base64Message: string) => {
+const decompressGzip = async (base64Message: string) => {
   const buffer = Buffer.from(base64Message, 'base64');
-  const decompressed = gunzipSync(Uint8Array.from(buffer));
+  const decompressed = await gunzipAsync(Uint8Array.from(buffer));
   return JSON.parse(decompressed.toString('utf-8'));
 };
 
@@ -134,55 +138,61 @@ export class QueueSubjectListener {
           return;
         }
 
-        const messages = response.Messages.map(m => {
-          if (m.Body === undefined)
-            throw Error(
-              `Message with ID '${m.MessageId}' has no Body defined.`
-            );
+        const messages = await Promise.all(
+          response.Messages.map(async m => {
+            if (m.Body === undefined)
+              throw Error(
+                `Message with ID '${m.MessageId}' has no Body defined.`
+              );
 
-          const json = JSON.parse(m.Body);
+            const json = JSON.parse(m.Body);
 
-          try {
-            const contentType =
-              m.MessageAttributes &&
-              m.MessageAttributes[MESSAGE_ATTRIBUTE_CONTENT_TYPE];
-            let jsonMessage;
+            try {
+              const contentType =
+                m.MessageAttributes &&
+                m.MessageAttributes[MESSAGE_ATTRIBUTE_CONTENT_TYPE];
+              let jsonMessage;
 
-            if (contentType) {
-              if (contentType.StringValue === COMPRESSTION_METHOD_BROTLI) {
-                this.logger.info(
-                  `Message with ID '${m.MessageId}' is compressed with Brotli.`
-                );
-                jsonMessage = decompressBrotli(json.Message);
-              } else if (contentType.StringValue === COMPRESSTION_METHOD_GZIP) {
-                this.logger.info(
-                  `Message with ID '${m.MessageId}' is compressed with Gzip.`
-                );
-                jsonMessage = decompressGzip(json.Message);
+              if (contentType) {
+                if (contentType.StringValue === COMPRESSTION_METHOD_BROTLI) {
+                  this.logger.info(
+                    `Message with ID '${m.MessageId}' is compressed with Brotli.`
+                  );
+                  jsonMessage = await decompressBrotli(json.Message);
+                } else if (
+                  contentType.StringValue === COMPRESSTION_METHOD_GZIP
+                ) {
+                  this.logger.info(
+                    `Message with ID '${m.MessageId}' is compressed with Gzip.`
+                  );
+                  jsonMessage = await decompressGzip(json.Message);
+                } else {
+                  jsonMessage = JSON.parse(json.Message);
+                }
+              } else {
+                jsonMessage = JSON.parse(json.Message);
               }
-            } else {
-              jsonMessage = JSON.parse(json.Message);
+              return {
+                handle: m.ReceiptHandle,
+                isValidJson: true,
+                message: {
+                  message: jsonMessage,
+                  subject: json.Subject,
+                  attributes: m.Attributes,
+                },
+              };
+            } catch (error) {
+              this.logger.error(
+                `Not able to parse event as json: ${json.Message}`
+              );
+              return {
+                handle: m.ReceiptHandle,
+                isValidJson: false,
+                message: {subject: 'Delete Me'},
+              };
             }
-            return {
-              handle: m.ReceiptHandle,
-              isValidJson: true,
-              message: {
-                message: jsonMessage,
-                subject: json.Subject,
-                attributes: m.Attributes,
-              },
-            };
-          } catch (error) {
-            this.logger.error(
-              `Not able to parse event as json: ${json.Message}`
-            );
-            return {
-              handle: m.ReceiptHandle,
-              isValidJson: false,
-              message: {subject: 'Delete Me'},
-            };
-          }
-        });
+          })
+        );
 
         cntInFlight += messages.length;
 
