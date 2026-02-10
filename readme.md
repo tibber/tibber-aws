@@ -5,6 +5,25 @@ Thie repo is a typescript wrapper around the AWS SDK for Javascript.
 - Migrated to aws sdk 3.x
 - Removed ECS Api
 
+## Features
+
+### Queue Message Compression Support
+The library now supports automatic decompression of SQS messages compressed with Brotli or GZip. Messages with a `contentType` message attribute set to `brotli` or `gzip` will be automatically decompressed.
+
+```typescript
+import {QueueSubjectListener, Queue} from 'tibber-aws';
+
+const queue = await Queue.createQueue('test-queue');
+const listener = new QueueSubjectListener(queue);
+
+listener.onSubject('test', async (message, subject) => {
+  // Message is automatically decompressed if compressed
+  console.log(message);
+});
+
+listener.listen();
+```
+
 ## Usage
 
 ```
