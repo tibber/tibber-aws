@@ -1,3 +1,15 @@
+# [7.0.0](https://github.com/tibber/tibber-aws/compare/v6.3.0...v7.0.0) (2026-02-10)
+
+
+### Features
+
+* add support for compressed SQS messages (Brotli/GZip) ([#429](https://github.com/tibber/tibber-aws/issues/429)) ([4680c60](https://github.com/tibber/tibber-aws/commit/4680c601da103a4eaf099658f627707212c25f03))
+
+
+### BREAKING CHANGES
+
+* None
+
 # [6.3.0](https://github.com/tibber/tibber-aws/compare/v6.2.22...v6.3.0) (2026-01-27)
 
 
