@@ -1,5 +1,6 @@
 import {Queue} from '../src';
 import {QueueSubjectListener} from '../src/queue/QueueSubjectListener';
+import {brotliCompressSync, gzipSync} from 'zlib';
 
 const messages = [
   {
@@ -252,6 +253,138 @@ describe('QueueSubjectListener', () => {
           WaitTimeSeconds: 20,
         })
       );
+    });
+
+    it('should decompress brotli compressed messages', async () => {
+      const messagePayload = {id: '123', test: 'compressed-brotli'};
+      const compressedMessage = brotliCompressSync(
+        JSON.stringify(messagePayload)
+      ).toString('base64');
+
+      const queueMock = {
+        receiveMessage: jest.fn().mockResolvedValueOnce({
+          Messages: [
+            {
+              Body: JSON.stringify({
+                Subject: 'test',
+                Message: compressedMessage,
+              }),
+              ReceiptHandle: 'test',
+              MessageAttributes: {
+                contentType: {
+                  StringValue: 'brotli',
+                  DataType: 'String',
+                },
+              },
+            },
+          ],
+        }),
+        deleteMessage: jest.fn(Promise.resolve),
+      } as unknown as Queue;
+
+      const sut = new QueueSubjectListener(queueMock, null, {
+        maxConcurrentMessage: 1,
+        waitTimeSeconds: 0,
+        visibilityTimeout: 0,
+        receiveTimeout: () => 0,
+      });
+
+      const handler = jest.fn(() => Promise.resolve());
+
+      sut.onSubject('test', handler);
+      sut.listen();
+
+      await new Promise(resolve => setTimeout(resolve, 10));
+      sut.stop();
+
+      expect(handler).toHaveBeenCalledTimes(1);
+      expect(handler).toHaveBeenCalledWith(messagePayload, 'test');
+      expect(queueMock.deleteMessage).toHaveBeenCalledTimes(1);
+    });
+
+    it('should decompress gzip compressed messages', async () => {
+      const messagePayload = {id: '456', test: 'compressed-gzip'};
+      const compressedMessage = gzipSync(
+        JSON.stringify(messagePayload)
+      ).toString('base64');
+
+      const queueMock = {
+        receiveMessage: jest.fn().mockResolvedValueOnce({
+          Messages: [
+            {
+              Body: JSON.stringify({
+                Subject: 'test',
+                Message: compressedMessage,
+              }),
+              ReceiptHandle: 'test',
+              MessageAttributes: {
+                contentType: {
+                  StringValue: 'gzip',
+                  DataType: 'String',
+                },
+              },
+            },
+          ],
+        }),
+        deleteMessage: jest.fn(Promise.resolve),
+      } as unknown as Queue;
+
+      const sut = new QueueSubjectListener(queueMock, null, {
+        maxConcurrentMessage: 1,
+        waitTimeSeconds: 0,
+        visibilityTimeout: 0,
+        receiveTimeout: () => 0,
+      });
+
+      const handler = jest.fn(() => Promise.resolve());
+
+      sut.onSubject('test', handler);
+      sut.listen();
+
+      await new Promise(resolve => setTimeout(resolve, 10));
+      sut.stop();
+
+      expect(handler).toHaveBeenCalledTimes(1);
+      expect(handler).toHaveBeenCalledWith(messagePayload, 'test');
+      expect(queueMock.deleteMessage).toHaveBeenCalledTimes(1);
+    });
+
+    it('should handle messages without compression', async () => {
+      const messagePayload = {id: '789', test: 'uncompressed'};
+
+      const queueMock = {
+        receiveMessage: jest.fn().mockResolvedValueOnce({
+          Messages: [
+            {
+              Body: JSON.stringify({
+                Subject: 'test',
+                Message: JSON.stringify(messagePayload),
+              }),
+              ReceiptHandle: 'test',
+            },
+          ],
+        }),
+        deleteMessage: jest.fn(Promise.resolve),
+      } as unknown as Queue;
+
+      const sut = new QueueSubjectListener(queueMock, null, {
+        maxConcurrentMessage: 1,
+        waitTimeSeconds: 0,
+        visibilityTimeout: 0,
+        receiveTimeout: () => 0,
+      });
+
+      const handler = jest.fn(() => Promise.resolve());
+
+      sut.onSubject('test', handler);
+      sut.listen();
+
+      await new Promise(resolve => setTimeout(resolve, 10));
+      sut.stop();
+
+      expect(handler).toHaveBeenCalledTimes(1);
+      expect(handler).toHaveBeenCalledWith(messagePayload, 'test');
+      expect(queueMock.deleteMessage).toHaveBeenCalledTimes(1);
     });
   });
 });
