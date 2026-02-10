@@ -5,6 +5,12 @@ import {
 import {ILogger} from '../ILogger';
 import {LoggerWrapper} from '../LoggerWrapper';
 import {Queue} from './Queue';
+import {brotliDecompress, gunzip} from 'zlib';
+import {promisify} from 'util';
+
+const MESSAGE_ATTRIBUTE_CONTENT_TYPE = 'contentType';
+const COMPRESSTION_METHOD_BROTLI = 'brotli';
+const COMPRESSTION_METHOD_GZIP = 'gzip';
 
 export type QueueSubjectListenerOptions = {
   maxConcurrentMessage: number;
@@ -36,6 +42,21 @@ export const ExponentialRetryPolicy = (
   attempt: number,
   backoffDelaySeconds: number
 ) => Math.pow(attempt, backoffDelaySeconds);
+
+const brotliDecompressAsync = promisify(brotliDecompress);
+const gunzipAsync = promisify(gunzip);
+
+const decompressBrotli = async (base64Message: string) => {
+  const buffer = Buffer.from(base64Message, 'base64');
+  const decompressed = await brotliDecompressAsync(Uint8Array.from(buffer));
+  return JSON.parse(decompressed.toString('utf-8'));
+};
+
+const decompressGzip = async (base64Message: string) => {
+  const buffer = Buffer.from(base64Message, 'base64');
+  const decompressed = await gunzipAsync(Uint8Array.from(buffer));
+  return JSON.parse(decompressed.toString('utf-8'));
+};
 
 export class QueueSubjectListener {
   public handlers: Record<
@@ -117,35 +138,61 @@ export class QueueSubjectListener {
           return;
         }
 
-        const messages = response.Messages.map(m => {
-          if (m.Body === undefined)
-            throw Error(
-              `Message with ID '${m.MessageId}' has no Body defined.`
-            );
+        const messages = await Promise.all(
+          response.Messages.map(async m => {
+            if (m.Body === undefined)
+              throw Error(
+                `Message with ID '${m.MessageId}' has no Body defined.`
+              );
 
-          const json = JSON.parse(m.Body);
+            const json = JSON.parse(m.Body);
 
-          try {
-            return {
-              handle: m.ReceiptHandle,
-              isValidJson: true,
-              message: {
-                message: JSON.parse(json.Message),
-                subject: json.Subject,
-                attributes: m.Attributes,
-              },
-            };
-          } catch (error) {
-            this.logger.error(
-              `Not able to parse event as json: ${json.Message}`
-            );
-            return {
-              handle: m.ReceiptHandle,
-              isValidJson: false,
-              message: {subject: 'Delete Me'},
-            };
-          }
-        });
+            try {
+              const contentType =
+                m.MessageAttributes &&
+                m.MessageAttributes[MESSAGE_ATTRIBUTE_CONTENT_TYPE];
+              let jsonMessage;
+
+              if (contentType) {
+                if (contentType.StringValue === COMPRESSTION_METHOD_BROTLI) {
+                  this.logger.info(
+                    `Message with ID '${m.MessageId}' is compressed with Brotli.`
+                  );
+                  jsonMessage = await decompressBrotli(json.Message);
+                } else if (
+                  contentType.StringValue === COMPRESSTION_METHOD_GZIP
+                ) {
+                  this.logger.info(
+                    `Message with ID '${m.MessageId}' is compressed with Gzip.`
+                  );
+                  jsonMessage = await decompressGzip(json.Message);
+                } else {
+                  jsonMessage = JSON.parse(json.Message);
+                }
+              } else {
+                jsonMessage = JSON.parse(json.Message);
+              }
+              return {
+                handle: m.ReceiptHandle,
+                isValidJson: true,
+                message: {
+                  message: jsonMessage,
+                  subject: json.Subject,
+                  attributes: m.Attributes,
+                },
+              };
+            } catch (error) {
+              this.logger.error(
+                `Not able to parse event as json: ${json.Message}`
+              );
+              return {
+                handle: m.ReceiptHandle,
+                isValidJson: false,
+                message: {subject: 'Delete Me'},
+              };
+            }
+          })
+        );
 
         cntInFlight += messages.length;
 
