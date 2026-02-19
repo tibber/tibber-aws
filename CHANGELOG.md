@@ -1,3 +1,8 @@
+## [7.0.2](https://github.com/tibber/tibber-aws/compare/v7.0.1...v7.0.2) (2026-02-19)
+
+### Bug Fixes
+- upgrade AWS SDK packages to 3.993.0 to resolve CVE-2026-26278 (https://github.com/tibber/tibber-aws/security/dependabot/103)
+
 ## [7.0.1](https://github.com/tibber/tibber-aws/compare/v7.0.0...v7.0.1) (2026-02-10)
 
 
