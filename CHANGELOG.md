@@ -1,3 +1,10 @@
+## [7.0.2](https://github.com/tibber/tibber-aws/compare/v7.0.1...v7.0.2) (2026-02-20)
+
+
+### Bug Fixes
+
+* **deps:** bump tar from 7.5.7 to 7.5.9 ([7ff49cf](https://github.com/tibber/tibber-aws/commit/7ff49cfd31de3c7a31494d386e6fa56c5e5837f7))
+
 ## [7.0.1](https://github.com/tibber/tibber-aws/compare/v7.0.0...v7.0.1) (2026-02-10)
 
 
