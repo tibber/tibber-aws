@@ -98,7 +98,7 @@
     "@smithy/util-utf8" "^2.0.0"
     tslib "^2.6.2"
 
-"@aws-sdk/client-lambda@^3.972.0":
+"@aws-sdk/client-lambda@^3.993.0":
   version "3.993.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/client-lambda/-/client-lambda-3.993.0.tgz#63f1a865b5158040f44ef4823c8f19be56fbb270"
   integrity sha512-bXUuyTeNjMEyzVdXnYUJFcRXr6NQJjQte3EqnixUkUDZcqbyL3lXQS3cQSUuzmSaQrUDiTqIvbGrQiKv2wTXpQ==
@@ -148,7 +148,7 @@
     "@smithy/util-waiter" "^4.2.8"
     tslib "^2.6.2"
 
-"@aws-sdk/client-s3@^3.972.0":
+"@aws-sdk/client-s3@^3.993.0":
   version "3.993.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/client-s3/-/client-s3-3.993.0.tgz#3e40e3631d88100dab51bcde017abbb14e3274b6"
   integrity sha512-0slCxdbo9O3rfzqD7/PsBOrZ6vcwFzPAvGeUu5NZApI5WyjEfMLLi2T9QW8R9N9TQeUfiUQiHkg/NV0LPS61/g==
@@ -209,7 +209,7 @@
     "@smithy/util-waiter" "^4.2.8"
     tslib "^2.6.2"
 
-"@aws-sdk/client-secrets-manager@^3.972.0":
+"@aws-sdk/client-secrets-manager@^3.993.0":
   version "3.993.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/client-secrets-manager/-/client-secrets-manager-3.993.0.tgz#c867c19104e32c1ba05ef0791d0726768bde3f96"
   integrity sha512-yGiBaEod0iWYjV60jPniYE0jWa6nMKlVwtQuITMc9cdQkhjPMZQBfPRMKh0xTmKnUNBqVQb5PNPaYDxWDmys4w==
@@ -254,7 +254,7 @@
     "@smithy/util-utf8" "^4.2.0"
     tslib "^2.6.2"
 
-"@aws-sdk/client-sns@^3.972.0":
+"@aws-sdk/client-sns@^3.993.0":
   version "3.993.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/client-sns/-/client-sns-3.993.0.tgz#776f301dd4bf8d0347cad0ec2c32d85168fb9263"
   integrity sha512-9eo4kC+bnzqHAIzahIfuRJNTNRy7XQ4y+Bh/Gm41DjMSZToL1s+x8V6c42D1t1ckpt8+udhtPj9UQ3vlEzDbCw==
@@ -299,7 +299,7 @@
     "@smithy/util-utf8" "^4.2.0"
     tslib "^2.6.2"
 
-"@aws-sdk/client-sqs@^3.972.0":
+"@aws-sdk/client-sqs@^3.993.0":
   version "3.993.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/client-sqs/-/client-sqs-3.993.0.tgz#a9b158e35bb9f02e6f7cb82894c8f34472412cf0"
   integrity sha512-DKtONDUt568hbs4VrnBoK2VJGPXMvkm3Plef/gdsyRjWUMXcCuiLeWi9ru10YN2wAJeGxKMSBoedcuQS9wt2Pg==
