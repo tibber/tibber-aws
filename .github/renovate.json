@@ -14,7 +14,9 @@
         "description": "AWS SDK client packages",
         "matchManagers": ["npm"],
         "matchPackagePrefixes": ["@aws-sdk/client-"],
-        "groupName": "aws-sdk-clients"
+        "matchDepTypes": ["dependencies"],
+        "groupName": "aws-sdk-clients",
+        "extends": [":semanticCommitTypeAll(fix)"]
       }
   ]
 }
