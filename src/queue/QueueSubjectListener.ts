@@ -115,6 +115,8 @@ export class QueueSubjectListener {
 
     let cntInFlight = 0;
 
+    const hasWildCardHandler = !!this.handlers['*'];
+
     const handlerFunc = async () => {
       try {
         if (this.isStopped) return;
@@ -147,6 +149,14 @@ export class QueueSubjectListener {
 
             const json = JSON.parse(m.Body);
 
+            if (!(hasWildCardHandler || this.handlers[json.Subject])) {
+              return {
+                handle: m.ReceiptHandle,
+                shouldBeHandled: false,
+                message: {subject: 'Delete Me'},
+              };
+            }
+
             try {
               const contentType =
                 m.MessageAttributes &&
@@ -174,7 +184,7 @@ export class QueueSubjectListener {
               }
               return {
                 handle: m.ReceiptHandle,
-                isValidJson: true,
+                shouldBeHandled: true,
                 message: {
                   message: jsonMessage,
                   subject: json.Subject,
@@ -187,7 +197,7 @@ export class QueueSubjectListener {
               );
               return {
                 handle: m.ReceiptHandle,
-                isValidJson: false,
+                shouldBeHandled: false,
                 message: {subject: 'Delete Me'},
               };
             }
@@ -201,10 +211,7 @@ export class QueueSubjectListener {
           let shouldRetry = false;
           let visibilityTimeout: number | undefined;
           try {
-            if (
-              m.isValidJson &&
-              (this.handlers[subject] || this.handlers['*'])
-            ) {
+            if (m.shouldBeHandled) {
               const subjectHandlers = (this.handlers[subject] || []).concat(
                 this.handlers['*'] || []
               );
