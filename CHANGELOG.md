@@ -1,3 +1,10 @@
+## [7.0.8](https://github.com/tibber/tibber-aws/compare/v7.0.7...v7.0.8) (2026-03-02)
+
+
+### Bug Fixes
+
+* **deps:** Patch minimatch ([1e572e7](https://github.com/tibber/tibber-aws/commit/1e572e70ac5e83dd2b836f87aa26acc1839b36b3))
+
 ## [7.0.7](https://github.com/tibber/tibber-aws/compare/v7.0.6...v7.0.7) (2026-03-02)
 
 
