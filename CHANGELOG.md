@@ -1,3 +1,10 @@
+## [7.0.9](https://github.com/tibber/tibber-aws/compare/v7.0.8...v7.0.9) (2026-03-02)
+
+
+### Bug Fixes
+
+* Bail early if message is not relevant ([#441](https://github.com/tibber/tibber-aws/issues/441)) ([1720547](https://github.com/tibber/tibber-aws/commit/172054747f3d35b4c9178d01995e641f5ac3fc6b))
+
 ## [7.0.8](https://github.com/tibber/tibber-aws/compare/v7.0.7...v7.0.8) (2026-03-02)
 
 
