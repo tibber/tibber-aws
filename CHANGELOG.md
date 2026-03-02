@@ -1,3 +1,10 @@
+## [7.0.7](https://github.com/tibber/tibber-aws/compare/v7.0.6...v7.0.7) (2026-03-02)
+
+
+### Bug Fixes
+
+* **deps:** Upgrade fast-xml-parser ([#439](https://github.com/tibber/tibber-aws/issues/439)) ([54f3ffd](https://github.com/tibber/tibber-aws/commit/54f3ffdad82007b6dbe8e0d658620248b5a8bfb6))
+
 ## [7.0.6](https://github.com/tibber/tibber-aws/compare/v7.0.5...v7.0.6) (2026-03-02)
 
 
