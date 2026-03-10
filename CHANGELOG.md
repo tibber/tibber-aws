@@ -1,3 +1,10 @@
+## [7.0.12](https://github.com/tibber/tibber-aws/compare/v7.0.11...v7.0.12) (2026-03-10)
+
+
+### Bug Fixes
+
+* **deps:** update aws-sdk-clients to v3.1005.0 ([3ad21f4](https://github.com/tibber/tibber-aws/commit/3ad21f446915ff4eec34132a3eafc22e47c84cf4))
+
 ## [7.0.11](https://github.com/tibber/tibber-aws/compare/v7.0.10...v7.0.11) (2026-03-09)
 
 
