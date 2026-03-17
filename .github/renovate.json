@@ -17,12 +17,12 @@
         "matchDepTypes": ["dependencies"],
         "groupName": "aws-sdk-clients",
         "extends": [":semanticCommitTypeAll(fix)"],
-        "autoMerge": true
+        "automerge": true
       },
       {
         "description": "NPM patch and minor updates",
         "matchManagers": ["npm"],
-        "autoMerge": true,
+        "automerge": true,
         "matchUpdateTypes": ["patch", "minor"]
       }
   ]
