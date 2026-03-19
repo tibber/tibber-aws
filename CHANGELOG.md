@@ -1,3 +1,10 @@
+## [7.0.15](https://github.com/tibber/tibber-aws/compare/v7.0.14...v7.0.15) (2026-03-19)
+
+
+### Bug Fixes
+
+* Update randomstring package version to 1.3.1 ([cdbc233](https://github.com/tibber/tibber-aws/commit/cdbc233ceceb15f1b0771d37358dbd5dc0176ab1))
+
 ## [7.0.14](https://github.com/tibber/tibber-aws/compare/v7.0.13...v7.0.14) (2026-03-19)
 
 
