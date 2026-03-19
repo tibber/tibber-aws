@@ -1,3 +1,12 @@
+## [7.0.14](https://github.com/tibber/tibber-aws/compare/v7.0.13...v7.0.14) (2026-03-19)
+
+
+### Bug Fixes
+
+* **deps:** bump tar from 7.5.10 to 7.5.11 ([e77151b](https://github.com/tibber/tibber-aws/commit/e77151b1a7dcb484d412e14743bbb9e2b648d709))
+* **deps:** update aws-sdk-clients to v3.1011.0 ([#456](https://github.com/tibber/tibber-aws/issues/456)) ([79d408c](https://github.com/tibber/tibber-aws/commit/79d408c0da8c1094b50744254febc02828ab7b76))
+* **deps:** update aws-sdk-clients to v3.1012.0 ([#457](https://github.com/tibber/tibber-aws/issues/457)) ([8e91d76](https://github.com/tibber/tibber-aws/commit/8e91d76784befd12636fb0ef1b9dff7b9938f11c))
+
 ## [7.0.13](https://github.com/tibber/tibber-aws/compare/v7.0.12...v7.0.13) (2026-03-17)
 
 
