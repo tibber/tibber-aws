@@ -1,3 +1,10 @@
+## [7.0.17](https://github.com/tibber/tibber-aws/compare/v7.0.16...v7.0.17) (2026-03-20)
+
+
+### Bug Fixes
+
+* trigger release ([18ef704](https://github.com/tibber/tibber-aws/commit/18ef7045664d6fb1524e3f6be77be1a2df20a0cf))
+
 ## [7.0.16](https://github.com/tibber/tibber-aws/compare/v7.0.15...v7.0.16) (2026-03-19)
 
 
