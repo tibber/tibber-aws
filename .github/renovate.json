@@ -1,29 +1,48 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "dependencyDashboard": true,
-  "enabledManagers": ["dockerfile", "npm"],
+  "enabledManagers": [
+    "dockerfile",
+    "npm"
+  ],
   "packageRules": [
-      {
-        "pinDigests": true,
-        "matchUpdateTypes": [
-          "major"
-        ],
-        "enabled": false
-      },    
-      {
-        "description": "AWS SDK client packages",
-        "matchManagers": ["npm"],
-        "matchPackagePrefixes": ["@aws-sdk/client-"],
-        "matchDepTypes": ["dependencies"],
-        "groupName": "aws-sdk-clients",
-        "extends": [":semanticCommitTypeAll(fix)"],
-        "automerge": true
-      },
-      {
-        "description": "NPM patch and minor updates",
-        "matchManagers": ["npm"],
-        "automerge": true,
-        "matchUpdateTypes": ["patch", "minor"]
-      }
+    {
+      "pinDigests": true,
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "enabled": false
+    },
+    {
+      "description": "AWS SDK client packages",
+      "matchManagers": [
+        "npm"
+      ],
+      "matchPackagePrefixes": [
+        "@aws-sdk/client-"
+      ],
+      "matchDepTypes": [
+        "dependencies"
+      ],
+      "groupName": "aws-sdk-clients",
+      "extends": [
+        ":semanticCommitTypeAll(fix)"
+      ],
+      "automerge": true
+    },
+    {
+      "description": "NPM patch and minor updates",
+      "matchManagers": [
+        "npm"
+      ],
+      "extends": [
+        ":semanticCommitTypeAll(fix)"
+      ],
+      "automerge": true,
+      "matchUpdateTypes": [
+        "patch",
+        "minor"
+      ]
+    }
   ]
 }
