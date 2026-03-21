@@ -1,3 +1,10 @@
+## [7.0.19](https://github.com/tibber/tibber-aws/compare/v7.0.18...v7.0.19) (2026-03-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @aws-sdk/core to v3.973.23 ([#465](https://github.com/tibber/tibber-aws/issues/465)) ([26b87db](https://github.com/tibber/tibber-aws/commit/26b87dbef94ed94f64f291c2352427ac3f2d3db9))
+
 ## [7.0.18](https://github.com/tibber/tibber-aws/compare/v7.0.17...v7.0.18) (2026-03-20)
 
 
