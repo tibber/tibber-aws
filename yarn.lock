@@ -347,18 +347,18 @@
     tslib "^2.6.2"
 
 "@aws-sdk/core@^3.973.15", "@aws-sdk/core@^3.973.22":
-  version "3.973.22"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/core/-/core-3.973.22.tgz#61b09e0ec965b071991b92d31ca463cad2db5ad9"
-  integrity sha512-lY6g5L95jBNgOUitUhfV2N/W+i08jHEl3xuLODYSQH5Sf50V+LkVYBSyZRLtv2RyuXZXiV7yQ+acpswK1tlrOA==
+  version "3.973.23"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/core/-/core-3.973.23.tgz#76c6d4c94dd21ed298769a75e30ab0af8120af01"
+  integrity sha512-aoJncvD1XvloZ9JLnKqTRL9dBy+Szkryoag9VT+V1TqsuUgIxV9cnBVM/hrDi2vE8bDqLiDR8nirdRcCdtJu0w==
   dependencies:
     "@aws-sdk/types" "^3.973.6"
-    "@aws-sdk/xml-builder" "^3.972.14"
+    "@aws-sdk/xml-builder" "^3.972.15"
     "@smithy/core" "^3.23.12"
     "@smithy/node-config-provider" "^4.3.12"
     "@smithy/property-provider" "^4.2.12"
     "@smithy/protocol-http" "^5.3.12"
     "@smithy/signature-v4" "^5.3.12"
-    "@smithy/smithy-client" "^4.12.6"
+    "@smithy/smithy-client" "^4.12.7"
     "@smithy/types" "^4.13.1"
     "@smithy/util-base64" "^4.3.2"
     "@smithy/util-middleware" "^4.2.12"
@@ -763,13 +763,13 @@
     "@smithy/util-config-provider" "^4.2.2"
     tslib "^2.6.2"
 
-"@aws-sdk/xml-builder@^3.972.14":
-  version "3.972.14"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/xml-builder/-/xml-builder-3.972.14.tgz#53ac0f6bac1acd9c7a215ab2baa5909c6ca5c13f"
-  integrity sha512-G/Yd8Bnnyh8QrqLf8jWJbixEnScUFW24e/wOBGYdw1Cl4r80KX/DvHyM2GVZ2vTp7J4gTEr8IXJlTadA8+UfuQ==
+"@aws-sdk/xml-builder@^3.972.15":
+  version "3.972.15"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/xml-builder/-/xml-builder-3.972.15.tgz#7cbc823f8eb11fa8c02d81a744892e41b1762619"
+  integrity sha512-PxMRlCFNiQnke9YR29vjFQwz4jq+6Q04rOVFeTDR2K7Qpv9h9FOWOxG+zJjageimYbWqE3bTuLjmryWHAWbvaA==
   dependencies:
     "@smithy/types" "^4.13.1"
-    fast-xml-parser "5.5.6"
+    fast-xml-parser "5.5.8"
     tslib "^2.6.2"
 
 "@aws/lambda-invoke-store@^0.2.2":
@@ -2427,7 +2427,7 @@
     "@smithy/util-utf8" "^4.2.2"
     tslib "^2.6.2"
 
-"@smithy/smithy-client@^4.12.6":
+"@smithy/smithy-client@^4.12.6", "@smithy/smithy-client@^4.12.7":
   version "4.12.7"
   resolved "https://registry.yarnpkg.com/@smithy/smithy-client/-/smithy-client-4.12.7.tgz#3867272c062e39d3d4b719bf83ba491c76e1ee93"
   integrity sha512-q3gqnwml60G44FECaEEsdQMplYhDMZYCtYhMCzadCnRnnHIobZJjegmdoUo6ieLQlPUzvrMdIJUpx6DoPmzANQ==
@@ -4129,7 +4129,7 @@ fast-xml-builder@^1.1.4:
   dependencies:
     path-expression-matcher "^1.1.3"
 
-fast-xml-parser@5.5.6, fast-xml-parser@^5.5.7:
+fast-xml-parser@5.5.8, fast-xml-parser@^5.5.7:
   version "5.5.8"
   resolved "https://registry.yarnpkg.com/fast-xml-parser/-/fast-xml-parser-5.5.8.tgz#929571ed8c5eb96e6d9bd572ba14fc4b84875716"
   integrity sha512-Z7Fh2nVQSb2d+poDViM063ix2ZGt9jmY1nWhPfHBOK2Hgnb/OW3P4Et3P/81SEej0J7QbWtJqxO05h8QYfK7LQ==
