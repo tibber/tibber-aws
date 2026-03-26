@@ -21,6 +21,8 @@ jobs:
     working_directory: ~/package
     machine:
       image: ubuntu-2204:2025.09.1
+    environment:
+      IMAGE_NAME: localstack/localstack:4.14
     steps:
       - checkout
       - localstack/startup
@@ -36,7 +38,7 @@ jobs:
             cd test/lambda
             awslocal lambda create-function --region $AWS_REGION --function-name localstack-lambda-url-example --runtime nodejs18.x --zip-file fileb://function.zip --handler index.handler --role arn:aws:iam::000000000000:role/lambda-role
             cd ../..
-            echo "Done creating test resources" 
+            echo "Done creating test resources"
       - run:
           name: Test Package
           environment:
