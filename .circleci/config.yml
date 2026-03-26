@@ -30,7 +30,7 @@ jobs:
             AWS_REGION: eu-west-1
             AWS_ACCESS_KEY_ID: test
             AWS_SECRET_ACCESS_KEY: test
-            LOCALSTACK_ACKNOWLEDGE_ACCOUNT_REQUIREMENT: 1
+            LOCALSTACK_ACKNOWLEDGE_ACCOUNT_REQUIREMENT: "1"
           command: |
             echo "Creating test resources"
             awslocal secretsmanager create-secret --region $AWS_REGION --name my-secret --secret-string '{"PG_PASSWORD":"stacy"}'
