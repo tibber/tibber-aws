@@ -6,7 +6,7 @@ services:
       image: tibber-aws-3.0
       entrypoint: yarn test
       depends_on:
-        localstack:
+        floci:
           condition: service_healthy
         create-resources:
           condition: service_completed_successfully
@@ -14,24 +14,27 @@ services:
         - AWS_DEFAULT_REGION=eu-west-1
         - AWS_ACCESS_KEY_ID=x
         - AWS_SECRET_ACCESS_KEY=x
-        - LOCALSTACK_ENDPOINT=http://localstack:4566
-  localstack:
-    container_name: "${LOCALSTACK_DOCKER_NAME-localstack_test}"
-    image: localstack/localstack
+        - LOCALSTACK_ENDPOINT=http://floci:4566
+  floci:
+    image: hectorvent/floci:latest
     ports:
-      - "127.0.0.1:4566:4566"            # LocalStack Gateway
-      - "127.0.0.1:4510-4559:4510-4559"  # external services port range
+      - "127.0.0.1:4566:4566"
     environment:
-      - DEBUG=${DEBUG-}
+      - FLOCI_HOSTNAME=floci
       - DOCKER_HOST=unix:///var/run/docker.sock
     volumes:
-      - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4566/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
   create-resources:
     restart: "no"
     image: amazon/aws-cli:2.11.0
     depends_on:
-      localstack:
+      floci:
         condition: service_healthy
     environment:
       - AWS_DEFAULT_REGION=eu-west-1
@@ -42,7 +45,7 @@ services:
     entrypoint: [ "sh", "-c" ]
     command:
     - |
-        aws --endpoint-url=http://localstack:4566 secretsmanager create-secret --name my-secret --secret-string '{"PG_PASSWORD":"stacy"}'
+        aws --endpoint-url=http://floci:4566 secretsmanager create-secret --name my-secret --secret-string '{"PG_PASSWORD":"stacy"}'
         cd /app/test/lambda
-        aws --endpoint-url=http://localstack:4566 lambda create-function --function-name localstack-lambda-url-example --runtime nodejs18.x --zip-file fileb://function.zip --handler index.handler --role arn:aws:iam::000000000000:role/lambda-role
+        aws --endpoint-url=http://floci:4566 lambda create-function --function-name localstack-lambda-url-example --runtime nodejs18.x --zip-file fileb://function.zip --handler index.handler --role arn:aws:iam::000000000000:role/lambda-role
         echo "Done creating test resources" 
