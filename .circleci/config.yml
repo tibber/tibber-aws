@@ -30,12 +30,13 @@ jobs:
               -v /var/run/docker.sock:/var/run/docker.sock \
               hectorvent/floci:latest
             echo "Waiting for Floci to be ready..."
-            for i in $(seq 1 30); do
+            for i in $(seq 1 60); do
               if curl -sf http://localhost:4566/health > /dev/null 2>&1; then
-                echo "Floci is ready"
+                echo "Floci is ready after ${i}s"
                 exit 0
               fi
-              sleep 1
+              echo "Attempt $i/60 - not ready yet, waiting..."
+              sleep 2
             done
             echo "Floci did not become ready in time" && exit 1
       - run:
