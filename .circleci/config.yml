@@ -33,10 +33,11 @@ jobs:
             for i in $(seq 1 30); do
               if curl -sf http://localhost:4566/health > /dev/null 2>&1; then
                 echo "Floci is ready"
-                break
+                exit 0
               fi
               sleep 1
             done
+            echo "Floci did not become ready in time" && exit 1
       - run:
           name: Setup Floci resources
           environment:
