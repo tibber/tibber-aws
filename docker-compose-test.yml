@@ -20,6 +20,7 @@ services:
     ports:
       - "127.0.0.1:4566:4566"
     environment:
+      - DEBUG=${DEBUG-}
       - FLOCI_HOSTNAME=floci
       - DOCKER_HOST=unix:///var/run/docker.sock
     volumes:
