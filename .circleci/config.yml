@@ -1,6 +1,4 @@
 version: 2.1
-orbs:
-  localstack: localstack/platform@2.1.0
 workflows:
   build_and_deploy:
     jobs:
@@ -23,26 +21,44 @@ jobs:
       image: ubuntu-2204:2025.09.1
     steps:
       - checkout
-      - localstack/startup
       - run:
-          name: Setup Localstack resources
+          name: Start Floci
+          command: |
+            docker run -d \
+              --name floci \
+              -p 4566:4566 \
+              -v /var/run/docker.sock:/var/run/docker.sock \
+              hectorvent/floci:latest
+            echo "Waiting for Floci to be ready..."
+            for i in $(seq 1 60); do
+              if curl -sf http://localhost:4566/health > /dev/null 2>&1; then
+                echo "Floci is ready after ${i}s"
+                exit 0
+              fi
+              echo "Attempt $i/60 - not ready yet, waiting..."
+              sleep 2
+            done
+            echo "Floci did not become ready in time" && exit 1
+      - run:
+          name: Setup Floci resources
           environment:
-            AWS_REGION: eu-west-1
+            AWS_DEFAULT_REGION: eu-west-1
             AWS_ACCESS_KEY_ID: test
             AWS_SECRET_ACCESS_KEY: test
           command: |
             echo "Creating test resources"
-            awslocal secretsmanager create-secret --region $AWS_REGION --name my-secret --secret-string '{"PG_PASSWORD":"stacy"}'
+            aws --endpoint-url=http://localhost:4566 secretsmanager create-secret --region $AWS_DEFAULT_REGION --name my-secret --secret-string '{"PG_PASSWORD":"stacy"}'
             cd test/lambda
-            awslocal lambda create-function --region $AWS_REGION --function-name localstack-lambda-url-example --runtime nodejs18.x --zip-file fileb://function.zip --handler index.handler --role arn:aws:iam::000000000000:role/lambda-role
+            aws --endpoint-url=http://localhost:4566 lambda create-function --region $AWS_DEFAULT_REGION --function-name localstack-lambda-url-example --runtime nodejs18.x --zip-file fileb://function.zip --handler index.handler --role arn:aws:iam::000000000000:role/lambda-role
             cd ../..
-            echo "Done creating test resources" 
+            echo "Done creating test resources"
       - run:
           name: Test Package
           environment:
             AWS_REGION: eu-west-1
             AWS_ACCESS_KEY_ID: test
             AWS_SECRET_ACCESS_KEY: test
+            LOCALSTACK_ENDPOINT: http://localhost:4566
           command: |
             node --version
             yarn
