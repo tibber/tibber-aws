@@ -1,6 +1,33 @@
 # tibber-aws
 Thie repo is a typescript wrapper around the AWS SDK for Javascript.
 
+## Running tests locally
+
+Tests run against [Floci](https://github.com/floci-io/floci), a free local AWS emulator.
+
+### Steps
+
+1. Start Floci and seed test resources:
+
+```bash
+docker compose -f docker-compose-test.yml up -d
+```
+
+2. Wait for the `create-resources` container to finish (check with `docker compose -f docker-compose-test.yml logs create-resources`).
+
+3. Run the tests:
+
+```bash
+yarn
+yarn test
+```
+
+4. When done, tear down the containers:
+
+```bash
+docker compose -f docker-compose-test.yml down
+```
+
 ## Version 6.x.x changes
 - Migrated to aws sdk 3.x
 - Removed ECS Api

@@ -8,8 +8,7 @@ import {
   getSecret,
 } from '../src';
 
-const localstackEndpoint =
-  process.env.LOCALSTACK_ENDPOINT || 'http://localhost:4566';
+const awsEndpointURL = process.env.AWS_ENDPOINT_URL;
 
 beforeAll(async () => {
   configure({region: 'eu-west-1'});
@@ -30,7 +29,7 @@ describe('QueueSubjectListener', () => {
     const queueName = 'test-queueName';
     const subjectName = 'test_subject';
     const topicName = 'test_topic';
-    const queue = await Queue.createQueue(queueName, localstackEndpoint);
+    const queue = await Queue.createQueue(queueName, awsEndpointURL);
     const listener = new QueueSubjectListener(queue, null, {
       maxConcurrentMessage: 1,
       visibilityTimeout: 1,
@@ -46,7 +45,7 @@ describe('QueueSubjectListener', () => {
     const topic = await Topic.createTopic(
       topicName,
       subjectName,
-      localstackEndpoint
+      awsEndpointURL
     );
     await queue.subscribeTopic(topic);
     const event = {id: '123', test: 'test'};
@@ -63,10 +62,10 @@ describe('QueueSubjectListener', () => {
     const queueName = 'test-retry-queueName';
     const subjectName = 'test_retry_subject';
     const topicName = 'test_retry_topic';
-    const queue = await Queue.createQueue(queueName, localstackEndpoint);
+    const queue = await Queue.createQueue(queueName, awsEndpointURL);
     const listener = new QueueSubjectListener(queue, null, {
       maxConcurrentMessage: 1,
-      visibilityTimeout: 0,
+      visibilityTimeout: 5,
       waitTimeSeconds: 0,
     });
 
@@ -74,7 +73,7 @@ describe('QueueSubjectListener', () => {
 
     listener.onSubject(subjectName, handler, {
       maxAttempts: 2,
-      backoffDelaySeconds: 0,
+      backoffDelaySeconds: 1,
     });
 
     listener.listen();
@@ -82,18 +81,18 @@ describe('QueueSubjectListener', () => {
     const topic = await Topic.createTopic(
       topicName,
       subjectName,
-      localstackEndpoint
+      awsEndpointURL
     );
     await queue.subscribeTopic(topic);
     const event = {id: '123', test: 'test'};
     await topic.push(event);
 
-    await new Promise(resolve => setTimeout(resolve, 4000));
+    await new Promise(resolve => setTimeout(resolve, 6000));
     expect(handler).toHaveBeenCalledTimes(2);
     expect(handler).toHaveBeenCalledWith(event, subjectName);
 
     listener.stop();
-  }, 10000);
+  }, 15000);
 });
 
 it('should run lambda func', async () => {
@@ -109,7 +108,7 @@ awslocal lambda create-function \
  */
   const func = getLambdaFunc(
     'localstack-lambda-url-example',
-    localstackEndpoint
+    awsEndpointURL
   );
   const payload = {num1: 324, num2: 36};
 
@@ -122,18 +121,18 @@ awslocal lambda create-function \
       payload.num1 * payload.num2
     }`,
   });
-});
+}, 30000);
 
 it('getSecret', async () => {
   //aws --profile localstack secretsmanager create-secret --name my-secret --secret-string '{"PG_PASSWORD":"stacy"}'
-  const res = getSecret('my-secret', 'PG_PASSWORD', localstackEndpoint);
+  const res = getSecret('my-secret', 'PG_PASSWORD', awsEndpointURL);
   expect(res).toEqual('stacy');
 });
 
 it('should be able to send message to queue', async () => {
   const queue = await Queue.createQueue(
     'test-tibber-aws-queue',
-    localstackEndpoint
+    awsEndpointURL
   );
   const res = await queue.send('Test', {property: 'test'});
 

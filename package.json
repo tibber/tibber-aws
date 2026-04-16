@@ -5,7 +5,7 @@
   "main": "./dist/src/index.js",
   "scripts": {
     "start": "ts-node -T samples/sample1.ts",
-    "test": "NODE_OPTIONS='--experimental-vm-modules' jest --verbose --coverage --runInBand --detectOpenHandles",
+    "test": "NODE_OPTIONS='--experimental-vm-modules' AWS_DEFAULT_REGION=eu-west-1 AWS_ACCESS_KEY_ID=test AWS_SECRET_ACCESS_KEY=test AWS_ENDPOINT_URL=http://localhost:4566 jest --verbose --coverage --runInBand --detectOpenHandles",
     "lint": "gts lint",
     "clean": "gts clean",
     "compile": "tsc --build",
