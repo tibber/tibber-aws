@@ -24,6 +24,8 @@ jobs:
       - run:
           name: Start Floci and create test resources
           command: |
+            mkdir -p volume/floci-data
+            chmod 777 volume/floci-data
             docker compose -f docker-compose-test.yml up -d
             echo "Waiting for Floci to be healthy..."
             for i in $(seq 1 60); do

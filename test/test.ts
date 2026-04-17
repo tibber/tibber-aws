@@ -1,5 +1,6 @@
 import {readFileSync} from 'fs';
 import {join} from 'path';
+import JSZip from 'jszip';
 import {
   Lambda,
   ResourceConflictException,
@@ -36,9 +37,18 @@ async function ensureSecret(endpoint?: string) {
   }
 }
 
+async function buildLambdaZip(): Promise<Buffer> {
+  const src = readFileSync(
+    join(__dirname, '..', '..', 'test', 'lambda', 'index.js')
+  );
+  const zip = new JSZip();
+  zip.file('index.js', src);
+  return zip.generateAsync({type: 'nodebuffer'});
+}
+
 async function ensureLambda(endpoint?: string) {
   const lambda = new Lambda({endpoint, region: 'eu-west-1'});
-  const zip = readFileSync(join(__dirname, '..', '..', 'test', 'lambda', 'function.zip'));
+  const zip = await buildLambdaZip();
 
   try {
     await lambda.createFunction({
