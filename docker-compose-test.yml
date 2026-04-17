@@ -6,7 +6,7 @@ services:
       - "127.0.0.1:4566:4566"
     environment:
       - FLOCI_HOSTNAME=floci
-      - FLOCI_SERVICES_DOCKER_NETWORK=${COMPOSE_PROJECT_NAME:-tibber-aws}_default
+      - FLOCI_SERVICES_LAMBDA_DOCKER_NETWORK=tibber-aws_default
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
       - "./volume/floci-data:/app/data"
@@ -16,3 +16,7 @@ services:
       timeout: 5s
       retries: 20
       start_period: 5s
+
+networks:
+  default:
+    name: tibber-aws_default
