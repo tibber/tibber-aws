@@ -1,6 +1,4 @@
 version: 2.1
-orbs:
-  localstack: localstack/platform@2.1.0
 workflows:
   build_and_deploy:
     jobs:
@@ -23,26 +21,26 @@ jobs:
       image: ubuntu-2204:2025.09.1
     steps:
       - checkout
-      - localstack/startup
       - run:
-          name: Setup Localstack resources
-          environment:
-            AWS_REGION: eu-west-1
-            AWS_ACCESS_KEY_ID: test
-            AWS_SECRET_ACCESS_KEY: test
+          name: Start Floci and create test resources
           command: |
-            echo "Creating test resources"
-            awslocal secretsmanager create-secret --region $AWS_REGION --name my-secret --secret-string '{"PG_PASSWORD":"stacy"}'
-            cd test/lambda
-            awslocal lambda create-function --region $AWS_REGION --function-name localstack-lambda-url-example --runtime nodejs18.x --zip-file fileb://function.zip --handler index.handler --role arn:aws:iam::000000000000:role/lambda-role
-            cd ../..
-            echo "Done creating test resources" 
+            docker compose -f docker-compose-test.yml up -d
+            echo "Waiting for Floci to be healthy..."
+            for i in $(seq 1 60); do
+              status=$(docker inspect --format='{{.State.Health.Status}}' floci_test 2>/dev/null || echo "starting")
+              if [ "$status" = "healthy" ]; then
+                echo "Floci is healthy"
+                break
+              fi
+              sleep 2
+            done
       - run:
           name: Test Package
           environment:
             AWS_REGION: eu-west-1
             AWS_ACCESS_KEY_ID: test
             AWS_SECRET_ACCESS_KEY: test
+            AWS_ENDPOINT_URL: http://localhost:4566
           command: |
             node --version
             yarn
