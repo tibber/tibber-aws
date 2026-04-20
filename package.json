@@ -32,7 +32,7 @@
     "@semantic-release/git": "^10.0.0",
     "@types/jest": "^29.5.8",
     "@types/jszip": "^3.4.1",
-    "@types/node": "20.19.37",
+    "@types/node": "20.19.39",
     "@types/randomstring": "^1.1.11",
     "dotenv-cli": "^4.0.0",
     "glob": "^10.5.0",
