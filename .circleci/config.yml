@@ -1,6 +1,4 @@
 version: 2.1
-orbs:
-  localstack: localstack/platform@2.1.0
 workflows:
   build_and_deploy:
     jobs:
@@ -10,7 +8,6 @@ workflows:
             - build
           context:
             - GITHUB
-            - NPM
           filters:
             branches:
               only:
@@ -23,18 +20,23 @@ jobs:
       image: ubuntu-2204:2025.09.1
     steps:
       - checkout
-      - localstack/startup
       - run:
-          name: Setup Localstack resources
+          name: Start Floci
+          command: |
+            docker run -d -p 4566:4566 hectorvent/floci:latest
+            until curl -s http://localhost:4566 > /dev/null 2>&1; do sleep 0.1; done
+      - run:
+          name: Setup Floci resources
           environment:
             AWS_REGION: eu-west-1
             AWS_ACCESS_KEY_ID: test
             AWS_SECRET_ACCESS_KEY: test
+            AWS_ENDPOINT_URL: http://localhost:4566
           command: |
             echo "Creating test resources"
-            awslocal secretsmanager create-secret --region $AWS_REGION --name my-secret --secret-string '{"PG_PASSWORD":"stacy"}'
+            aws secretsmanager create-secret --region $AWS_REGION --name my-secret --secret-string '{"PG_PASSWORD":"stacy"}'
             cd test/lambda
-            awslocal lambda create-function --region $AWS_REGION --function-name localstack-lambda-url-example --runtime nodejs18.x --zip-file fileb://function.zip --handler index.handler --role arn:aws:iam::000000000000:role/lambda-role
+            aws lambda create-function --region $AWS_REGION --function-name localstack-lambda-url-example --runtime nodejs18.x --zip-file fileb://function.zip --handler index.handler --role arn:aws:iam::000000000000:role/lambda-role
             cd ../..
             echo "Done creating test resources" 
       - run:
@@ -57,5 +59,6 @@ jobs:
           name: Deploy Package
           command: |
             export GH_TOKEN=$GITHUB_AUTH_TOKEN
+            export NPM_TOKEN=$CIRCLE_OIDC_TOKEN_V2
             yarn
             yarn release
