@@ -1,3 +1,13 @@
+## [7.0.21](https://github.com/tibber/tibber-aws/compare/v7.0.20...v7.0.21) (2026-04-20)
+
+
+### Bug Fixes
+
+* **deps:** bump handlebars from 4.7.8 to 4.7.9 ([4186915](https://github.com/tibber/tibber-aws/commit/4186915397256ec550de9fa695e91dd41a1ceecb))
+* **deps:** bump lodash from 4.17.23 to 4.18.1 ([25af37f](https://github.com/tibber/tibber-aws/commit/25af37f065e7463b592f18a9581ec619d04dcd04))
+* **deps:** bump lodash-es from 4.17.23 to 4.18.1 ([63c9e2f](https://github.com/tibber/tibber-aws/commit/63c9e2f27106ef993e45cf0f13f494ad5707a269))
+* **deps:** update dependency @types/node to v20.19.39 ([#475](https://github.com/tibber/tibber-aws/issues/475)) ([5bbd176](https://github.com/tibber/tibber-aws/commit/5bbd1764c21a6848fdd833e7d06d11f8f028f138))
+
 ## [7.0.20](https://github.com/tibber/tibber-aws/compare/v7.0.19...v7.0.20) (2026-03-21)
 
 
