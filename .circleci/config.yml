@@ -61,6 +61,10 @@ jobs:
           name: Deploy Package
           command: |
             export GH_TOKEN=$GITHUB_AUTH_TOKEN
-            export NPM_TOKEN=$CIRCLE_OIDC_TOKEN_V2
+            NPM_ID_TOKEN=$(circleci run oidc get --claims '{"aud": "npm:registry.npmjs.org"}')
+            export NPM_TOKEN=$(curl -sf -XPOST \
+              "https://registry.npmjs.org/-/npm/v1/oidc/token/exchange/package/tibber-aws" \
+              -H "Authorization: Bearer $NPM_ID_TOKEN" | jq -r '.token')
+
             yarn
             yarn release
