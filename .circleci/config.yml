@@ -8,7 +8,6 @@ workflows:
             - build
           context:
             - GITHUB
-            - NPM
           filters:
             branches:
               only:
@@ -62,5 +61,6 @@ jobs:
           name: Deploy Package
           command: |
             export GH_TOKEN=$GITHUB_AUTH_TOKEN
+            export NPM_TOKEN=$CIRCLE_OIDC_TOKEN_V2
             yarn
             yarn release
