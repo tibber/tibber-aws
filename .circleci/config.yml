@@ -60,17 +60,11 @@ jobs:
       - run:
           name: Deploy Package
           command: |
-            set -e
             export GH_TOKEN=$GITHUB_AUTH_TOKEN
-            echo "Getting OIDC token..."
             NPM_ID_TOKEN=$(circleci run oidc get --claims '{"aud": "npm:registry.npmjs.org"}')
-            echo "OIDC token acquired (length: ${#NPM_ID_TOKEN})"
-            echo "Exchanging for npm token..."
-            EXCHANGE_RESPONSE=$(curl -sf -XPOST \
+            export NPM_TOKEN=$(curl -sf -XPOST \
               "https://registry.npmjs.org/-/npm/v1/oidc/token/exchange/package/tibber-aws" \
-              -H "Authorization: Bearer $NPM_ID_TOKEN")
-            echo "Exchange response: $EXCHANGE_RESPONSE"
-            export NPM_TOKEN=$(echo "$EXCHANGE_RESPONSE" | jq -r '.token')
-            echo "NPM_TOKEN acquired (length: ${#NPM_TOKEN})"
+              -H "Authorization: Bearer $NPM_ID_TOKEN" | jq -r '.token')
+
             yarn
             yarn release
