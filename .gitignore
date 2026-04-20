@@ -41,3 +41,8 @@ build
 
 .env
 .idea
+
+# Floci / LocalStack test state
+data/
+volume/floci-data/
+

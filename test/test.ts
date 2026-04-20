@@ -1,15 +1,73 @@
+import {readFileSync} from 'fs';
+import {join} from 'path';
+import JSZip from 'jszip';
+import {
+  Lambda,
+  ResourceConflictException,
+  waitUntilFunctionActiveV2,
+} from '@aws-sdk/client-lambda';
+import {
+  SecretsManager,
+  ResourceExistsException,
+} from '@aws-sdk/client-secrets-manager';
 import {
   Queue,
   QueueSubjectListener,
   QueueSubjectListenerBuilder,
-  Topic,
   configure,
   getLambdaFunc,
   getSecret,
 } from '../src';
 
-const localstackEndpoint =
-  process.env.LOCALSTACK_ENDPOINT || 'http://localhost:4566';
+const awsEndpointUrl = process.env.AWS_ENDPOINT_URL;
+
+const LAMBDA_FUNCTION_NAME = 'localstack-lambda-url-example';
+const SECRET_NAME = 'my-secret';
+const SECRET_VALUE = {PG_PASSWORD: 'stacy'};
+
+async function ensureSecret(endpoint?: string) {
+  const sm = new SecretsManager({endpoint, region: 'eu-west-1'});
+  try {
+    await sm.createSecret({
+      Name: SECRET_NAME,
+      SecretString: JSON.stringify(SECRET_VALUE),
+    });
+  } catch (err) {
+    if (!(err instanceof ResourceExistsException)) throw err;
+  }
+}
+
+async function buildLambdaZip(): Promise<Buffer> {
+  const src = readFileSync(
+    join(__dirname, '..', '..', 'test', 'lambda', 'index.js')
+  );
+  const zip = new JSZip();
+  zip.file('index.js', src);
+  return zip.generateAsync({type: 'nodebuffer'});
+}
+
+async function ensureLambda(endpoint?: string) {
+  const lambda = new Lambda({endpoint, region: 'eu-west-1'});
+  const zip = await buildLambdaZip();
+
+  try {
+    await lambda.createFunction({
+      FunctionName: LAMBDA_FUNCTION_NAME,
+      Runtime: 'nodejs18.x',
+      Role: 'arn:aws:iam::000000000000:role/lambda-role',
+      Handler: 'index.handler',
+      Code: {ZipFile: zip},
+      Timeout: 60,
+    });
+  } catch (err) {
+    if (!(err instanceof ResourceConflictException)) throw err;
+  }
+
+  await waitUntilFunctionActiveV2(
+    {client: lambda, maxWaitTime: 60},
+    {FunctionName: LAMBDA_FUNCTION_NAME}
+  );
+}
 
 beforeAll(async () => {
   configure({region: 'eu-west-1'});
@@ -27,14 +85,13 @@ it('should be able to assign several topics to builderer', () => {
 
 describe('QueueSubjectListener', () => {
   it('should be able to listen to queue and call handler', async () => {
-    const queueName = 'test-queueName';
+    const queueName = 'test-queueName-' + Date.now();
     const subjectName = 'test_subject';
-    const topicName = 'test_topic';
-    const queue = await Queue.createQueue(queueName, localstackEndpoint);
+    const queue = await Queue.createQueue(queueName, awsEndpointUrl);
     const listener = new QueueSubjectListener(queue, null, {
       maxConcurrentMessage: 1,
-      visibilityTimeout: 1,
-      waitTimeSeconds: 1,
+      visibilityTimeout: 10,
+      waitTimeSeconds: 0,
     });
 
     const handler = jest.fn(() => Promise.resolve());
@@ -43,30 +100,23 @@ describe('QueueSubjectListener', () => {
 
     listener.listen();
 
-    const topic = await Topic.createTopic(
-      topicName,
-      subjectName,
-      localstackEndpoint
-    );
-    await queue.subscribeTopic(topic);
     const event = {id: '123', test: 'test'};
-    await topic.push(event);
+    await queue.send(subjectName, event);
 
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise(resolve => setTimeout(resolve, 3000));
     expect(handler).toHaveBeenCalledTimes(1);
     expect(handler).toHaveBeenCalledWith(event, subjectName);
 
     listener.stop();
-  });
+  }, 10000);
 
   it('should be able to listen to queue and call handler with retry', async () => {
-    const queueName = 'test-retry-queueName';
+    const queueName = 'test-retry-queueName-' + Date.now();
     const subjectName = 'test_retry_subject';
-    const topicName = 'test_retry_topic';
-    const queue = await Queue.createQueue(queueName, localstackEndpoint);
+    const queue = await Queue.createQueue(queueName, awsEndpointUrl);
     const listener = new QueueSubjectListener(queue, null, {
       maxConcurrentMessage: 1,
-      visibilityTimeout: 0,
+      visibilityTimeout: 5,
       waitTimeSeconds: 0,
     });
 
@@ -74,42 +124,28 @@ describe('QueueSubjectListener', () => {
 
     listener.onSubject(subjectName, handler, {
       maxAttempts: 2,
-      backoffDelaySeconds: 0,
+      backoffDelaySeconds: 1,
     });
 
     listener.listen();
 
-    const topic = await Topic.createTopic(
-      topicName,
-      subjectName,
-      localstackEndpoint
-    );
-    await queue.subscribeTopic(topic);
     const event = {id: '123', test: 'test'};
-    await topic.push(event);
+    await queue.send(subjectName, event);
 
-    await new Promise(resolve => setTimeout(resolve, 4000));
+    await new Promise(resolve => setTimeout(resolve, 6000));
     expect(handler).toHaveBeenCalledTimes(2);
     expect(handler).toHaveBeenCalledWith(event, subjectName);
 
     listener.stop();
-  }, 10000);
+  }, 15000);
 });
 
 it('should run lambda func', async () => {
-  /*
-  lambda source is in test/lambda/index.js
-zip function.zip index.js
-awslocal lambda create-function \
-    --function-name localstack-lambda-url-example \
-    --runtime nodejs18.x \
-    --zip-file fileb://function.zip \
-    --handler index.handler \
-    --role arn:aws:iam::000000000000:role/lambda-role
- */
+  await ensureLambda(awsEndpointUrl);
+
   const func = getLambdaFunc(
-    'localstack-lambda-url-example',
-    localstackEndpoint
+    LAMBDA_FUNCTION_NAME,
+    awsEndpointUrl
   );
   const payload = {num1: 324, num2: 36};
 
@@ -122,18 +158,18 @@ awslocal lambda create-function \
       payload.num1 * payload.num2
     }`,
   });
-});
+}, 60000);
 
 it('getSecret', async () => {
-  //aws --profile localstack secretsmanager create-secret --name my-secret --secret-string '{"PG_PASSWORD":"stacy"}'
-  const res = getSecret('my-secret', 'PG_PASSWORD', localstackEndpoint);
+  await ensureSecret(awsEndpointUrl);
+  const res = getSecret(SECRET_NAME, 'PG_PASSWORD', awsEndpointUrl);
   expect(res).toEqual('stacy');
 });
 
 it('should be able to send message to queue', async () => {
   const queue = await Queue.createQueue(
     'test-tibber-aws-queue',
-    localstackEndpoint
+    awsEndpointUrl
   );
   const res = await queue.send('Test', {property: 'test'});
 
