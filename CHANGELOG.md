@@ -1,3 +1,11 @@
+## [7.0.22](https://github.com/tibber/tibber-aws/compare/v7.0.21...v7.0.22) (2026-04-23)
+
+
+### Bug Fixes
+
+* pin fast-xml-parser to ~5.5.7 to avoid AWS SDK breakage ([b21e6f1](https://github.com/tibber/tibber-aws/commit/b21e6f13a549d3646fca84fdc2510c12455312dc))
+* use correct floci env var for Docker network ([5f6be26](https://github.com/tibber/tibber-aws/commit/5f6be265393a8ee66d7ddf1dc812c8c3b3022455))
+
 ## [7.0.21](https://github.com/tibber/tibber-aws/compare/v7.0.20...v7.0.21) (2026-04-20)
 
 
