@@ -35,7 +35,7 @@
     "@types/node": "20.19.39",
     "@types/randomstring": "^1.1.11",
     "dotenv-cli": "^4.0.0",
-    "glob": "^10.5.0",
+    "glob": "^13.0.0",
     "gts": "7.0.0",
     "husky": "^8.0.3",
     "jest": "^30.3.0",
@@ -53,7 +53,12 @@
   "resolutions": {
     "undici": "^7.24.4",
     "flatted": "^3.4.0",
-    "fast-xml-parser": "~5.7.0"
+    "fast-xml-parser": "~5.7.0",
+    "picomatch": "4.0.4",
+    "yaml": "2.8.3",
+    "**/libnpmdiff/diff": "8.0.4",
+    "**/ts-node/diff": "4.0.4",
+    "tmp": "0.2.5"
   },
   "dependencies": {
     "@aws-sdk/client-lambda": "^3.1013.0",
