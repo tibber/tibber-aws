@@ -347,12 +347,12 @@
     tslib "^2.6.2"
 
 "@aws-sdk/core@^3.973.15", "@aws-sdk/core@^3.974.5":
-  version "3.974.5"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/core/-/core-3.974.5.tgz#6b9533215a9fb929bd5257f760a802e10493d2bf"
-  integrity sha512-lMPlYlYfQdNZhlkJgnkmESwrY+hNh3PljmZ+37oAqLNdJ6rnILAwFSyc6B3bJeDOtMORNnMQIej0aTRuOlDyhQ==
+  version "3.974.7"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/core/-/core-3.974.7.tgz#1b78801c86f54947971ead2d4b9913a2b5b7d860"
+  integrity sha512-YhRC90ofz5oolTJZlA8voU/oUrCB2azi8Usx51k8hhB5LpWbYQMMXKUqSqkoL0Cru+RQJgWTHpAfEDDIwfUhJw==
   dependencies:
     "@aws-sdk/types" "^3.973.8"
-    "@aws-sdk/xml-builder" "^3.972.19"
+    "@aws-sdk/xml-builder" "^3.972.22"
     "@smithy/core" "^3.23.17"
     "@smithy/node-config-provider" "^4.3.14"
     "@smithy/property-provider" "^4.2.14"
@@ -362,7 +362,7 @@
     "@smithy/types" "^4.14.1"
     "@smithy/util-base64" "^4.3.2"
     "@smithy/util-middleware" "^4.2.14"
-    "@smithy/util-retry" "^4.3.4"
+    "@smithy/util-retry" "^4.3.6"
     "@smithy/util-utf8" "^4.2.2"
     tslib "^2.6.2"
 
@@ -765,13 +765,14 @@
     "@smithy/util-config-provider" "^4.2.2"
     tslib "^2.6.2"
 
-"@aws-sdk/xml-builder@^3.972.19":
-  version "3.972.19"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/xml-builder/-/xml-builder-3.972.19.tgz#49dbd580e51b04ae207b17d5ed8f6e53a79fe6d3"
-  integrity sha512-Cw8IOMdBUEIl8ZlhRC3Dc/E64D5B5/8JhV6vhPLiPfJwcRC84S6F8aBOIi/N4vR9ZyA4I5Cc0Ateb/9EHaJXeQ==
+"@aws-sdk/xml-builder@^3.972.22":
+  version "3.972.22"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/xml-builder/-/xml-builder-3.972.22.tgz#1e44ca9fd9c3fdc3d9af9540ced024f34cfc60b2"
+  integrity sha512-PMYKKtJd70IsSG0yHrdAbxBr+ZWBKLvzFZfD3/urxgf6hXVMzuU5M+3MJ5G67RpOmLBu1fAUN65SbWuKUCOlAA==
   dependencies:
+    "@nodable/entities" "2.1.0"
     "@smithy/types" "^4.14.1"
-    fast-xml-parser "5.7.1"
+    fast-xml-parser "5.7.2"
     tslib "^2.6.2"
 
 "@aws/lambda-invoke-store@^0.2.2":
@@ -1631,7 +1632,7 @@
     "@emnapi/runtime" "^1.4.3"
     "@tybys/wasm-util" "^0.10.0"
 
-"@nodable/entities@^2.1.0":
+"@nodable/entities@2.1.0", "@nodable/entities@^2.1.0":
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/@nodable/entities/-/entities-2.1.0.tgz#f543e5c6446720d4cf9e498a83019dd159973bc2"
   integrity sha512-nyT7T3nbMyBI/lvr6L5TyWbFJAI9FTgVRakNoBqCD+PmID8DzFrrNdLLtHMwMszOtqZa8PAOV24ZqDnQrhQINA==
@@ -2404,6 +2405,13 @@
   dependencies:
     "@smithy/types" "^4.14.1"
 
+"@smithy/service-error-classification@^4.3.1":
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/@smithy/service-error-classification/-/service-error-classification-4.3.1.tgz#5303d4fc3c3eea0f79c3b88cb4436498a31e9f12"
+  integrity sha512-aUQuDGh760ts/8MU+APjIZhlLPKhIIfqyzZaJikLEIMrdxFvxuLYD0WxWzaYWpmLbQlXDe9p7EWM3HsBe0K6Gw==
+  dependencies:
+    "@smithy/types" "^4.14.1"
+
 "@smithy/shared-ini-file-loader@^4.4.9":
   version "4.4.9"
   resolved "https://registry.yarnpkg.com/@smithy/shared-ini-file-loader/-/shared-ini-file-loader-4.4.9.tgz#fb3719b401d101a65a682380b40efd3a116162f0"
@@ -2554,6 +2562,15 @@
   integrity sha512-FY1UQQ1VFmMwiYp1GVS4MeaGD5O0blLNYK0xCRHU+mJgeoH/hSY8Ld8sJWKQ6uznkh14HveRGQJncgPyNl9J+A==
   dependencies:
     "@smithy/service-error-classification" "^4.3.0"
+    "@smithy/types" "^4.14.1"
+    tslib "^2.6.2"
+
+"@smithy/util-retry@^4.3.6":
+  version "4.3.6"
+  resolved "https://registry.yarnpkg.com/@smithy/util-retry/-/util-retry-4.3.6.tgz#8d242d7e736593ca3f1c0f056279909b881d6e2a"
+  integrity sha512-p6/FO1n2KxMeQyna067i0uJ6TSbb165ZhnRtCpWh4Foxqbfc6oW+XITaL8QkFJj3KFnDe2URt4gOhgU06EP9ew==
+  dependencies:
+    "@smithy/service-error-classification" "^4.3.1"
     "@smithy/types" "^4.14.1"
     tslib "^2.6.2"
 
@@ -4134,7 +4151,7 @@ fast-xml-builder@^1.1.5:
   dependencies:
     path-expression-matcher "^1.1.3"
 
-fast-xml-parser@5.7.1, fast-xml-parser@~5.7.0:
+fast-xml-parser@5.7.2, fast-xml-parser@~5.7.0:
   version "5.7.2"
   resolved "https://registry.yarnpkg.com/fast-xml-parser/-/fast-xml-parser-5.7.2.tgz#fecd0b054c6c132fc03dab994a413da781e0eb9f"
   integrity sha512-P7oW7tLbYnhOLQk/Gv7cZgzgMPP/XN03K02/Jy6Y/NHzyIAIpxuZIM/YqAkfiXFPxA2CTm7NtCijK9EDu09u2w==
