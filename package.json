@@ -55,7 +55,7 @@
     "flatted": "^3.4.0",
     "fast-xml-parser": "~5.7.0",
     "picomatch": "4.0.4",
-    "yaml": "2.8.3",
+    "yaml": "2.8.4",
     "**/libnpmdiff/diff": "8.0.4",
     "**/ts-node/diff": "4.0.4",
     "tmp": "0.2.5"
