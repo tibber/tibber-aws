@@ -99,9 +99,9 @@
     tslib "^2.6.2"
 
 "@aws-sdk/client-lambda@^3.1013.0":
-  version "3.1043.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/client-lambda/-/client-lambda-3.1043.0.tgz#92877bc9b72a4f0b8ae63ae239b4e2a650be2d23"
-  integrity sha512-4q7hRDe+NHGRTZQmY07FPAMY65HevqHlzQG3SiBEoQfv6vvRVQQAHHOKU4nBzWFU2sICMFsfnqfFhRDIjMiafg==
+  version "3.1044.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/client-lambda/-/client-lambda-3.1044.0.tgz#77b5e97d622b1c760f109ca0d990a69adc716a9c"
+  integrity sha512-vWMVHylaMiXC+hbmx/ZVrxe/SL2F2veXaCs5q6KelsvT2d325D4FNFquo2q1u27WkTGN4Oe46703llBydnFL1Q==
   dependencies:
     "@aws-crypto/sha256-browser" "5.2.0"
     "@aws-crypto/sha256-js" "5.2.0"
@@ -149,9 +149,9 @@
     tslib "^2.6.2"
 
 "@aws-sdk/client-s3@^3.1013.0":
-  version "3.1043.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/client-s3/-/client-s3-3.1043.0.tgz#b0b52e5fc98db8650da175ad533e25b4909608c1"
-  integrity sha512-QrDh9PACpmijOgbVnvQIvoWFZcMEBoGw0qiQRfGvsUEcB1JPCS2U5R0irB4XQSmsBlQUNlNeXVfpx3JI++NqrA==
+  version "3.1044.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/client-s3/-/client-s3-3.1044.0.tgz#acdfdc9d103320ef91dde11ae52aa2df1ae907ed"
+  integrity sha512-yT3g0Oi0b+pJBJswNxRwWLLBoExQhRx9Iz2rUy1xV0slMogTQN+DSjChI95XTDtpGEcY0qnIK6UYX0XCYdhOKg==
   dependencies:
     "@aws-crypto/sha1-browser" "5.2.0"
     "@aws-crypto/sha256-browser" "5.2.0"
@@ -210,9 +210,9 @@
     tslib "^2.6.2"
 
 "@aws-sdk/client-secrets-manager@^3.1013.0":
-  version "3.1043.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/client-secrets-manager/-/client-secrets-manager-3.1043.0.tgz#c78a12cebf0e8e9f1ab72661abe4936c3048cac2"
-  integrity sha512-xjxE4CSid16j9yBFuykNinW7z+RwqJGxqCDD+hh99jL6YRmVa6FZOkv96gur5jHfrolbb0e19aS3ztD7UWmcLQ==
+  version "3.1044.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/client-secrets-manager/-/client-secrets-manager-3.1044.0.tgz#6eb2ed875bf0914a9242ca403d36c1fed426be3f"
+  integrity sha512-aURP58NekytJcxe3xFDOepS6wDChlQe/sLtJbFIJjc1+ReQ1RQblmC7/pvJIUmb8swjvNCgXzgQozR+R8fw/pw==
   dependencies:
     "@aws-crypto/sha256-browser" "5.2.0"
     "@aws-crypto/sha256-js" "5.2.0"
@@ -255,9 +255,9 @@
     tslib "^2.6.2"
 
 "@aws-sdk/client-sns@^3.1013.0":
-  version "3.1043.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/client-sns/-/client-sns-3.1043.0.tgz#f0f7be2f96d914ac941ac84ded64b21b711b6720"
-  integrity sha512-uDZCd43oakj1rg1UdAy7/rqZEtPHsJxKkjil1hXx3lYbF9Pu3+T46g3UvU4lVbQE89GNkIUfiGWgR0gaBlkV+A==
+  version "3.1044.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/client-sns/-/client-sns-3.1044.0.tgz#6cd5a048d67a42c182d2c9f28554af129af6f948"
+  integrity sha512-0vcufJrms7t4dV9yO2N71t2Nme2mavOm51eaeXEcjMRow2DY64aIqe9pO7NE+WwMeE1RqN0tUy9mH9wRaxC2/Q==
   dependencies:
     "@aws-crypto/sha256-browser" "5.2.0"
     "@aws-crypto/sha256-js" "5.2.0"
@@ -300,9 +300,9 @@
     tslib "^2.6.2"
 
 "@aws-sdk/client-sqs@^3.1013.0":
-  version "3.1043.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/client-sqs/-/client-sqs-3.1043.0.tgz#bfec512255df79b995dd16bb1458cee4b5492c76"
-  integrity sha512-falpc0L/v6gTsm+ieZmGhmPUxQDPBl78SFCX9H2TbW1ziNtcZcFCpQMgp3jSP9l86Vge/NT2gDuWnp/0RAoZGw==
+  version "3.1044.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/client-sqs/-/client-sqs-3.1044.0.tgz#a7c541c93b5cf73b2d2f0d5c0fd27524eea4df63"
+  integrity sha512-Vf46G/luWJeRFTUF9gL3+IeH3CWCOxgJew9ZD5Lnd4vFMlFmlx8/SA1KFYTvmLjG9V61hVxS4u68Ssn1L9E8ow==
   dependencies:
     "@aws-crypto/sha256-browser" "5.2.0"
     "@aws-crypto/sha256-js" "5.2.0"
@@ -4129,9 +4129,9 @@ fast-levenshtein@^2.0.6:
   integrity sha512-DCXu6Ifhqcks7TZKY3Hxp3y6qphY5SJZmrWMDrKcERSOXWQdMhU9Ig/PYrzyw/ul9jOIyh0N4M0tbC5hodg8dw==
 
 fast-xml-builder@^1.1.7:
-  version "1.1.8"
-  resolved "https://registry.yarnpkg.com/fast-xml-builder/-/fast-xml-builder-1.1.8.tgz#7bbc0c3957587f3c44d13c10fa1fdf8d4bcc328b"
-  integrity sha512-sDVBc2gg8pSKvcbE8rBmOyjSGQf0AdsbqvHeIOv3D/uYNoV4eCReQXyDF8Pdv8+m1FHazACypSz2hR7O2S1LLw==
+  version "1.1.9"
+  resolved "https://registry.yarnpkg.com/fast-xml-builder/-/fast-xml-builder-1.1.9.tgz#96bf8de1e3a5f560149b6092844db4e6fd0ee38f"
+  integrity sha512-jcyKVSEX13iseJqg7n/KWw+xnu/7fdrZ333Fac54KjHDIELVCfDDJXYIm6DTJ0Su4gSzrhqiK0DzY/wZbF40mw==
   dependencies:
     path-expression-matcher "^1.1.3"
 
