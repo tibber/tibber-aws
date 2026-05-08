@@ -99,9 +99,9 @@
     tslib "^2.6.2"
 
 "@aws-sdk/client-lambda@^3.1013.0":
-  version "3.1044.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/client-lambda/-/client-lambda-3.1044.0.tgz#77b5e97d622b1c760f109ca0d990a69adc716a9c"
-  integrity sha512-vWMVHylaMiXC+hbmx/ZVrxe/SL2F2veXaCs5q6KelsvT2d325D4FNFquo2q1u27WkTGN4Oe46703llBydnFL1Q==
+  version "3.1045.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/client-lambda/-/client-lambda-3.1045.0.tgz#a655320551942dc4b8400247e70fc74df8f36f15"
+  integrity sha512-9EDPinh03XanJQssTBdTY+9E7PkyQ0NLLJiaOAM71/g4DI+0OZboGqhX7KKizwUGqKkj0paKEAwgWaMLgEkQFQ==
   dependencies:
     "@aws-crypto/sha256-browser" "5.2.0"
     "@aws-crypto/sha256-js" "5.2.0"
@@ -149,9 +149,9 @@
     tslib "^2.6.2"
 
 "@aws-sdk/client-s3@^3.1013.0":
-  version "3.1044.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/client-s3/-/client-s3-3.1044.0.tgz#acdfdc9d103320ef91dde11ae52aa2df1ae907ed"
-  integrity sha512-yT3g0Oi0b+pJBJswNxRwWLLBoExQhRx9Iz2rUy1xV0slMogTQN+DSjChI95XTDtpGEcY0qnIK6UYX0XCYdhOKg==
+  version "3.1045.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/client-s3/-/client-s3-3.1045.0.tgz#d41b6d49f0554d3f67a41866dfa6de0e6b8f1a94"
+  integrity sha512-fsuO3Y6t+3Ro9Bsg41DKj4Sfy53CGSrhnMldNplWmG8Tx0UbYk+YDa4RD1hVlJpERw4JBmPkl0+J9qlxMh1pcA==
   dependencies:
     "@aws-crypto/sha1-browser" "5.2.0"
     "@aws-crypto/sha256-browser" "5.2.0"
@@ -210,9 +210,9 @@
     tslib "^2.6.2"
 
 "@aws-sdk/client-secrets-manager@^3.1013.0":
-  version "3.1044.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/client-secrets-manager/-/client-secrets-manager-3.1044.0.tgz#6eb2ed875bf0914a9242ca403d36c1fed426be3f"
-  integrity sha512-aURP58NekytJcxe3xFDOepS6wDChlQe/sLtJbFIJjc1+ReQ1RQblmC7/pvJIUmb8swjvNCgXzgQozR+R8fw/pw==
+  version "3.1045.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/client-secrets-manager/-/client-secrets-manager-3.1045.0.tgz#cb9ca5613d6cb24b9c78b332fc6cfbf8601edfd2"
+  integrity sha512-ceXmaTE/3j7bHgVzUrpL/ECjQQ+aE/x8wNbblC/SIb020OxYRMj0DscFimnI5kEjutGHQ+A68bbX2A+bZuAMEA==
   dependencies:
     "@aws-crypto/sha256-browser" "5.2.0"
     "@aws-crypto/sha256-js" "5.2.0"
@@ -255,9 +255,9 @@
     tslib "^2.6.2"
 
 "@aws-sdk/client-sns@^3.1013.0":
-  version "3.1044.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/client-sns/-/client-sns-3.1044.0.tgz#6cd5a048d67a42c182d2c9f28554af129af6f948"
-  integrity sha512-0vcufJrms7t4dV9yO2N71t2Nme2mavOm51eaeXEcjMRow2DY64aIqe9pO7NE+WwMeE1RqN0tUy9mH9wRaxC2/Q==
+  version "3.1045.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/client-sns/-/client-sns-3.1045.0.tgz#82aa9bc74d3eb47f792ad2109f59b5ef0a116e7d"
+  integrity sha512-w/iwPYVAXx62dD2E5nBQaUOntlYWCjaIPXGZpdC6+WWF/idTPjN3qu5Q0KgcrP6zQDGCgtAVaLlLVaK36/5x7A==
   dependencies:
     "@aws-crypto/sha256-browser" "5.2.0"
     "@aws-crypto/sha256-js" "5.2.0"
@@ -300,9 +300,9 @@
     tslib "^2.6.2"
 
 "@aws-sdk/client-sqs@^3.1013.0":
-  version "3.1044.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/client-sqs/-/client-sqs-3.1044.0.tgz#a7c541c93b5cf73b2d2f0d5c0fd27524eea4df63"
-  integrity sha512-Vf46G/luWJeRFTUF9gL3+IeH3CWCOxgJew9ZD5Lnd4vFMlFmlx8/SA1KFYTvmLjG9V61hVxS4u68Ssn1L9E8ow==
+  version "3.1045.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/client-sqs/-/client-sqs-3.1045.0.tgz#0d8fcf34c1c4732b0530228211c062b0cbbb552e"
+  integrity sha512-reWeEE53mgCv8uUFSicvVf0A6BoWGImdC4y5x5clkeEmfIikahIBtons6u0d32kwI4NczpcretpUkOCE/nvWAA==
   dependencies:
     "@aws-crypto/sha256-browser" "5.2.0"
     "@aws-crypto/sha256-js" "5.2.0"
@@ -7303,9 +7303,9 @@ strip-json-comments@~2.0.1:
   integrity sha512-4gB8na07fecVVkOI6Rs4e7T6NOTki5EmL7TUduTs6bu3EdnSycntVJ4re8kgZA+wx9IueI2Y11bfbgwtzuE0KQ==
 
 strnum@^2.2.3:
-  version "2.2.3"
-  resolved "https://registry.yarnpkg.com/strnum/-/strnum-2.2.3.tgz#0119fce02749a11bb126a4d686ac5dbdf6e57586"
-  integrity sha512-oKx6RUCuHfT3oyVjtnrmn19H1SiCqgJSg+54XqURKp5aCMbrXrhLjRN9TjuwMjiYstZ0MzDrHqkGZ5dFTKd+zg==
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/strnum/-/strnum-2.3.0.tgz#81bfbfef53db8c3217ea62a98c026886ec4a2761"
+  integrity sha512-ums3KNd42PGyx5xaoVTO1mjU1bH3NpY4vsrVlnv9PNGqQj8wd7rJ6nEypLrJ7z5vxK5RP0yMLo6J/Gsm62DI5Q==
 
 super-regex@^1.0.0:
   version "1.1.0"
