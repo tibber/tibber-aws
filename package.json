@@ -53,7 +53,7 @@
   "resolutions": {
     "undici": "^7.24.4",
     "flatted": "^3.4.0",
-    "fast-xml-parser": "~5.7.0",
+    "fast-xml-parser": "~5.8.0",
     "picomatch": "4.0.4",
     "yaml": "2.9.0",
     "**/libnpmdiff/diff": "8.0.4",
