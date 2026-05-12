@@ -1,3 +1,10 @@
+## [7.0.23](https://github.com/tibber/tibber-aws/compare/v7.0.22...v7.0.23) (2026-05-12)
+
+
+### Bug Fixes
+
+* **deps:** bump ip-address from 10.1.0 to 10.2.0 ([f32e353](https://github.com/tibber/tibber-aws/commit/f32e353b9151a90b2a3b535dba1e6180d6c3bd63))
+
 ## [7.0.22](https://github.com/tibber/tibber-aws/compare/v7.0.21...v7.0.22) (2026-04-23)
 
 
