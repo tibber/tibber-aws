@@ -99,9 +99,9 @@
     tslib "^2.6.2"
 
 "@aws-sdk/client-lambda@^3.1013.0":
-  version "3.1050.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/client-lambda/-/client-lambda-3.1050.0.tgz#4a9a91d561600bce817951b8bfe679d29476c191"
-  integrity sha512-KlpBFZzvvzj6ShPCAmGi9Pm2Q50qDHRu1TJEg+rtpnPQln+pU8usnK2F6ied97pqtHSrLv0wOi7TUaVpTXr2+A==
+  version "3.1051.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/client-lambda/-/client-lambda-3.1051.0.tgz#3b2e49ba9105f8f1acb3496f4449eccaa9ef861e"
+  integrity sha512-Oc7Rc9R6BbltJGYUls4xYswIujugscTbjAao51izJvW+UKAzgoYg0TenVDslXoPQbkkIAnZjAF6ehLxB8eui4g==
   dependencies:
     "@aws-crypto/sha256-browser" "5.2.0"
     "@aws-crypto/sha256-js" "5.2.0"
@@ -115,9 +115,9 @@
     tslib "^2.6.2"
 
 "@aws-sdk/client-s3@^3.1013.0":
-  version "3.1050.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/client-s3/-/client-s3-3.1050.0.tgz#22765da5a866d88bb902751a4cab1a46c20bdc13"
-  integrity sha512-9kgtv+bXZQrOIJT2INPPBCezrJu1FlgGrzEat/ut4A4V53IT00LynsBZgp12eFKbjJuNCeTo7iPSKjPsX8ub+A==
+  version "3.1051.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/client-s3/-/client-s3-3.1051.0.tgz#687ff17164fe292405085ab7b169962ea7cbfb3b"
+  integrity sha512-0Yhq7AMw2te5YtxDHkm2KKpXF8IccOO4nmCsp12EzYB/e3IKQ73NHH4jA2ki8mQwvAQzFGB+1GoycT00U8sZCg==
   dependencies:
     "@aws-crypto/sha1-browser" "5.2.0"
     "@aws-crypto/sha256-browser" "5.2.0"
@@ -139,9 +139,9 @@
     tslib "^2.6.2"
 
 "@aws-sdk/client-secrets-manager@^3.1013.0":
-  version "3.1050.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/client-secrets-manager/-/client-secrets-manager-3.1050.0.tgz#3ef6cffc412c4df60d7bdbd0c37903bf86c577a4"
-  integrity sha512-mVOzxK4inCJgbGSQTeENYaACA9qGikru07b3HJyrKEeLVhuLKmo5csVzvKuz++ROdhX9gR7WzzJkoDOO5Xy/EQ==
+  version "3.1051.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/client-secrets-manager/-/client-secrets-manager-3.1051.0.tgz#629c46f44668133d1d92e3dbb590382c93696588"
+  integrity sha512-bJN7+ck68aCFnTHGysMYqdXJY7qVMxRo99rZoqR5aG0Zm/uH6ZaFxO5qLSdOBV5CnBEbhmzsS6xNCaBk75WHiA==
   dependencies:
     "@aws-crypto/sha256-browser" "5.2.0"
     "@aws-crypto/sha256-js" "5.2.0"
@@ -155,9 +155,9 @@
     tslib "^2.6.2"
 
 "@aws-sdk/client-sns@^3.1013.0":
-  version "3.1050.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/client-sns/-/client-sns-3.1050.0.tgz#036d267385d4253c1fea4c026b2a62a562d2589b"
-  integrity sha512-HuUUJdLPw/7mTA1p4sBsI3/3/9Qbmka6j+BpxuMv+2vejV5bu15KNEgE+XpNmKS5tc8bP1nIV3rwwpgX42VQiw==
+  version "3.1051.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/client-sns/-/client-sns-3.1051.0.tgz#e9628382b5e4e4eb5c4188d51c40721852667edf"
+  integrity sha512-XUJ9/dNgH78X7nytdX7wioU0dcLs/TF9tzGHpM+jnb884mDKjEfxjzE8fqgv9ParjiLN7y+YnjL97XhVuI7s4A==
   dependencies:
     "@aws-crypto/sha256-browser" "5.2.0"
     "@aws-crypto/sha256-js" "5.2.0"
@@ -171,9 +171,9 @@
     tslib "^2.6.2"
 
 "@aws-sdk/client-sqs@^3.1013.0":
-  version "3.1050.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/client-sqs/-/client-sqs-3.1050.0.tgz#b60da0b4893b0fcebbc3837b0489f95f48e5678b"
-  integrity sha512-HybqoeiQTYI/OWtHZZPuVlUYWN+0wM4PgvNPwlpNDB+yraoZMhgDUUDdDshpvjl8ohVWNK1mtBeu37TOncdPRQ==
+  version "3.1051.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/client-sqs/-/client-sqs-3.1051.0.tgz#d978189bb740a2554d96b050b2c0c6d4cdc27be1"
+  integrity sha512-Q18FwOUEBItulNgr77KfNld99qTz+Jj+SHRPNvCX2LpTphl2KtvdiuzbYbIM9aR+EJ8VSLezdrG6wT9Y6EuMBQ==
   dependencies:
     "@aws-crypto/sha256-browser" "5.2.0"
     "@aws-crypto/sha256-js" "5.2.0"
