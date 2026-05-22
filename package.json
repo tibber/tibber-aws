@@ -28,6 +28,7 @@
   "author": "tibber",
   "license": "ISC",
   "devDependencies": {
+    "@aws-sdk/client-iam": "^3.1013.0",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.0",
     "@types/jest": "^29.5.8",

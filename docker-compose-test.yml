@@ -8,6 +8,12 @@ services:
     environment:
       - FLOCI_HOSTNAME=floci
       - FLOCI_SERVICES_DOCKER_NETWORK=tibber-aws_default
+      # Enable IAM policy enforcement so test/iamPermissions.test.ts can
+      # verify the minimum permission set required by the listener path.
+      # The default `test` access key (used by the rest of the suite)
+      # bypasses enforcement; only requests with a real IAM-store access
+      # key are evaluated against attached policies.
+      - FLOCI_SERVICES_IAM_ENFORCEMENT_ENABLED=true
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
       - "./volume/floci-data:/app/data"

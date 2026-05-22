@@ -98,6 +98,22 @@
     "@smithy/util-utf8" "^2.0.0"
     tslib "^2.6.2"
 
+"@aws-sdk/client-iam@^3.1013.0":
+  version "3.1052.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/client-iam/-/client-iam-3.1052.0.tgz#fa2b4f9837f01078c6cb6c9a441dc275e062d47c"
+  integrity sha512-yKN5/a0kYQxRM6yweTXXKB5fLj2GVqSusSVeehkZPS/URp2NerumGOpVd2ncBTepWeQa4V10SLGJ98z5b4G1pw==
+  dependencies:
+    "@aws-crypto/sha256-browser" "5.2.0"
+    "@aws-crypto/sha256-js" "5.2.0"
+    "@aws-sdk/core" "^3.974.13"
+    "@aws-sdk/credential-provider-node" "^3.972.44"
+    "@aws-sdk/types" "^3.973.9"
+    "@smithy/core" "^3.24.3"
+    "@smithy/fetch-http-handler" "^5.4.3"
+    "@smithy/node-http-handler" "^4.7.3"
+    "@smithy/types" "^4.14.2"
+    tslib "^2.6.2"
+
 "@aws-sdk/client-lambda@^3.1013.0":
   version "3.1052.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/client-lambda/-/client-lambda-3.1052.0.tgz#e3615cb0e8c96711b934617e9a6b31cd6987fe95"
