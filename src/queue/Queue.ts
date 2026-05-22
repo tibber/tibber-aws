@@ -8,6 +8,7 @@ import {
   SQS,
 } from '@aws-sdk/client-sqs';
 
+import {partitionFromRegion} from './partition';
 import {Topic} from './Topic';
 
 /**
@@ -30,12 +31,6 @@ type PolicyTemplate = {
     Sid: string;
   }>;
   Version: '2012-10-17';
-};
-
-const partitionFromRegion = (region: string): string => {
-  if (region.startsWith('cn-')) return 'aws-cn';
-  if (region.startsWith('us-gov-')) return 'aws-us-gov';
-  return 'aws';
 };
 
 const policyTemplate: PolicyTemplate = {

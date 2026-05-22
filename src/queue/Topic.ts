@@ -3,6 +3,7 @@ import {
   NotFoundException,
   SNS,
 } from '@aws-sdk/client-sns';
+import {partitionFromRegion} from './partition';
 
 export class Topic {
   public sns: SNS;
@@ -51,6 +52,27 @@ export class Topic {
   static fromArn(topicArn: string, subject?: string, endpoint?: string) {
     const name = topicArn.split(':').at(-1) ?? '';
     return new Topic(topicArn, name, subject, endpoint);
+  }
+
+  /**
+   * Convenience wrapper around {@link fromArn} that assembles the ARN from
+   * its parts. Same semantics: no AWS API call, no permissions required.
+   * Use this when the publisher knows its account, region and the topic
+   * name (typical case — both are usually in the service's config).
+   *
+   * The partition is derived from the region (`cn-*` → `aws-cn`,
+   * `us-gov-*` → `aws-us-gov`, else `aws`).
+   */
+  static fromName(
+    topicName: string,
+    accountId: string,
+    region: string,
+    subject?: string,
+    endpoint?: string
+  ) {
+    const partition = partitionFromRegion(region);
+    const topicArn = `arn:${partition}:sns:${region}:${accountId}:${topicName}`;
+    return new Topic(topicArn, topicName, subject, endpoint);
   }
 
   /**

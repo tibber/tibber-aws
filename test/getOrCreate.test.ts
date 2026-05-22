@@ -164,3 +164,48 @@ describe('Topic.fromArn (publisher constructor)', () => {
     );
   });
 });
+
+describe('Topic.fromName (publisher convenience)', () => {
+  it('assembles the ARN from accountId + region + name, no AWS call', async () => {
+    const topicName = uniqueName('from-name-t');
+    const real = await Topic.createTopic(topicName, undefined, awsEndpointUrl);
+    // Floci returns 000000000000 as the account; eu-west-1 is the test region.
+    const topic = Topic.fromName(
+      topicName,
+      '000000000000',
+      'eu-west-1',
+      'subj',
+      awsEndpointUrl
+    );
+
+    expect(topic.topicArn).toBe(real.topicArn);
+    expect(topic.name).toBe(topicName);
+    expect(topic.subject).toBe('subj');
+  });
+
+  it('derives partition from region', () => {
+    const std = Topic.fromName('t', '123', 'eu-west-1');
+    expect(std.topicArn.startsWith('arn:aws:sns:')).toBe(true);
+
+    const cn = Topic.fromName('t', '123', 'cn-north-1');
+    expect(cn.topicArn.startsWith('arn:aws-cn:sns:')).toBe(true);
+
+    const gov = Topic.fromName('t', '123', 'us-gov-east-1');
+    expect(gov.topicArn.startsWith('arn:aws-us-gov:sns:')).toBe(true);
+  });
+
+  it('push() publishes against the assembled ARN', async () => {
+    const topicName = uniqueName('from-name-push');
+    await Topic.createTopic(topicName, undefined, awsEndpointUrl);
+
+    const topic = Topic.fromName(
+      topicName,
+      '000000000000',
+      'eu-west-1',
+      undefined,
+      awsEndpointUrl
+    );
+    const result = await topic.push({hello: 'world'});
+    expect(result.MessageId).toBeTruthy();
+  });
+});
