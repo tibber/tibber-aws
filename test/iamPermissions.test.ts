@@ -4,8 +4,8 @@ import {
   IAMClient,
   PutUserPolicyCommand,
 } from '@aws-sdk/client-iam';
-import {ListSubscriptionsByTopicCommand, SNS} from '@aws-sdk/client-sns';
-import {ReceiveMessageCommand, SQS} from '@aws-sdk/client-sqs';
+import {SNS} from '@aws-sdk/client-sns';
+import {SQS} from '@aws-sdk/client-sqs';
 import {Queue, Topic, configure} from '../src';
 
 /**
@@ -68,6 +68,27 @@ const createRestrictedCredentials = async (
   };
 };
 
+/**
+ * Runs `fn` with AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY temporarily set
+ * to the given credentials. Newly-constructed SDK clients inside `fn` pick
+ * up the env via the default credential provider chain.
+ */
+const withCredentials = async <T>(
+  credentials: {accessKeyId: string; secretAccessKey: string},
+  fn: () => Promise<T>
+): Promise<T> => {
+  const originalKey = process.env.AWS_ACCESS_KEY_ID;
+  const originalSecret = process.env.AWS_SECRET_ACCESS_KEY;
+  process.env.AWS_ACCESS_KEY_ID = credentials.accessKeyId;
+  process.env.AWS_SECRET_ACCESS_KEY = credentials.secretAccessKey;
+  try {
+    return await fn();
+  } finally {
+    process.env.AWS_ACCESS_KEY_ID = originalKey;
+    process.env.AWS_SECRET_ACCESS_KEY = originalSecret;
+  }
+};
+
 beforeAll(() => {
   configure({region: 'eu-west-1'});
 });
@@ -75,64 +96,53 @@ beforeAll(() => {
 describe('IAM permissions required by the listener path', () => {
   const iam = new IAMClient({endpoint: awsEndpointUrl});
 
-  it('full read-only listener flow succeeds with only the documented permissions', async () => {
+  it('listener init + message-handling primitives succeed with only the documented permissions', async () => {
     // Pre-seed queue, topic, and subscription with the default `test`
-    // credentials (which Floci bypasses from IAM enforcement).
+    // credentials (which Floci bypasses from IAM enforcement). After this
+    // setup, the listener path must be fully read-only.
     const queueName = uniqueName('iam-q');
     const topicName = uniqueName('iam-t');
     const setupQueue = await Queue.getOrCreateQueue(queueName, awsEndpointUrl);
-    const topic = await Topic.getOrCreateTopic(
+    const setupTopic = await Topic.getOrCreateTopic(
       topicName,
       undefined,
       setupQueue.queueArn,
       awsEndpointUrl
     );
-    await setupQueue.subscribeTopic(topic);
+    await setupQueue.subscribeTopic(setupTopic);
 
     const credentials = await createRestrictedCredentials(
       iam,
       REQUIRED_LISTENER_PERMISSIONS
     );
 
-    const sqs = new SQS({endpoint: awsEndpointUrl, credentials});
-    const sns = new SNS({endpoint: awsEndpointUrl, credentials});
+    // Exercise the actual tibber-aws library code under restricted creds.
+    // Anything the listener bootstrap needs that isn't in the policy above
+    // will surface as AccessDenied here and fail the test — that is the
+    // regression guard for "the documented permissions are sufficient".
+    await withCredentials(credentials, async () => {
+      // Queue.getOrCreateQueue → sqs:GetQueueUrl (steady-state path)
+      const queue = await Queue.getOrCreateQueue(queueName, awsEndpointUrl);
+      expect(queue.queueUrl).toBe(setupQueue.queueUrl);
 
-    // Walk the same call sequence the listener uses on startup against an
-    // existing queue/topic/subscription. Each call asserts the matching
-    // permission in the policy above is sufficient.
+      // Topic.getOrCreateTopic → sns:GetTopicAttributes
+      const topic = await Topic.getOrCreateTopic(
+        topicName,
+        undefined,
+        queue.queueArn,
+        awsEndpointUrl
+      );
+      expect(topic.topicArn).toBe(setupTopic.topicArn);
 
-    // Queue.getQueue → sqs:GetQueueUrl
-    const queueUrl = (await sqs.getQueueUrl({QueueName: queueName})).QueueUrl;
-    expect(queueUrl).toBe(setupQueue.queueUrl);
+      // Queue.subscribeTopic short-circuits on sns:ListSubscriptionsByTopic
+      // → no sqs:SetQueueAttributes / sns:Subscribe writes.
+      await queue.subscribeTopic(topic);
 
-    // Queue.subscribeTopic policy read → sqs:GetQueueAttributes
-    const attrs = await sqs.getQueueAttributes({
-      QueueUrl: setupQueue.queueUrl,
-      AttributeNames: ['All'],
+      // Listener loop primitives: sqs:ReceiveMessage / sqs:DeleteMessage /
+      // sqs:ChangeMessageVisibility. Receive returns no messages with the
+      // empty queue; the permission is what's being checked.
+      await queue.receiveMessage({WaitTimeSeconds: 0});
     });
-    expect(attrs.Attributes?.QueueArn).toBe(setupQueue.queueArn);
-
-    // Topic.getOrCreateTopic verify → sns:GetTopicAttributes
-    const topicAttrs = await sns.getTopicAttributes({TopicArn: topic.topicArn});
-    expect(topicAttrs.Attributes?.TopicArn).toBe(topic.topicArn);
-
-    // Queue.isAlreadySubscribed → sns:ListSubscriptionsByTopic
-    const subs = await sns.send(
-      new ListSubscriptionsByTopicCommand({TopicArn: topic.topicArn})
-    );
-    expect(
-      subs.Subscriptions?.some(s => s.Endpoint === setupQueue.queueArn)
-    ).toBe(true);
-
-    // Listener loop → sqs:ReceiveMessage / sqs:DeleteMessage / sqs:ChangeMessageVisibility
-    // We do not push a message; ReceiveMessage with WaitTimeSeconds=0
-    // returning an empty list is enough to verify the permission.
-    await sqs.send(
-      new ReceiveMessageCommand({
-        QueueUrl: setupQueue.queueUrl,
-        WaitTimeSeconds: 0,
-      })
-    );
   }, 30000);
 
   it.each([
@@ -184,15 +194,15 @@ describe('IAM permissions required by the publisher path (Topic.fromArn + push)'
       REQUIRED_PUBLISHER_PERMISSIONS
     );
 
-    // Direct SDK publish to verify the perm is sufficient — Topic.push
-    // constructs the same PublishCommand internally.
-    const publisherSns = new SNS({endpoint: awsEndpointUrl, credentials});
-    const result = await publisherSns.publish({
-      TopicArn: real.topicArn,
-      Message: JSON.stringify({hello: 'world'}),
+    await withCredentials(credentials, async () => {
+      const topic = Topic.fromArn(
+        real.topicArn,
+        'New Meter Reading NO',
+        awsEndpointUrl
+      );
+      const result = await topic.push({hello: 'world'});
+      expect(result.MessageId).toBeTruthy();
     });
-
-    expect(result.MessageId).toBeTruthy();
   }, 30000);
 
   // Note: a negative test for sns:Publish is intentionally omitted —
