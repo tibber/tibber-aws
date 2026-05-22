@@ -34,8 +34,7 @@ export class Topic {
   }
 
   /**
-   * Constructs a Topic from a known ARN. No AWS API call.
-   * The topic name is taken from the last segment of the ARN.
+   * Constructs a Topic from a known ARN.
    */
   static fromArn(topicArn: string, subject?: string, endpoint?: string) {
     const parts = topicArn.split(':');
