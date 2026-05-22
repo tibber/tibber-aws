@@ -62,6 +62,10 @@ export class Topic {
    *
    * The partition is derived from the region (`cn-*` → `aws-cn`,
    * `us-gov-*` → `aws-us-gov`, else `aws`).
+   *
+   * For FIFO topics, `topicName` must already include the `.fifo` suffix
+   * (AWS requires it); this helper does not append it automatically since
+   * it has no way to know whether the caller intends FIFO.
    */
   static fromName(
     topicName: string,
@@ -96,15 +100,22 @@ export class Topic {
     const partition = parts[1];
     const region = parts[3];
     const accountId = parts[4];
-    const derivedArn = `arn:${partition}:sns:${region}:${accountId}:${topicName}`;
+    const queueName = parts[5];
+    // FIFO SQS queues can only subscribe to FIFO SNS topics, whose names
+    // AWS requires to end in `.fifo`. Detect from the queue name suffix
+    // and append to the topic name if the caller didn't.
+    const isFifo = queueName.endsWith('.fifo');
+    const fullTopicName =
+      isFifo && !topicName.endsWith('.fifo') ? `${topicName}.fifo` : topicName;
+    const derivedArn = `arn:${partition}:sns:${region}:${accountId}:${fullTopicName}`;
 
     const sns = new SNS({endpoint});
     try {
       await sns.getTopicAttributes({TopicArn: derivedArn});
-      return new Topic(derivedArn, topicName, subjectName, endpoint);
+      return new Topic(derivedArn, fullTopicName, subjectName, endpoint);
     } catch (err) {
       if (err instanceof NotFoundException) {
-        return await Topic.createTopic(topicName, subjectName, endpoint);
+        return await Topic.createTopic(fullTopicName, subjectName, endpoint);
       }
       throw err;
     }

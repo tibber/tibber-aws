@@ -70,6 +70,24 @@ describe('Topic.getOrCreateTopic (integration with Floci/LocalStack)', () => {
 
     expect(second.topicArn).toBe(first.topicArn);
   });
+
+  it('auto-appends .fifo to the topic name when the queue ARN is FIFO', async () => {
+    // Construct a fake FIFO queue ARN — getOrCreateTopic only inspects the
+    // ARN suffix, not the underlying queue. Pair with an SNS endpoint that
+    // accepts arbitrary topic names (Floci).
+    const fifoQueueArn = 'arn:aws:sqs:eu-west-1:000000000000:fake-queue.fifo';
+    const topicName = uniqueName('goc-fifo');
+
+    const topic = await Topic.getOrCreateTopic(
+      topicName,
+      undefined,
+      fifoQueueArn,
+      awsEndpointUrl
+    );
+
+    expect(topic.name).toBe(`${topicName}.fifo`);
+    expect(topic.topicArn.endsWith('.fifo')).toBe(true);
+  });
 });
 
 describe('Queue.subscribeTopic (integration with Floci/LocalStack)', () => {
