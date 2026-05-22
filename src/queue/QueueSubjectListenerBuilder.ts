@@ -22,12 +22,12 @@ export class QueueSubjectListenerBuilder {
   async build() {
     if (!this.queueName) throw new Error('"queueName" must be specified');
 
-    const queue = await Queue.createQueue(this.queueName);
+    const queue = await Queue.getOrCreateQueue(this.queueName);
 
     for (const t of this.topics) {
       let topic;
       if (!(t instanceof Topic)) {
-        topic = await Topic.createTopic(t.name, t.subject);
+        topic = await Topic.getOrCreateTopic(t.name, t.subject, queue.queueArn);
       } else {
         topic = t;
       }

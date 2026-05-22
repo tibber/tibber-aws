@@ -2,6 +2,7 @@ import {SNS} from '@aws-sdk/client-sns';
 import {
   ChangeMessageVisibilityCommandInput,
   DeleteMessageCommandInput,
+  QueueDoesNotExist,
   ReceiveMessageCommandInput,
   SendMessageCommandInput,
   SQS,
@@ -75,6 +76,10 @@ export class Queue {
       return await this.sns.subscribe(params);
     };
 
+    if (await this.isAlreadySubscribed(topic.topicArn)) {
+      return;
+    }
+
     const response = await this.sqs.getQueueAttributes({
       AttributeNames: ['All'],
       QueueUrl: this.queueUrl,
@@ -146,6 +151,51 @@ export class Queue {
     return new Queue(queue.QueueUrl, response.Attributes.QueueArn, endpoint);
   }
 
+  /**
+   * Returns a Queue instance for an already-existing queue.
+   * Only requires `sqs:GetQueueUrl` — no write permissions needed.
+   * Throws {@link QueueDoesNotExist} if the queue is not present; use
+   * {@link getOrCreateQueue} when the queue may need to be created.
+   */
+  static async getQueue(queueName: string, endpoint?: string) {
+    const sqs = new SQS({endpoint});
+    const result = await sqs.getQueueUrl({QueueName: queueName});
+
+    if (!result.QueueUrl)
+      throw Error(`Could not resolve URL for queue "${queueName}".`);
+
+    const region = await sqs.config.region();
+    const url = new URL(result.QueueUrl);
+    // AWS:         https://sqs.{region}.amazonaws.com/{accountId}/{queueName}
+    // LocalStack:  http://localhost:4566/{accountId}/{queueName}
+    const parts = url.pathname.split('/').filter(Boolean);
+    if (parts.length < 2)
+      throw Error(`Unexpected queue URL format: ${result.QueueUrl}`);
+
+    const accountId = parts[0];
+    const name = parts[parts.length - 1];
+    const queueArn = `arn:aws:sqs:${region}:${accountId}:${name}`;
+
+    return new Queue(result.QueueUrl, queueArn, endpoint);
+  }
+
+  /**
+   * Resolves an existing queue or creates it if missing. The common path
+   * (queue exists) only needs `sqs:GetQueueUrl`, so debugging against
+   * production with read-only credentials works without falling back to
+   * `sqs:CreateQueue`. Deploy-time first runs still create the queue.
+   */
+  static async getOrCreateQueue(queueName: string, endpoint?: string) {
+    try {
+      return await Queue.getQueue(queueName, endpoint);
+    } catch (err) {
+      if (err instanceof QueueDoesNotExist) {
+        return await Queue.createQueue(queueName, endpoint);
+      }
+      throw err;
+    }
+  }
+
   async receiveMessage(params: Omit<ReceiveMessageCommandInput, 'QueueUrl'>) {
     return await this.sqs.receiveMessage({
       ...params,
@@ -171,5 +221,29 @@ export class Queue {
       VisibilityTimeout: visibilityTimeout,
     };
     await this.sqs.changeMessageVisibility(request);
+  }
+
+  /**
+   * Returns true if an `sqs` subscription from `topicArn` to this queue's ARN
+   * already exists. Used to skip the write-heavy subscribe flow when the
+   * topology is already in place — needs only `sns:ListSubscriptionsByTopic`.
+   */
+  private async isAlreadySubscribed(topicArn: string): Promise<boolean> {
+    let nextToken: string | undefined;
+    do {
+      const result = await this.sns.listSubscriptionsByTopic({
+        TopicArn: topicArn,
+        NextToken: nextToken,
+      });
+      if (
+        result.Subscriptions?.some(
+          s => s.Protocol === 'sqs' && s.Endpoint === this.queueArn
+        )
+      ) {
+        return true;
+      }
+      nextToken = result.NextToken;
+    } while (nextToken);
+    return false;
   }
 }

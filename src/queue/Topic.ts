@@ -1,4 +1,8 @@
-import {MessageAttributeValue, SNS} from '@aws-sdk/client-sns';
+import {
+  MessageAttributeValue,
+  NotFoundException,
+  SNS,
+} from '@aws-sdk/client-sns';
 
 export class Topic {
   public sns: SNS;
@@ -29,6 +33,40 @@ export class Topic {
     }
 
     return new Topic(topicResponse.TopicArn, topicName, subjectName, endpoint);
+  }
+
+  /**
+   * Resolves an existing topic by deriving its ARN from a co-located SQS
+   * queue ARN and verifying it exists via `sns:GetTopicAttributes`.
+   * Falls back to `sns:CreateTopic` if missing.
+   *
+   * The common path (topic exists) only needs read permissions, so debugging
+   * against production with read-only credentials does not require
+   * `sns:CreateTopic`. Deploy-time first runs still create the topic.
+   */
+  static async getOrCreateTopic(
+    topicName: string,
+    subjectName: string | undefined,
+    queueArn: string,
+    endpoint?: string
+  ) {
+    const parts = queueArn.split(':');
+    // arn:aws:sqs:<region>:<accountId>:<queueName>
+    //  0   1   2      3        4           5
+    const region = parts[3];
+    const accountId = parts[4];
+    const derivedArn = `arn:aws:sns:${region}:${accountId}:${topicName}`;
+
+    const sns = new SNS({endpoint});
+    try {
+      await sns.getTopicAttributes({TopicArn: derivedArn});
+      return new Topic(derivedArn, topicName, subjectName, endpoint);
+    } catch (err) {
+      if (err instanceof NotFoundException) {
+        return await Topic.createTopic(topicName, subjectName, endpoint);
+      }
+      throw err;
+    }
   }
 
   async push(
