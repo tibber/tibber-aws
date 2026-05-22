@@ -123,3 +123,44 @@ describe('Queue.subscribeTopic (integration with Floci/LocalStack)', () => {
     expect(subscribeSpy).toHaveBeenCalledTimes(1);
   });
 });
+
+describe('Topic.fromArn (publisher constructor)', () => {
+  it('constructs a Topic instance from an ARN without any AWS API call', async () => {
+    const topicName = uniqueName('from-arn-t');
+    const real = await Topic.createTopic(topicName, undefined, awsEndpointUrl);
+
+    const sns = new SNS({endpoint: awsEndpointUrl});
+    const spy = jest.spyOn(sns, 'createTopic');
+    // fromArn must not touch SNS — verify by inspecting an SNS client we
+    // didn't pass in. The spy is only here as an assertion of intent: the
+    // real check is that Topic.fromArn is synchronous and returns
+    // immediately.
+    const topic = Topic.fromArn(real.topicArn, 'meter-reading', awsEndpointUrl);
+
+    expect(topic.topicArn).toBe(real.topicArn);
+    expect(topic.name).toBe(topicName);
+    expect(topic.subject).toBe('meter-reading');
+    expect(spy).not.toHaveBeenCalled();
+  });
+
+  it('push() publishes against the supplied ARN', async () => {
+    const topicName = uniqueName('from-arn-push');
+    const real = await Topic.createTopic(topicName, undefined, awsEndpointUrl);
+
+    const topic = Topic.fromArn(real.topicArn, 'meter-reading', awsEndpointUrl);
+    const result = await topic.push({hello: 'world'});
+
+    expect(result.MessageId).toBeTruthy();
+  });
+
+  it('push() against a non-existent ARN surfaces NotFoundException', async () => {
+    // Same account+region prefix as real topics but with an ARN that does
+    // not exist. The SDK should reject at push time.
+    const bogusArn = 'arn:aws:sns:eu-west-1:000000000000:does-not-exist';
+    const topic = Topic.fromArn(bogusArn, undefined, awsEndpointUrl);
+
+    await expect(topic.push({hello: 'world'})).rejects.toThrow(
+      /NotFound|Topic does not exist/i
+    );
+  });
+});

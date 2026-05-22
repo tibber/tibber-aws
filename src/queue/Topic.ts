@@ -36,6 +36,24 @@ export class Topic {
   }
 
   /**
+   * Constructs a Topic instance from a known ARN — no AWS API call, no
+   * permissions required. Intended for the publisher flow when the topic is
+   * managed out-of-band (Terraform, prior deploy). The topic name is taken
+   * from the last segment of the ARN.
+   *
+   * Publishing via {@link push} still requires `sns:Publish` at the time of
+   * the call; if the topic does not exist the SDK throws `NotFoundException`
+   * at publish time, which is the right place to surface the misconfig.
+   *
+   * Use {@link getOrCreateTopic} instead when the topic may need to be
+   * created on first deploy and a co-located queue ARN is available.
+   */
+  static fromArn(topicArn: string, subject?: string, endpoint?: string) {
+    const name = topicArn.split(':').at(-1) ?? '';
+    return new Topic(topicArn, name, subject, endpoint);
+  }
+
+  /**
    * Resolves an existing topic by deriving its ARN from a co-located SQS
    * queue ARN and verifying it exists via `sns:GetTopicAttributes`.
    * Falls back to `sns:CreateTopic` if missing.
