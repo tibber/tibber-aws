@@ -44,7 +44,7 @@ export class Topic {
   }
 
   /**
-   * Constructs a Topic from (name, accountId, region). No AWS API call.
+   * Constructs a Topic from (name, accountId, region).
    * For FIFO topics, `topicName` must already include the `.fifo` suffix.
    */
   static fromName(
