@@ -24,7 +24,7 @@ listener.onSubject('test', async (message, subject) => {
 listener.listen();
 ```
 
-## Usage
+## Usage — application owns the queue/topic
 
 ```
 import {Topic, Queue} from 'tibber-aws';
@@ -48,4 +48,29 @@ const listener = new QueueSubjectListener(queue);
 listener.handlers = [handlerFunction];
 listener.listen();
 
+```
+
+## Usage — Terraform owns the queue/topic
+
+For services where the queue, topic, and subscription are provisioned by
+Terraform. The application attaches to existing resources.
+
+Required IAM (consumer): `sqs:GetQueueUrl`, `sqs:ReceiveMessage`,
+`sqs:DeleteMessage`, `sqs:ChangeMessageVisibility`.
+Required IAM (publisher): `sns:Publish`.
+
+```ts
+import {AttachedQueueListenerBuilder, Queue, Topic} from 'tibber-aws';
+
+// Consumer
+const queue = await Queue.attach('test-queue');
+const listener = new AttachedQueueListenerBuilder(queue).build();
+listener.onSubject('test subject', async (message, subject) => {
+  // handle message
+});
+listener.listen();
+
+// Publisher
+const topic = Topic.fromArn(process.env.TOPIC_ARN!, 'test subject');
+await topic.push({test: 'test'});
 ```
