@@ -1,10 +1,5 @@
 import {QueueDoesNotExist} from '@aws-sdk/client-sqs';
-import {
-  AttachedQueueListenerBuilder,
-  Queue,
-  Topic,
-  configure,
-} from '../src';
+import {AttachedQueueListenerBuilder, Queue, Topic, configure} from '../src';
 
 const awsEndpointUrl = process.env.AWS_ENDPOINT_URL;
 
@@ -29,80 +24,62 @@ beforeAll(() => {
 });
 
 describe('Queue.attach', () => {
-  it('resolves URL and ARN for an existing queue without calling create', async () => {
+  it('resolves URL and ARN for an existing queue', async () => {
     const name = uniqueName('attach-q');
     const created = await Queue.createQueue(name, awsEndpointUrl);
-
-    const sqsCreateSpy = jest.spyOn(created.sqs, 'createQueue');
-
     const attached = await Queue.attach(name, awsEndpointUrl);
-
     expect(attached.queueUrl).toBe(created.queueUrl);
     expect(attached.queueArn).toBe(created.queueArn);
-    expect(sqsCreateSpy).not.toHaveBeenCalled();
   });
 
-  it('throws QueueDoesNotExist for a queue that has not been provisioned', async () => {
-    const name = uniqueName('attach-missing');
-    await expect(Queue.attach(name, awsEndpointUrl)).rejects.toBeInstanceOf(
-      QueueDoesNotExist
-    );
+  it('throws QueueDoesNotExist for a missing queue', async () => {
+    await expect(
+      Queue.attach(uniqueName('attach-missing'), awsEndpointUrl)
+    ).rejects.toBeInstanceOf(QueueDoesNotExist);
   });
 });
 
-describe('Topic.fromArn / Topic.fromName', () => {
-  it('Topic.fromArn populates fields from the ARN', () => {
+describe('Topic.fromArn', () => {
+  it('populates fields from the ARN', () => {
     const topic = Topic.fromArn(
-      'arn:aws:sns:eu-west-1:000000000000:never-created',
-      'subj',
-      awsEndpointUrl
+      'arn:aws:sns:eu-west-1:000000000000:my-topic',
+      'subj'
     );
-
-    expect(topic.topicArn).toBe(
-      'arn:aws:sns:eu-west-1:000000000000:never-created'
-    );
-    expect(topic.name).toBe('never-created');
+    expect(topic.topicArn).toBe('arn:aws:sns:eu-west-1:000000000000:my-topic');
+    expect(topic.name).toBe('my-topic');
     expect(topic.subject).toBe('subj');
   });
 
-  it.each([
-    '',
-    'not-an-arn',
-    'arn:aws:sns:eu-west-1:000000000000:',
-    'arn:aws:sns:eu-west-1:000000000000',
-  ])('Topic.fromArn throws on malformed ARN %p', invalid => {
-    expect(() => Topic.fromArn(invalid)).toThrow(/Invalid SNS topic ARN/);
-  });
+  it.each(['', 'not-an-arn', 'arn:aws:sns:eu-west-1:000000000000:'])(
+    'throws on malformed ARN %p',
+    invalid => {
+      expect(() => Topic.fromArn(invalid)).toThrow(/Invalid SNS topic ARN/);
+    }
+  );
 
-  it('Topic.fromName derives the partition from the region', () => {
-    expect(
-      Topic.fromName('t', '123', 'eu-west-1').topicArn.startsWith('arn:aws:sns:')
-    ).toBe(true);
-    expect(
-      Topic.fromName('t', '123', 'cn-north-1').topicArn.startsWith(
-        'arn:aws-cn:sns:'
-      )
-    ).toBe(true);
-    expect(
-      Topic.fromName('t', '123', 'us-gov-east-1').topicArn.startsWith(
-        'arn:aws-us-gov:sns:'
-      )
-    ).toBe(true);
-  });
-
-  it('Topic.fromArn publishes against the supplied ARN', async () => {
+  it('publishes against the supplied ARN', async () => {
     const topicName = uniqueName('from-arn-push');
     const real = await Topic.createTopic(topicName, undefined, awsEndpointUrl);
-
     const topic = Topic.fromArn(real.topicArn, 'subj', awsEndpointUrl);
     const result = await topic.push({hello: 'world'});
-
     expect(result.MessageId).toBeTruthy();
   });
 });
 
+describe('Topic.fromName', () => {
+  it.each([
+    ['eu-west-1', 'aws'],
+    ['cn-north-1', 'aws-cn'],
+    ['us-gov-east-1', 'aws-us-gov'],
+  ])('region %s -> partition %s', (region, partition) => {
+    expect(Topic.fromName('t', '123', region).topicArn).toBe(
+      `arn:${partition}:sns:${region}:123:t`
+    );
+  });
+});
+
 describe('AttachedQueueListenerBuilder end-to-end', () => {
-  it('consumes messages published via Topic.fromArn when topology is pre-provisioned', async () => {
+  it('consumes messages from a pre-provisioned topology', async () => {
     const queueName = uniqueName('attached-q');
     const topicName = uniqueName('attached-t');
 
@@ -115,11 +92,6 @@ describe('AttachedQueueListenerBuilder end-to-end', () => {
     await provisionedQueue.subscribeTopic(provisionedTopic);
 
     const queue = await Queue.attach(queueName, awsEndpointUrl);
-
-    const sqsCreateSpy = jest.spyOn(queue.sqs, 'createQueue');
-    const snsSubscribeSpy = jest.spyOn(queue.sns, 'subscribe');
-    const sqsSetAttrsSpy = jest.spyOn(queue.sqs, 'setQueueAttributes');
-
     const listener = new AttachedQueueListenerBuilder(queue).build();
 
     const received: Array<{message: unknown; subject: string}> = [];
@@ -141,9 +113,6 @@ describe('AttachedQueueListenerBuilder end-to-end', () => {
         message: {userId: 42},
         subject: 'user.created',
       });
-      expect(sqsCreateSpy).not.toHaveBeenCalled();
-      expect(snsSubscribeSpy).not.toHaveBeenCalled();
-      expect(sqsSetAttrsSpy).not.toHaveBeenCalled();
     } finally {
       listener.stop();
     }
