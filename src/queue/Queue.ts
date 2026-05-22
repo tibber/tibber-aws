@@ -65,7 +65,15 @@ export class Queue {
       return;
     }
 
-    this._arnMap[topic.topicArn] = true;
+    // An existing subscription is taken to imply the queue policy already
+    // permits sqs:SendMessage from this topic's ARN. If a subscription was
+    // created out-of-band (e.g. via the AWS console) without the matching
+    // policy entry, message delivery will silently fail; recreate the
+    // subscription via this listener to heal it.
+    if (await this.isAlreadySubscribed(topic.topicArn)) {
+      this._arnMap[topic.topicArn] = true;
+      return;
+    }
 
     const subFunc = async () => {
       const params = {
@@ -75,10 +83,6 @@ export class Queue {
       };
       return await this.sns.subscribe(params);
     };
-
-    if (await this.isAlreadySubscribed(topic.topicArn)) {
-      return;
-    }
 
     const response = await this.sqs.getQueueAttributes({
       AttributeNames: ['All'],
@@ -106,19 +110,16 @@ export class Queue {
       statement.Condition.ArnLike['aws:SourceArn'] = sourceArns;
     }
 
-    if (sourceArns.filter(a => a === topic.topicArn).length > 0) {
-      await subFunc();
-      return;
+    if (!sourceArns.includes(topic.topicArn)) {
+      sourceArns.push(topic.topicArn);
+      await this.sqs.setQueueAttributes({
+        Attributes: {Policy: JSON.stringify(policy)},
+        QueueUrl: this.queueUrl,
+      });
     }
 
-    sourceArns.push(topic.topicArn);
-
-    await this.sqs.setQueueAttributes({
-      Attributes: {Policy: JSON.stringify(policy)},
-      QueueUrl: this.queueUrl,
-    });
-
     await subFunc();
+    this._arnMap[topic.topicArn] = true;
   }
 
   async send(subject: string, message: unknown, delaySeconds = 0) {
@@ -165,15 +166,20 @@ export class Queue {
       throw Error(`Could not resolve URL for queue "${queueName}".`);
 
     const region = await sqs.config.region();
+    if (!region)
+      throw Error(
+        'AWS region is not configured; cannot derive queue ARN. ' +
+          'Set AWS_REGION or configure the SDK with a region.'
+      );
+
     const url = new URL(result.QueueUrl);
-    // AWS:         https://sqs.{region}.amazonaws.com/{accountId}/{queueName}
-    // LocalStack:  http://localhost:4566/{accountId}/{queueName}
+    // AWS:        https://sqs.{region}.amazonaws.com/{accountId}/{queueName}
+    // LocalStack: http://localhost:4566/{accountId}/{queueName}
     const parts = url.pathname.split('/').filter(Boolean);
-    if (parts.length < 2)
+    if (parts.length !== 2)
       throw Error(`Unexpected queue URL format: ${result.QueueUrl}`);
 
-    const accountId = parts[0];
-    const name = parts[parts.length - 1];
+    const [accountId, name] = parts;
     const queueArn = `arn:aws:sqs:${region}:${accountId}:${name}`;
 
     return new Queue(result.QueueUrl, queueArn, endpoint);

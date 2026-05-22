@@ -91,11 +91,15 @@ describe('Queue.subscribeTopic (integration with Floci/LocalStack)', () => {
     // short-circuit must come from isAlreadySubscribed, not the in-memory dedup.
     const probe = await Queue.getOrCreateQueue(queueName, awsEndpointUrl);
 
+    const listSubsSpy = jest.spyOn(probe.sns, 'listSubscriptionsByTopic');
     const setAttrsSpy = jest.spyOn(probe.sqs, 'setQueueAttributes');
     const subscribeSpy = jest.spyOn(probe.sns, 'subscribe');
 
     await probe.subscribeTopic(topic);
 
+    // Positive: short-circuit reached via isAlreadySubscribed, not via the
+    // in-memory _arnMap dedup (which is empty on a fresh Queue instance).
+    expect(listSubsSpy).toHaveBeenCalled();
     expect(setAttrsSpy).not.toHaveBeenCalled();
     expect(subscribeSpy).not.toHaveBeenCalled();
   });
