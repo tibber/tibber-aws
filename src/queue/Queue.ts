@@ -32,6 +32,12 @@ type PolicyTemplate = {
   Version: '2012-10-17';
 };
 
+const partitionFromRegion = (region: string): string => {
+  if (region.startsWith('cn-')) return 'aws-cn';
+  if (region.startsWith('us-gov-')) return 'aws-us-gov';
+  return 'aws';
+};
+
 const policyTemplate: PolicyTemplate = {
   Statement: [
     {
@@ -174,13 +180,15 @@ export class Queue {
 
     const url = new URL(result.QueueUrl);
     // AWS:        https://sqs.{region}.amazonaws.com/{accountId}/{queueName}
+    // AWS China:  https://sqs.{region}.amazonaws.com.cn/{accountId}/{queueName}
     // LocalStack: http://localhost:4566/{accountId}/{queueName}
     const parts = url.pathname.split('/').filter(Boolean);
     if (parts.length !== 2)
       throw Error(`Unexpected queue URL format: ${result.QueueUrl}`);
 
     const [accountId, name] = parts;
-    const queueArn = `arn:aws:sqs:${region}:${accountId}:${name}`;
+    const partition = partitionFromRegion(region);
+    const queueArn = `arn:${partition}:sqs:${region}:${accountId}:${name}`;
 
     return new Queue(result.QueueUrl, queueArn, endpoint);
   }

@@ -69,11 +69,12 @@ export class Topic {
     endpoint?: string
   ) {
     const parts = queueArn.split(':');
-    // arn:aws:sqs:<region>:<accountId>:<queueName>
-    //  0   1   2      3        4           5
+    // arn:<partition>:sqs:<region>:<accountId>:<queueName>
+    //  0      1       2      3         4            5
+    const partition = parts[1];
     const region = parts[3];
     const accountId = parts[4];
-    const derivedArn = `arn:aws:sns:${region}:${accountId}:${topicName}`;
+    const derivedArn = `arn:${partition}:sns:${region}:${accountId}:${topicName}`;
 
     const sns = new SNS({endpoint});
     try {
