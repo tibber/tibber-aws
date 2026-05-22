@@ -1,4 +1,3 @@
-import {SNS} from '@aws-sdk/client-sns';
 import {QueueDoesNotExist} from '@aws-sdk/client-sqs';
 import {
   AttachedQueueListenerBuilder,
@@ -52,10 +51,7 @@ describe('Queue.attach', () => {
 });
 
 describe('Topic.fromArn / Topic.fromName', () => {
-  it('Topic.fromArn does not call SNS to construct', async () => {
-    const sns = new SNS({endpoint: awsEndpointUrl});
-    const spy = jest.spyOn(sns, 'createTopic');
-
+  it('Topic.fromArn populates fields from the ARN', () => {
     const topic = Topic.fromArn(
       'arn:aws:sns:eu-west-1:000000000000:never-created',
       'subj',
@@ -67,7 +63,15 @@ describe('Topic.fromArn / Topic.fromName', () => {
     );
     expect(topic.name).toBe('never-created');
     expect(topic.subject).toBe('subj');
-    expect(spy).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    '',
+    'not-an-arn',
+    'arn:aws:sns:eu-west-1:000000000000:',
+    'arn:aws:sns:eu-west-1:000000000000',
+  ])('Topic.fromArn throws on malformed ARN %p', invalid => {
+    expect(() => Topic.fromArn(invalid)).toThrow(/Invalid SNS topic ARN/);
   });
 
   it('Topic.fromName derives the partition from the region', () => {
