@@ -38,8 +38,10 @@ export class Topic {
    * The topic name is taken from the last segment of the ARN.
    */
   static fromArn(topicArn: string, subject?: string, endpoint?: string) {
-    const name = topicArn.split(':').at(-1) ?? '';
-    return new Topic(topicArn, name, subject, endpoint);
+    const parts = topicArn.split(':');
+    if (parts.length < 6 || !parts[5])
+      throw Error(`Invalid SNS topic ARN: "${topicArn}".`);
+    return new Topic(topicArn, parts[5], subject, endpoint);
   }
 
   /**
