@@ -1,3 +1,4 @@
+export * from './AttachedQueueListenerBuilder';
 export * from './Queue';
 export * from './QueueSubjectListener';
 export * from './QueueSubjectListenerBuilder';
