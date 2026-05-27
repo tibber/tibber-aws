@@ -58,7 +58,7 @@
     "yaml": "2.9.0",
     "**/libnpmdiff/diff": "8.0.4",
     "**/ts-node/diff": "4.0.4",
-    "tmp": "0.2.6"
+    "tmp": "0.2.7"
   },
   "dependencies": {
     "@aws-sdk/client-lambda": "^3.1013.0",
