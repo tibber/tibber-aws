@@ -6821,9 +6821,9 @@ undici-types@~7.19.0:
   integrity sha512-qYVnV5OEm2AW8cJMCpdV20CDyaN3g0AjDlOGf1OW4iaDEx8MwdtChUp4zu4H0VP3nDRF/8RKWH+IPp9uW0YGZg==
 
 undici@^5.25.4, undici@^7.0.0, undici@^7.24.4:
-  version "7.26.0"
-  resolved "https://registry.yarnpkg.com/undici/-/undici-7.26.0.tgz#d413a2b5752e3e71e003bb268dec32b9a0ad0ce7"
-  integrity sha512-3O9Tf67pGhgOv9jM35AbhkXAKi13f3oy3aE4CSgr+TckGeY+/iu97ZXN+J7DpHPzLbVApFd1IFhcnBjREYXYcg==
+  version "7.27.0"
+  resolved "https://registry.yarnpkg.com/undici/-/undici-7.27.0.tgz#8f1d99dfc28273fe8a5736aa93a507850fda78c9"
+  integrity sha512-+t2Z/GwkZQDtu00813aP66ygViGtPHKhhoFZpQKpKrE+9jIgES+Zw+mFNaDWOVRKiuJjuqKHzD3B1sfGg8+ZOQ==
 
 unicode-emoji-modifier-base@^1.0.0:
   version "1.0.0"
