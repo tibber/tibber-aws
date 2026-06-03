@@ -188,16 +188,16 @@
     tslib "^2.6.2"
 
 "@aws-sdk/core@^3.973.15", "@aws-sdk/core@^3.974.15":
-  version "3.974.15"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/core/-/core-3.974.15.tgz#841395d805ed33b8e4f30b1b86749922a0c6a058"
-  integrity sha512-UpA0rTGW/tHGITcCqHisbuuEPraYg9GG+mWmXjY5+RxZBMLGe6aL9oe0ix50LztwAcPIkGZLH0yWdMIkCM10hw==
+  version "3.974.16"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/core/-/core-3.974.16.tgz#00a0feb6ca71ad8d3ce72d8871bb6a2553bd6f5e"
+  integrity sha512-WXPvTfG7J2H4Ae6ewhd0285UC+8+9p/pKoibXXQlbXSqHexFLGM0oXHTwDfQEPmrNnvuWPpVjgoAUfW+cUFbXw==
   dependencies:
-    "@aws-sdk/types" "^3.973.9"
-    "@aws-sdk/xml-builder" "^3.972.26"
+    "@aws-sdk/types" "^3.973.10"
+    "@aws-sdk/xml-builder" "^3.972.27"
     "@aws/lambda-invoke-store" "^0.2.2"
-    "@smithy/core" "^3.24.5"
-    "@smithy/signature-v4" "^5.4.5"
-    "@smithy/types" "^4.14.2"
+    "@smithy/core" "^3.24.6"
+    "@smithy/signature-v4" "^5.4.6"
+    "@smithy/types" "^4.14.3"
     bowser "^2.11.0"
     tslib "^2.6.2"
 
@@ -431,7 +431,15 @@
     "@smithy/types" "^4.14.2"
     tslib "^2.6.2"
 
-"@aws-sdk/types@^3.222.0", "@aws-sdk/types@^3.973.9":
+"@aws-sdk/types@^3.222.0", "@aws-sdk/types@^3.973.10":
+  version "3.973.10"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/types/-/types-3.973.10.tgz#e0b6ab8b631aba7ac97b0ea14e06d6531926ee40"
+  integrity sha512-992QrTO7G9qCvKD0fx1rMlqcL14plUcRAbwmqqYVsuF3GrqcvlAL9qxR+baMafarEZ+l7DUQ5lCMmt5mbMhF7g==
+  dependencies:
+    "@smithy/types" "^4.14.3"
+    tslib "^2.6.2"
+
+"@aws-sdk/types@^3.973.9":
   version "3.973.9"
   resolved "https://registry.yarnpkg.com/@aws-sdk/types/-/types-3.973.9.tgz#7d1c08cc6e82ec2ac2f2da102a7dd55806592f7f"
   integrity sha512-kuBfgQVdcz5Bmapc4A13YbpVw/pXkesfhetcFYwbntqas8sF41OHyd4o28+/TG2ZQdHBsv90Lsu5y6oitvYCdg==
@@ -446,12 +454,12 @@
   dependencies:
     tslib "^2.6.2"
 
-"@aws-sdk/xml-builder@^3.972.26":
-  version "3.972.26"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/xml-builder/-/xml-builder-3.972.26.tgz#949366fe7c195f676f0ab9e002dd95b70942410c"
-  integrity sha512-cDbrqvDS73whl6YAPSPq0U6whzG6UWI9PuWh0wrUuGoZexhWEqhdunbukV7iBoaWnFV1AODutM5hOD6rtn439g==
+"@aws-sdk/xml-builder@^3.972.27":
+  version "3.972.27"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/xml-builder/-/xml-builder-3.972.27.tgz#b2d23f42b4de05cf6b28f0982a0925e5309232d8"
+  integrity sha512-hpsCXCOI436kxWpjtRuIHVvuPP81MOw8f18jzfZeg+UOiiOvlqWcmWChzEhJEu16cOC6+ku4ncBN+7rdt+DZ9g==
   dependencies:
-    "@smithy/types" "^4.14.2"
+    "@smithy/types" "^4.14.3"
     fast-xml-parser "5.7.3"
     tslib "^2.6.2"
 
@@ -1727,7 +1735,7 @@
     "@smithy/types" "^4.14.3"
     tslib "^2.6.2"
 
-"@smithy/signature-v4@^5.4.5":
+"@smithy/signature-v4@^5.4.5", "@smithy/signature-v4@^5.4.6":
   version "5.4.6"
   resolved "https://registry.yarnpkg.com/@smithy/signature-v4/-/signature-v4-5.4.6.tgz#5d2b98aa10e629b6aef36f2289226df81ba4c98e"
   integrity sha512-Ojg4B6oIDlIr1R86xCDJt1zJWnYa0VINmqdjfe9qxWjdRivHalZ3iSlQgVqYbW0MdpFOC5XfHEWsnbmdnpIILQ==
