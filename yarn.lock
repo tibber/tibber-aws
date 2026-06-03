@@ -188,9 +188,9 @@
     tslib "^2.6.2"
 
 "@aws-sdk/core@^3.973.15", "@aws-sdk/core@^3.974.15":
-  version "3.974.16"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/core/-/core-3.974.16.tgz#00a0feb6ca71ad8d3ce72d8871bb6a2553bd6f5e"
-  integrity sha512-WXPvTfG7J2H4Ae6ewhd0285UC+8+9p/pKoibXXQlbXSqHexFLGM0oXHTwDfQEPmrNnvuWPpVjgoAUfW+cUFbXw==
+  version "3.974.17"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/core/-/core-3.974.17.tgz#557e3b1e3db520d6f0cb1cbde385ab606e6d1837"
+  integrity sha512-r8o4h2K7j6P9ngno+8ei0aK0U/4JwDb7A2fMMxGVoSqDN8AFlIzSDeZHME9LcVLR2codyhtr1WAAg+/nmkeeMA==
   dependencies:
     "@aws-sdk/types" "^3.973.10"
     "@aws-sdk/xml-builder" "^3.972.27"
