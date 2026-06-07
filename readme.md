@@ -24,6 +24,27 @@ listener.onSubject('test', async (message, subject) => {
 listener.listen();
 ```
 
+## Running tests
+
+Tests are integration tests that run against [Floci](https://github.com/hectorvent/floci), a local AWS emulator. Docker is required.
+
+**1. Start Floci:**
+```sh
+docker compose -f docker-compose-test.yml up -d
+```
+
+**2. Run tests:**
+```sh
+yarn test
+```
+
+**3. Stop Floci when done:**
+```sh
+docker compose -f docker-compose-test.yml down
+```
+
+> No AWS credentials or profile are needed — the tests use dummy credentials and point to `http://localhost:4566`.
+
 ## Usage
 
 ```
