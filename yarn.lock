@@ -198,9 +198,9 @@
     tslib "^2.6.2"
 
 "@aws-sdk/core@^3.973.15", "@aws-sdk/core@^3.974.21":
-  version "3.974.21"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/core/-/core-3.974.21.tgz#bf173e6c3585dfc01e9ff6563ed12b6ad1bda330"
-  integrity sha512-P5JAHvn4dTi96UsAGS67LVOqqpUNNRhnfFXqzCYtdBIGZtqBue4CXvRr9YenOO7PALj/Pn8uuyw53FBCiCYw8w==
+  version "3.974.22"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/core/-/core-3.974.22.tgz#924157ab67067bf874cb883ed7d306230d5a5921"
+  integrity sha512-YofH63shc6YRdXjz80BJkpJW+Bkn0Cuu2dn4Rv7s9G2Idt58tgtzQEWxrR2xVljlVfIBeUjPuULnSVYLke3sUQ==
   dependencies:
     "@aws-sdk/types" "^3.973.13"
     "@aws-sdk/xml-builder" "^3.972.30"
@@ -1680,10 +1680,10 @@
   dependencies:
     "@sinonjs/commons" "^3.0.1"
 
-"@smithy/core@^3.24.6", "@smithy/core@^3.25.0":
-  version "3.25.0"
-  resolved "https://registry.yarnpkg.com/@smithy/core/-/core-3.25.0.tgz#7247961c444311bdb19125a4802f876e16344b34"
-  integrity sha512-TTD6el7tvKyafkXBf7XO3jLOE+qVxOTrLjp/fEGiV3BMfUHK/LfdYlQO9YgZvzxC7kqA3H/IhJXNqQgnbgjb7A==
+"@smithy/core@^3.24.6", "@smithy/core@^3.25.0", "@smithy/core@^3.25.1":
+  version "3.25.1"
+  resolved "https://registry.yarnpkg.com/@smithy/core/-/core-3.25.1.tgz#93d342dd50a82973fcbb7b562f17a6f0e2a20009"
+  integrity sha512-zpDbpXBCBsxfLtG2GEUyfgvHvSFrw5CwDZSNzL0v52gx/c3oPlPbm+7W7num8xs6vyiUBn+bvYPHcQDOXZynCQ==
   dependencies:
     "@aws-crypto/crc32" "5.2.0"
     "@smithy/types" "^4.15.0"
@@ -1724,11 +1724,11 @@
     tslib "^2.6.2"
 
 "@smithy/signature-v4@^5.4.6":
-  version "5.5.0"
-  resolved "https://registry.yarnpkg.com/@smithy/signature-v4/-/signature-v4-5.5.0.tgz#12879a3a8b37a952fa1f2ba87a273830931ef99c"
-  integrity sha512-vW6UdK7e7gV2wU/tXRsPq4pMQMusb8VymdVOyIFNA1FtyRmEClRFkYDtYI8UcO/HM0wK3qqjvvQs3HOlbgMbdg==
+  version "5.5.1"
+  resolved "https://registry.yarnpkg.com/@smithy/signature-v4/-/signature-v4-5.5.1.tgz#e669088e22ded3cebc296b40e6b28cbfb37254dc"
+  integrity sha512-X9rVls3En0z3NtrmguTmpRM0/NqtWUxBjal6fcAkwtsub+gOdLZ6kD+V7xhUgFMGdG14bHbZ7M5QjaRI1+DatQ==
   dependencies:
-    "@smithy/core" "^3.25.0"
+    "@smithy/core" "^3.25.1"
     "@smithy/types" "^4.15.0"
     tslib "^2.6.2"
 
