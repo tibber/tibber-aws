@@ -198,15 +198,15 @@
     tslib "^2.6.2"
 
 "@aws-sdk/core@^3.973.15", "@aws-sdk/core@^3.974.24":
-  version "3.974.24"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/core/-/core-3.974.24.tgz#a9c325d1d088e65a0c770d3ffb4e564da9ea98a4"
-  integrity sha512-vWB/qJl21vxGKBkBN8fKPTVXgm14v/bUQWTtR5oikrfAZbIN2bxuSiCY5rRAMR4gs3vtR2Vw0aTfVDU4tdfIPg==
+  version "3.974.25"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/core/-/core-3.974.25.tgz#1479c508f912f5e34012935b2b6a49130ad9f1b6"
+  integrity sha512-fJFkx6u6wCqGMV/v6EAxiwa2UzEukbvr1hNPv4MrD3yj4IFz011jZg42/eSTOP/u5kJ0tlILqEjCWtT8GiKZvA==
   dependencies:
     "@aws-sdk/types" "^3.973.14"
     "@aws-sdk/xml-builder" "^3.972.32"
     "@aws/lambda-invoke-store" "^0.2.2"
-    "@smithy/core" "^3.27.0"
-    "@smithy/signature-v4" "^5.5.3"
+    "@smithy/core" "^3.28.0"
+    "@smithy/signature-v4" "^5.6.0"
     "@smithy/types" "^4.15.0"
     bowser "^2.11.0"
     tslib "^2.6.2"
@@ -1721,7 +1721,7 @@
     "@smithy/types" "^4.15.0"
     tslib "^2.6.2"
 
-"@smithy/signature-v4@^5.5.3":
+"@smithy/signature-v4@^5.5.3", "@smithy/signature-v4@^5.6.0":
   version "5.6.0"
   resolved "https://registry.yarnpkg.com/@smithy/signature-v4/-/signature-v4-5.6.0.tgz#9a2b5ad85888572f8c3095242aea70e917115ec7"
   integrity sha512-IkPHQdbyoebSwBCuMTzJ/2oIhKVqiZZAZxQYSlpDZqq/WhJUpmdgbHvP7ItddxsPzcDUJeI0V4PNMSNtlZ0aqA==
