@@ -54,7 +54,7 @@
     "undici": "^7.24.4",
     "flatted": "^3.4.0",
     "fast-xml-parser": "~5.9.0",
-    "picomatch": "4.0.4",
+    "picomatch": "4.0.5",
     "yaml": "2.9.0",
     "**/libnpmdiff/diff": "8.0.4",
     "**/ts-node/diff": "4.0.4",
