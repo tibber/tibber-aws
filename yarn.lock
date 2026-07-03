@@ -3325,7 +3325,7 @@ get-package-type@^0.1.0:
 
 get-port@^3.1.0:
   version "3.2.0"
-  resolved "https://registry.npmjs.org/get-port/-/get-port-3.2.0.tgz"
+  resolved "https://registry.yarnpkg.com/get-port/-/get-port-3.2.0.tgz#dd7ce7de187c06c8bf353796ac71e099f0980ebc"
   integrity sha512-x5UJKlgeUiNT8nyo/AcnwLnZuZNcSjSw0kogRB+Whd1fjjFq4B1hySFxSFWWSn4mIBzg3sRNUDFYc4g5gjPoLg==
 
 get-stream@^6.0.0:
@@ -6364,9 +6364,9 @@ supports-preserve-symlinks-flag@^1.0.0:
   integrity sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==
 
 sync-rpc@^1.3.6:
-  version "1.3.6"
-  resolved "https://registry.npmjs.org/sync-rpc/-/sync-rpc-1.3.6.tgz"
-  integrity sha512-J8jTXuZzRlvU7HemDgHi3pGnh/rkoqR/OZSjhTyyZrEkkYQbk7Z33AXp37mkPfPpfdOuj7Ex3H/TJM1z48uPQw==
+  version "1.3.7"
+  resolved "https://registry.yarnpkg.com/sync-rpc/-/sync-rpc-1.3.7.tgz#a19a740cc726a1a394d986c3f90b86fc93e908e2"
+  integrity sha512-YHciI7TUxL8EPqz/bg01sZfwuzQA0odao1wf1Ywdtw7j5vl30aQ6s+bLRTvgPPgzr94cg+WMm6Bxi/P7BJOxgw==
   dependencies:
     get-port "^3.1.0"
 
