@@ -1,6 +1,10 @@
 # tibber-aws
 Thie repo is a typescript wrapper around the AWS SDK for Javascript.
 
+> **Versioning:** releases are tag-based (semantic-release). The git tag,
+> GitHub release, and npm carry the real version — the in-repo
+> `package.json` version and `CHANGELOG.md` are frozen at v7.0.23.
+
 ## Version 6.x.x changes
 - Migrated to aws sdk 3.x
 - Removed ECS Api
