@@ -78,4 +78,6 @@ jobs:
             fi
             NPM_ID_TOKEN=$(circleci run oidc get --claims '{"aud": "npm:registry.npmjs.org"}')
             export NPM_ID_TOKEN
+            # Provenance is emitted automatically under trusted publishing —
+            # no --provenance flag needed.
             npm publish
