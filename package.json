@@ -28,8 +28,6 @@
   "author": "tibber",
   "license": "ISC",
   "devDependencies": {
-    "@semantic-release/changelog": "^6.0.3",
-    "@semantic-release/git": "^10.0.0",
     "@types/jest": "^29.5.8",
     "@types/jszip": "^3.4.1",
     "@types/node": "20.19.43",
