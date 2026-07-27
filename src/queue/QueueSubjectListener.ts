@@ -1,6 +1,6 @@
 import {
   ReceiveMessageCommandInput,
-  QueueAttributeName,
+  MessageSystemAttributeName,
 } from '@aws-sdk/client-sqs';
 import {ILogger} from '../ILogger';
 import {LoggerWrapper} from '../LoggerWrapper';
@@ -56,6 +56,17 @@ const decompressGzip = async (base64Message: string) => {
   const buffer = Buffer.from(base64Message, 'base64');
   const decompressed = await gunzipAsync(Uint8Array.from(buffer));
   return JSON.parse(decompressed.toString('utf-8'));
+};
+
+/**
+ * Publishers send to SNS, which delivers to the queue without raw message
+ * delivery, so the SQS message body is the SNS envelope and the message
+ * attributes sit inside it rather than on the SQS message itself.
+ */
+type SnsEnvelope = {
+  Subject: string;
+  Message: string;
+  MessageAttributes?: Record<string, {Type?: string; Value?: string}>;
 };
 
 export class QueueSubjectListener {
@@ -130,7 +141,8 @@ export class QueueSubjectListener {
           MaxNumberOfMessages: maxNumberOfMessagesOrUndefined,
           VisibilityTimeout,
           WaitTimeSeconds,
-          AttributeNames: [QueueAttributeName.All],
+          // not overridable: the retry policy reads ApproximateReceiveCount
+          MessageSystemAttributeNames: [MessageSystemAttributeName.All],
         };
 
         const response = await this.queue.receiveMessage(currentParams);
@@ -147,7 +159,7 @@ export class QueueSubjectListener {
                 `Message with ID '${m.MessageId}' has no Body defined.`
               );
 
-            const json = JSON.parse(m.Body);
+            const json: SnsEnvelope = JSON.parse(m.Body);
 
             if (!(hasWildCardHandler || this.handlers[json.Subject])) {
               return {
@@ -158,27 +170,20 @@ export class QueueSubjectListener {
             }
 
             try {
-              const contentType =
-                m.MessageAttributes &&
-                m.MessageAttributes[MESSAGE_ATTRIBUTE_CONTENT_TYPE];
+              const compressionMethod =
+                json.MessageAttributes?.[MESSAGE_ATTRIBUTE_CONTENT_TYPE]?.Value;
               let jsonMessage;
 
-              if (contentType) {
-                if (contentType.StringValue === COMPRESSTION_METHOD_BROTLI) {
-                  this.logger.info(
-                    `Message with ID '${m.MessageId}' is compressed with Brotli.`
-                  );
-                  jsonMessage = await decompressBrotli(json.Message);
-                } else if (
-                  contentType.StringValue === COMPRESSTION_METHOD_GZIP
-                ) {
-                  this.logger.info(
-                    `Message with ID '${m.MessageId}' is compressed with Gzip.`
-                  );
-                  jsonMessage = await decompressGzip(json.Message);
-                } else {
-                  jsonMessage = JSON.parse(json.Message);
-                }
+              if (compressionMethod === COMPRESSTION_METHOD_BROTLI) {
+                this.logger.info(
+                  `Message with ID '${m.MessageId}' is compressed with Brotli.`
+                );
+                jsonMessage = await decompressBrotli(json.Message);
+              } else if (compressionMethod === COMPRESSTION_METHOD_GZIP) {
+                this.logger.info(
+                  `Message with ID '${m.MessageId}' is compressed with Gzip.`
+                );
+                jsonMessage = await decompressGzip(json.Message);
               } else {
                 jsonMessage = JSON.parse(json.Message);
               }
