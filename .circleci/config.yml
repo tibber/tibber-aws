@@ -46,6 +46,14 @@ jobs:
             yarn
             yarn test
       - run:
+          # Also runs in `deploy` as the publish gate, but that job is
+          # master-only — running it here too means a bug in the harness
+          # surfaces on the PR instead of first blocking a release. Needs no
+          # Floci and makes no AWS calls, so it is independent of the steps
+          # above.
+          name: Consumer smoke test (packaged tarball)
+          command: yarn test:consumer
+      - run:
           name: Floci logs (on failure)
           when: on_fail
           command: |

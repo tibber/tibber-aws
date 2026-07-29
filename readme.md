@@ -65,8 +65,9 @@ green while shipping a broken package. It runs four checks, cheapest first:
    to `S3Bucket | undefined`.
 
 Changing `expected-exports.json` is how an API addition or removal becomes a
-reviewable decision instead of an accident. CI runs the whole thing **before**
-`yarn release`, so none of the above can publish.
+reviewable decision instead of an accident. CI runs it in **two** places: in
+`build` on every PR (so a harness bug surfaces on the PR), and again in `deploy`
+**before** `yarn release`, so none of the above can publish.
 
 ## Version 6.x.x changes
 - Migrated to aws sdk 3.x

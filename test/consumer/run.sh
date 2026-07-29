@@ -54,7 +54,9 @@ echo "==> publint (packaging config)"
 npx --yes publint@0.3 "$TARBALL"
 
 echo "==> attw (declaration resolution)"
-npx --yes @arethetypeswrong/cli@0.18 "$TARBALL" --ignore-rules no-resolution
+# No --ignore-rules: the package resolves cleanly in every mode today, so
+# suppressing anything would only hide a future regression.
+npx --yes @arethetypeswrong/cli@0.18 "$TARBALL"
 
 echo "==> consumer probes in a scratch project"
 PROBE="$WORK/probe"
