@@ -46,6 +46,14 @@ jobs:
             yarn
             yarn test
       - run:
+          # Also runs in `deploy` as the publish gate, but that job is
+          # master-only — running it here too means a bug in the harness
+          # surfaces on the PR instead of first blocking a release. Needs no
+          # Floci and makes no AWS calls, so it is independent of the steps
+          # above.
+          name: Consumer smoke test (packaged tarball)
+          command: yarn test:consumer
+      - run:
           name: Floci logs (on failure)
           when: on_fail
           command: |
@@ -66,6 +74,13 @@ jobs:
           command: |
             export GH_TOKEN=$GITHUB_AUTH_TOKEN
             yarn
+            # Consumer smoke test (test/consumer/run.sh): publint + attw + a
+            # require/type probe against the packed TARBALL. Runs before
+            # release so a broken main/files, a dropped export, or
+            # unconsumable .d.ts cannot publish — the unit suite imports
+            # ../src and stays green through all of those. Makes no AWS calls,
+            # so it needs no Floci here.
+            yarn test:consumer
             # semantic-release computes the version from commits, tags, and
             # creates the GitHub release; npmPublish is off in .releaserc.js
             # so the publish itself happens below via OIDC trusted publishing
