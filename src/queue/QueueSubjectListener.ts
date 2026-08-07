@@ -46,6 +46,9 @@ export const ExponentialRetryPolicy = (
 const brotliDecompressAsync = promisify(brotliDecompress);
 const gunzipAsync = promisify(gunzip);
 
+const errorMessage = (error: unknown): string =>
+  error instanceof Error ? (error.stack ?? error.message) : String(error);
+
 const decompressBrotli = async (base64Message: string) => {
   const buffer = Buffer.from(base64Message, 'base64');
   const decompressed = await brotliDecompressAsync(Uint8Array.from(buffer));
@@ -226,7 +229,9 @@ export class QueueSubjectListener {
                     shouldRetry = false;
                     await h.handler(message, subject);
                   } catch (error) {
-                    typeof error === 'string' && this.logger.error(error);
+                    this.logger.error(
+                      `Handler for message with subject "${m.message.subject}" failed: ${errorMessage(error)}`
+                    );
 
                     if (!h.retryPolicyOptions) return;
 
@@ -253,6 +258,10 @@ export class QueueSubjectListener {
 
                       this.logger.debug(
                         `Message with subject "${m.message.subject}" will be retried`
+                      );
+                    } else {
+                      this.logger.error(
+                        `Message with subject "${m.message.subject}" dropped after exhausting ${maxAttempts} attempts`
                       );
                     }
                   }
@@ -292,7 +301,7 @@ export class QueueSubjectListener {
               `Message with subject "${m.message.subject}" kept, visibilityTimeout: ${visibilityTimeout}`
             );
           } catch (error) {
-            typeof error === 'string' && this.logger.error(error);
+            this.logger.error(errorMessage(error));
           } finally {
             cntInFlight--;
           }
@@ -302,7 +311,7 @@ export class QueueSubjectListener {
           await Promise.race(promises);
         }
       } catch (err) {
-        typeof err === 'string' && this.logger.error(err);
+        this.logger.error(errorMessage(err));
       }
 
       setTimeout(handlerFunc, (receiveTimeout && receiveTimeout()) || 10);
