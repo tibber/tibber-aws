@@ -137,6 +137,47 @@ describe('QueueSubjectListener (integration with Floci/LocalStack)', () => {
       expect(changeVisibilitySpy).toHaveBeenCalled();
     }, 20000);
 
+    it('should log an error and delete the message when retry attempts are exhausted', async () => {
+      const queue = await Queue.createQueue(
+        uniqueQueueName('exhausted'),
+        awsEndpointUrl
+      );
+      const deleteSpy = jest.spyOn(queue, 'deleteMessage');
+      const logger = {
+        log: jest.fn(),
+        debug: jest.fn(),
+        info: jest.fn(),
+        warn: jest.fn(),
+        error: jest.fn(),
+      };
+
+      const sut = new QueueSubjectListener(queue, logger, {
+        maxConcurrentMessage: 1,
+        waitTimeSeconds: 0,
+        visibilityTimeout: 30,
+      });
+
+      const handler = jest.fn(() => Promise.reject(new Error('boom')));
+      sut.onSubject('test', handler, {maxAttempts: 1, backoffDelaySeconds: 1});
+      sut.listen();
+
+      await queue.send('test', {id: '123', test: 'test'});
+
+      try {
+        await waitFor(() => deleteSpy.mock.calls.length >= 1);
+      } finally {
+        sut.stop();
+      }
+
+      expect(logger.error).toHaveBeenCalledWith(
+        expect.stringContaining('failed: Error: boom')
+      );
+      expect(logger.error).toHaveBeenCalledWith(
+        expect.stringContaining('dropped after exhausting 1 attempts')
+      );
+      expect(deleteSpy).toHaveBeenCalledTimes(1);
+    }, 20000);
+
     it('should not retry when multiple handlers are registered', async () => {
       const queue = await Queue.createQueue(
         uniqueQueueName('multi-same'),
