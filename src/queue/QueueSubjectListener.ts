@@ -5,6 +5,11 @@ import {
 import {ILogger} from '../ILogger';
 import {LoggerWrapper} from '../LoggerWrapper';
 import {Queue} from './Queue';
+import {
+  QueueSubjectListenerError,
+  QueueSubjectListenerErrorContext,
+  QueueSubjectListenerErrorHandler,
+} from './QueueSubjectListenerError';
 import {brotliDecompress, gunzip} from 'zlib';
 import {promisify} from 'util';
 
@@ -46,8 +51,11 @@ export const ExponentialRetryPolicy = (
 const brotliDecompressAsync = promisify(brotliDecompress);
 const gunzipAsync = promisify(gunzip);
 
-const errorMessage = (error: unknown): string =>
-  error instanceof Error ? (error.stack ?? error.message) : String(error);
+const describeError = (error: unknown): string =>
+  error instanceof Error ? error.message : String(error);
+
+const errorStack = (error: unknown): string | undefined =>
+  error instanceof Error ? error.stack : undefined;
 
 const decompressBrotli = async (base64Message: string) => {
   const buffer = Buffer.from(base64Message, 'base64');
@@ -91,13 +99,42 @@ export class QueueSubjectListener {
       maxConcurrentMessage: 1,
       waitTimeSeconds: 20,
       visibilityTimeout: 30,
-    }
+    },
+    public onError?: QueueSubjectListenerErrorHandler
   ) {
     this.logger = new LoggerWrapper(logger);
   }
 
   stop() {
     this.isStopped = true;
+  }
+
+  private emitError(error: QueueSubjectListenerError) {
+    const stack = errorStack(error.cause);
+    this.logger.error(stack ? `${error.message}\n${stack}` : error.message);
+
+    if (!this.onError) return;
+
+    try {
+      this.onError(error);
+    } catch (callbackError) {
+      this.logger.error(
+        `onError callback threw: ${describeError(callbackError)}`
+      );
+    }
+  }
+
+  private asListenerError(
+    error: unknown,
+    message: string,
+    context: QueueSubjectListenerErrorContext = {}
+  ): QueueSubjectListenerError {
+    return error instanceof QueueSubjectListenerError
+      ? error
+      : new QueueSubjectListenerError(`${message}: ${describeError(error)}`, {
+          ...context,
+          cause: error,
+        });
   }
 
   onSubject(
@@ -158,8 +195,9 @@ export class QueueSubjectListener {
         const messages = await Promise.all(
           response.Messages.map(async m => {
             if (m.Body === undefined)
-              throw Error(
-                `Message with ID '${m.MessageId}' has no Body defined.`
+              throw new QueueSubjectListenerError(
+                `Message with ID '${m.MessageId}' has no Body defined.`,
+                {messageId: m.MessageId}
               );
 
             const json: SnsEnvelope = JSON.parse(m.Body);
@@ -200,8 +238,15 @@ export class QueueSubjectListener {
                 },
               };
             } catch (error) {
-              this.logger.error(
-                `Not able to parse event as json: ${json.Message}`
+              this.emitError(
+                new QueueSubjectListenerError(
+                  `Not able to parse event as json: ${json.Message}`,
+                  {
+                    cause: error,
+                    subject: json.Subject,
+                    messageId: m.MessageId,
+                  }
+                )
               );
               return {
                 handle: m.ReceiptHandle,
@@ -229,8 +274,11 @@ export class QueueSubjectListener {
                     shouldRetry = false;
                     await h.handler(message, subject);
                   } catch (error) {
-                    this.logger.error(
-                      `Handler for message with subject "${m.message.subject}" failed: ${errorMessage(error)}`
+                    this.emitError(
+                      new QueueSubjectListenerError(
+                        `Handler for message with subject "${subject}" failed: ${describeError(error)}`,
+                        {cause: error, subject}
+                      )
                     );
 
                     if (!h.retryPolicyOptions) return;
@@ -260,8 +308,11 @@ export class QueueSubjectListener {
                         `Message with subject "${m.message.subject}" will be retried`
                       );
                     } else {
-                      this.logger.error(
-                        `Message with subject "${m.message.subject}" dropped after exhausting ${maxAttempts} attempts`
+                      this.emitError(
+                        new QueueSubjectListenerError(
+                          `Message with subject "${subject}" dropped after exhausting ${maxAttempts} attempts`,
+                          {cause: error, subject, attempt, maxAttempts}
+                        )
                       );
                     }
                   }
@@ -269,7 +320,10 @@ export class QueueSubjectListener {
               );
             }
             if (!m.handle)
-              throw Error("'handle' property on message was undefined.");
+              throw new QueueSubjectListenerError(
+                "'handle' property on message was undefined.",
+                {subject}
+              );
 
             if (!shouldRetry) {
               await this.queue.deleteMessage(m.handle);
@@ -301,7 +355,13 @@ export class QueueSubjectListener {
               `Message with subject "${m.message.subject}" kept, visibilityTimeout: ${visibilityTimeout}`
             );
           } catch (error) {
-            this.logger.error(errorMessage(error));
+            this.emitError(
+              this.asListenerError(
+                error,
+                `Not able to process message with subject "${subject}"`,
+                {subject}
+              )
+            );
           } finally {
             cntInFlight--;
           }
@@ -311,7 +371,12 @@ export class QueueSubjectListener {
           await Promise.race(promises);
         }
       } catch (err) {
-        this.logger.error(errorMessage(err));
+        this.emitError(
+          this.asListenerError(
+            err,
+            `Not able to receive messages from queue "${this.queue.queueUrl}"`
+          )
+        );
       }
 
       setTimeout(handlerFunc, (receiveTimeout && receiveTimeout()) || 10);
