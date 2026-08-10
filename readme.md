@@ -62,6 +62,32 @@ listener.onSubject('test', async (message, subject) => {
 listener.listen();
 ```
 
+### Queue Listener Error Callback
+`QueueSubjectListener` takes an optional `onError` callback as its fourth
+constructor argument. It is invoked with a `QueueSubjectListenerError` whenever
+a handler throws, a message is dropped after exhausting its retry attempts, a
+message body cannot be parsed, or receiving/processing a message fails. The
+original error is available on `cause`, and `subject`, `messageId`, `attempt`
+and `maxAttempts` carry the message context when known. Exceptions thrown by
+the callback are caught and logged, so they never interrupt message processing.
+
+```typescript
+import {
+  QueueSubjectListener,
+  QueueSubjectListenerError,
+  Queue,
+} from 'tibber-aws';
+
+const queue = await Queue.createQueue('test-queue');
+
+const listener = new QueueSubjectListener(
+  queue,
+  logger,
+  {maxConcurrentMessage: 1, waitTimeSeconds: 20, visibilityTimeout: 30},
+  (error: QueueSubjectListenerError) => notifyErrorTracker(error)
+);
+```
+
 ## Usage
 
 ```

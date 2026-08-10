@@ -1,6 +1,7 @@
 import {brotliCompressSync, gzipSync} from 'zlib';
 import {Queue, configure} from '../src';
 import {QueueSubjectListener} from '../src/queue/QueueSubjectListener';
+import {QueueSubjectListenerError} from '../src/queue/QueueSubjectListenerError';
 
 const awsEndpointUrl = process.env.AWS_ENDPOINT_URL;
 
@@ -135,6 +136,138 @@ describe('QueueSubjectListener (integration with Floci/LocalStack)', () => {
       expect(handler).toHaveBeenCalled();
       expect(deleteSpy).not.toHaveBeenCalled();
       expect(changeVisibilitySpy).toHaveBeenCalled();
+    }, 20000);
+
+    it('should call onError when a handler fails and when retry attempts are exhausted', async () => {
+      const queue = await Queue.createQueue(
+        uniqueQueueName('onerror-exhausted'),
+        awsEndpointUrl
+      );
+      const deleteSpy = jest.spyOn(queue, 'deleteMessage');
+      const onError = jest.fn();
+
+      const sut = new QueueSubjectListener(
+        queue,
+        null,
+        {
+          maxConcurrentMessage: 1,
+          waitTimeSeconds: 0,
+          visibilityTimeout: 30,
+        },
+        onError
+      );
+
+      const cause = new Error('boom');
+      const handler = jest.fn(() => Promise.reject(cause));
+      sut.onSubject('test', handler, {maxAttempts: 1, backoffDelaySeconds: 1});
+      sut.listen();
+
+      await queue.send('test', {id: '123', test: 'test'});
+
+      try {
+        await waitFor(() => deleteSpy.mock.calls.length >= 1);
+      } finally {
+        sut.stop();
+      }
+
+      const errors: QueueSubjectListenerError[] = onError.mock.calls.map(
+        ([error]) => error
+      );
+
+      expect(
+        errors.every(error => error instanceof QueueSubjectListenerError)
+      ).toBe(true);
+
+      const handlerError = errors.find(error =>
+        error.message.includes('failed: boom')
+      );
+      expect(handlerError).toBeDefined();
+      expect(handlerError?.subject).toBe('test');
+      expect(handlerError?.cause).toBe(cause);
+
+      const droppedError = errors.find(error =>
+        error.message.includes('dropped after exhausting 1 attempts')
+      );
+      expect(droppedError).toBeDefined();
+      expect(droppedError?.subject).toBe('test');
+      expect(droppedError?.maxAttempts).toBe(1);
+      expect(droppedError?.attempt).toBe(1);
+      expect(droppedError?.cause).toBe(cause);
+
+      expect(deleteSpy).toHaveBeenCalledTimes(1);
+    }, 20000);
+
+    it('should call onError when a message is not valid JSON', async () => {
+      const queue = await Queue.createQueue(
+        uniqueQueueName('onerror-badjson'),
+        awsEndpointUrl
+      );
+      const deleteSpy = jest.spyOn(queue, 'deleteMessage');
+      const onError = jest.fn();
+
+      const sut = new QueueSubjectListener(
+        queue,
+        null,
+        {
+          maxConcurrentMessage: 1,
+          waitTimeSeconds: 0,
+          visibilityTimeout: 30,
+        },
+        onError
+      );
+
+      sut.onSubject('test', jest.fn(() => Promise.resolve()));
+      sut.listen();
+
+      await sendSnsEnvelopeMessage(queue, 'test', '{"corruptJSON:');
+
+      try {
+        await waitFor(() => deleteSpy.mock.calls.length >= 1);
+      } finally {
+        sut.stop();
+      }
+
+      const error = onError.mock.calls[0]?.[0];
+      expect(error).toBeInstanceOf(QueueSubjectListenerError);
+      expect(error.message).toContain('Not able to parse event as json');
+      expect(error.subject).toBe('test');
+    }, 20000);
+
+    it('should keep processing messages when onError throws', async () => {
+      const queue = await Queue.createQueue(
+        uniqueQueueName('onerror-throws'),
+        awsEndpointUrl
+      );
+      const deleteSpy = jest.spyOn(queue, 'deleteMessage');
+      const onError = jest.fn(() => {
+        throw new Error('callback exploded');
+      });
+
+      const sut = new QueueSubjectListener(
+        queue,
+        null,
+        {
+          maxConcurrentMessage: 1,
+          waitTimeSeconds: 0,
+          visibilityTimeout: 30,
+        },
+        onError
+      );
+
+      const handler = jest.fn(() => Promise.reject(new Error('boom')));
+      sut.onSubject('test', handler);
+      sut.listen();
+
+      await queue.send('test', {id: '123', test: 'test'});
+
+      try {
+        await waitFor(() => deleteSpy.mock.calls.length >= 1);
+      } finally {
+        sut.stop();
+      }
+
+      expect(onError).toHaveBeenCalled();
+      expect(deleteSpy).toHaveBeenCalledTimes(1);
     }, 20000);
 
     it('should not retry when multiple handlers are registered', async () => {
