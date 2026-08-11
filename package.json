@@ -28,8 +28,6 @@
   "author": "tibber",
   "license": "ISC",
   "devDependencies": {
-    "@semantic-release/changelog": "^6.0.3",
-    "@semantic-release/git": "^10.0.0",
     "@types/jest": "^29.5.8",
     "@types/jszip": "^3.4.1",
     "@types/node": "20.19.43",
@@ -53,8 +51,8 @@
   "resolutions": {
     "undici": "^7.24.4",
     "flatted": "^3.4.0",
-    "fast-xml-parser": "~5.8.0",
-    "picomatch": "4.0.4",
+    "fast-xml-parser": "~5.10.0",
+    "picomatch": "4.0.5",
     "yaml": "2.9.0",
     "**/libnpmdiff/diff": "8.0.4",
     "**/ts-node/diff": "4.0.4",

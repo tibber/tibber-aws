@@ -1,4 +1,3 @@
-import {SendMessageCommandInput} from '@aws-sdk/client-sqs';
 import {brotliCompressSync, gzipSync} from 'zlib';
 import {Queue, configure} from '../src';
 import {QueueSubjectListener} from '../src/queue/QueueSubjectListener';
@@ -22,29 +21,24 @@ const uniqueQueueName = (suffix: string) =>
   `qsl-${suffix}-${Date.now()}-${Math.floor(Math.random() * 1e6)}`;
 
 /**
- * The listener does not request MessageAttributes when polling SQS, but the
- * compression code path relies on `m.MessageAttributes` being populated.
- * Wrap receiveMessage so the underlying ReceiveMessage call asks for them.
+ * SNS delivers to SQS without raw message delivery, so the body is the SNS
+ * envelope and the message attributes sit inside it rather than on the SQS
+ * message itself.
  */
-const enableMessageAttributes = (queue: Queue) => {
-  const original = queue.receiveMessage.bind(queue);
-  jest
-    .spyOn(queue, 'receiveMessage')
-    .mockImplementation((params: Parameters<Queue['receiveMessage']>[0]) =>
-      original({...params, MessageAttributeNames: ['All']})
-    );
-};
-
-const sendRawSnsLikeMessage = async (
+const sendSnsEnvelopeMessage = async (
   queue: Queue,
   subject: string,
   message: string,
-  messageAttributes?: SendMessageCommandInput['MessageAttributes']
+  messageAttributes?: Record<string, {Type: string; Value: string}>
 ) =>
   queue.sqs.sendMessage({
     QueueUrl: queue.queueUrl,
-    MessageBody: JSON.stringify({Subject: subject, Message: message}),
-    MessageAttributes: messageAttributes,
+    MessageBody: JSON.stringify({
+      Type: 'Notification',
+      Subject: subject,
+      Message: message,
+      MessageAttributes: messageAttributes,
+    }),
   });
 
 beforeAll(() => {
@@ -100,7 +94,7 @@ describe('QueueSubjectListener (integration with Floci/LocalStack)', () => {
       sut.onSubject('test', handler);
       sut.listen();
 
-      await sendRawSnsLikeMessage(queue, 'test', '{"corruptJSON:');
+      await sendSnsEnvelopeMessage(queue, 'test', '{"corruptJSON:');
 
       try {
         await waitFor(() => deleteSpy.mock.calls.length >= 1);
@@ -141,6 +135,47 @@ describe('QueueSubjectListener (integration with Floci/LocalStack)', () => {
       expect(handler).toHaveBeenCalled();
       expect(deleteSpy).not.toHaveBeenCalled();
       expect(changeVisibilitySpy).toHaveBeenCalled();
+    }, 20000);
+
+    it('should log an error and delete the message when retry attempts are exhausted', async () => {
+      const queue = await Queue.createQueue(
+        uniqueQueueName('exhausted'),
+        awsEndpointUrl
+      );
+      const deleteSpy = jest.spyOn(queue, 'deleteMessage');
+      const logger = {
+        log: jest.fn(),
+        debug: jest.fn(),
+        info: jest.fn(),
+        warn: jest.fn(),
+        error: jest.fn(),
+      };
+
+      const sut = new QueueSubjectListener(queue, logger, {
+        maxConcurrentMessage: 1,
+        waitTimeSeconds: 0,
+        visibilityTimeout: 30,
+      });
+
+      const handler = jest.fn(() => Promise.reject(new Error('boom')));
+      sut.onSubject('test', handler, {maxAttempts: 1, backoffDelaySeconds: 1});
+      sut.listen();
+
+      await queue.send('test', {id: '123', test: 'test'});
+
+      try {
+        await waitFor(() => deleteSpy.mock.calls.length >= 1);
+      } finally {
+        sut.stop();
+      }
+
+      expect(logger.error).toHaveBeenCalledWith(
+        expect.stringContaining('failed: Error: boom')
+      );
+      expect(logger.error).toHaveBeenCalledWith(
+        expect.stringContaining('dropped after exhausting 1 attempts')
+      );
+      expect(deleteSpy).toHaveBeenCalledTimes(1);
     }, 20000);
 
     it('should not retry when multiple handlers are registered', async () => {
@@ -320,7 +355,6 @@ describe('QueueSubjectListener (integration with Floci/LocalStack)', () => {
         uniqueQueueName('brotli'),
         awsEndpointUrl
       );
-      enableMessageAttributes(queue);
       const deleteSpy = jest.spyOn(queue, 'deleteMessage');
 
       const logger = {
@@ -341,8 +375,8 @@ describe('QueueSubjectListener (integration with Floci/LocalStack)', () => {
       sut.onSubject('test', handler);
       sut.listen();
 
-      await sendRawSnsLikeMessage(queue, 'test', compressedMessage, {
-        contentType: {DataType: 'String', StringValue: 'brotli'},
+      await sendSnsEnvelopeMessage(queue, 'test', compressedMessage, {
+        contentType: {Type: 'String', Value: 'brotli'},
       });
 
       try {
@@ -368,7 +402,6 @@ describe('QueueSubjectListener (integration with Floci/LocalStack)', () => {
         uniqueQueueName('gzip'),
         awsEndpointUrl
       );
-      enableMessageAttributes(queue);
       const deleteSpy = jest.spyOn(queue, 'deleteMessage');
 
       const logger = {
@@ -389,8 +422,8 @@ describe('QueueSubjectListener (integration with Floci/LocalStack)', () => {
       sut.onSubject('test', handler);
       sut.listen();
 
-      await sendRawSnsLikeMessage(queue, 'test', compressedMessage, {
-        contentType: {DataType: 'String', StringValue: 'gzip'},
+      await sendSnsEnvelopeMessage(queue, 'test', compressedMessage, {
+        contentType: {Type: 'String', Value: 'gzip'},
       });
 
       try {

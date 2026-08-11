@@ -64,23 +64,21 @@ module.exports = {
          */
         "@semantic-release/release-notes-generator",
         /**
-         * Patches package.json with the new semver, and publishes the package to NPM.
+         * Patches package.json with the new semver. Publishing is done by the
+         * CI job itself via CircleCI OIDC trusted publishing (npm >= 11.11,
+         * no stored token) — with npmPublish off, this plugin also skips its
+         * NPM_TOKEN verification.
          */
-        "@semantic-release/npm",
+        ["@semantic-release/npm", { "npmPublish": false }],
         /**
          * Pushes the release and its release notes to its GitHub repository.
+         *
+         * Releases are tag-based only: master's repository rules forbid direct
+         * pushes, which broke the old @semantic-release/git + changelog plugins
+         * (every release after v7.0.23 failed on the push-back). The version's
+         * source of truth is the git tag + GitHub release + npm; the in-repo
+         * package.json version and CHANGELOG.md are frozen at v7.0.23.
          */
         "@semantic-release/github",
-        /**
-         * Inserts the latest release notes into CHANGELOG.md
-         */
-        "@semantic-release/changelog",
-        /**
-         * Commits and pushes the updated package.json and CHANGELOG.md to origin.
-         */
-        ["@semantic-release/git", {
-            "assets": ["package.json", "CHANGELOG.md"],
-            "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
-        }],
     ]
 };

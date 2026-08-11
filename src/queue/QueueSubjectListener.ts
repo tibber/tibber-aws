@@ -1,6 +1,6 @@
 import {
   ReceiveMessageCommandInput,
-  QueueAttributeName,
+  MessageSystemAttributeName,
 } from '@aws-sdk/client-sqs';
 import {ILogger} from '../ILogger';
 import {LoggerWrapper} from '../LoggerWrapper';
@@ -46,6 +46,9 @@ export const ExponentialRetryPolicy = (
 const brotliDecompressAsync = promisify(brotliDecompress);
 const gunzipAsync = promisify(gunzip);
 
+const errorMessage = (error: unknown): string =>
+  error instanceof Error ? (error.stack ?? error.message) : String(error);
+
 const decompressBrotli = async (base64Message: string) => {
   const buffer = Buffer.from(base64Message, 'base64');
   const decompressed = await brotliDecompressAsync(Uint8Array.from(buffer));
@@ -56,6 +59,17 @@ const decompressGzip = async (base64Message: string) => {
   const buffer = Buffer.from(base64Message, 'base64');
   const decompressed = await gunzipAsync(Uint8Array.from(buffer));
   return JSON.parse(decompressed.toString('utf-8'));
+};
+
+/**
+ * Publishers send to SNS, which delivers to the queue without raw message
+ * delivery, so the SQS message body is the SNS envelope and the message
+ * attributes sit inside it rather than on the SQS message itself.
+ */
+type SnsEnvelope = {
+  Subject: string;
+  Message: string;
+  MessageAttributes?: Record<string, {Type?: string; Value?: string}>;
 };
 
 export class QueueSubjectListener {
@@ -130,7 +144,8 @@ export class QueueSubjectListener {
           MaxNumberOfMessages: maxNumberOfMessagesOrUndefined,
           VisibilityTimeout,
           WaitTimeSeconds,
-          AttributeNames: [QueueAttributeName.All],
+          // not overridable: the retry policy reads ApproximateReceiveCount
+          MessageSystemAttributeNames: [MessageSystemAttributeName.All],
         };
 
         const response = await this.queue.receiveMessage(currentParams);
@@ -147,7 +162,7 @@ export class QueueSubjectListener {
                 `Message with ID '${m.MessageId}' has no Body defined.`
               );
 
-            const json = JSON.parse(m.Body);
+            const json: SnsEnvelope = JSON.parse(m.Body);
 
             if (!(hasWildCardHandler || this.handlers[json.Subject])) {
               return {
@@ -158,27 +173,20 @@ export class QueueSubjectListener {
             }
 
             try {
-              const contentType =
-                m.MessageAttributes &&
-                m.MessageAttributes[MESSAGE_ATTRIBUTE_CONTENT_TYPE];
+              const compressionMethod =
+                json.MessageAttributes?.[MESSAGE_ATTRIBUTE_CONTENT_TYPE]?.Value;
               let jsonMessage;
 
-              if (contentType) {
-                if (contentType.StringValue === COMPRESSTION_METHOD_BROTLI) {
-                  this.logger.info(
-                    `Message with ID '${m.MessageId}' is compressed with Brotli.`
-                  );
-                  jsonMessage = await decompressBrotli(json.Message);
-                } else if (
-                  contentType.StringValue === COMPRESSTION_METHOD_GZIP
-                ) {
-                  this.logger.info(
-                    `Message with ID '${m.MessageId}' is compressed with Gzip.`
-                  );
-                  jsonMessage = await decompressGzip(json.Message);
-                } else {
-                  jsonMessage = JSON.parse(json.Message);
-                }
+              if (compressionMethod === COMPRESSTION_METHOD_BROTLI) {
+                this.logger.info(
+                  `Message with ID '${m.MessageId}' is compressed with Brotli.`
+                );
+                jsonMessage = await decompressBrotli(json.Message);
+              } else if (compressionMethod === COMPRESSTION_METHOD_GZIP) {
+                this.logger.info(
+                  `Message with ID '${m.MessageId}' is compressed with Gzip.`
+                );
+                jsonMessage = await decompressGzip(json.Message);
               } else {
                 jsonMessage = JSON.parse(json.Message);
               }
@@ -221,7 +229,9 @@ export class QueueSubjectListener {
                     shouldRetry = false;
                     await h.handler(message, subject);
                   } catch (error) {
-                    typeof error === 'string' && this.logger.error(error);
+                    this.logger.error(
+                      `Handler for message with subject "${m.message.subject}" failed: ${errorMessage(error)}`
+                    );
 
                     if (!h.retryPolicyOptions) return;
 
@@ -248,6 +258,10 @@ export class QueueSubjectListener {
 
                       this.logger.debug(
                         `Message with subject "${m.message.subject}" will be retried`
+                      );
+                    } else {
+                      this.logger.error(
+                        `Message with subject "${m.message.subject}" dropped after exhausting ${maxAttempts} attempts`
                       );
                     }
                   }
@@ -287,7 +301,7 @@ export class QueueSubjectListener {
               `Message with subject "${m.message.subject}" kept, visibilityTimeout: ${visibilityTimeout}`
             );
           } catch (error) {
-            typeof error === 'string' && this.logger.error(error);
+            this.logger.error(errorMessage(error));
           } finally {
             cntInFlight--;
           }
@@ -297,7 +311,7 @@ export class QueueSubjectListener {
           await Promise.race(promises);
         }
       } catch (err) {
-        typeof err === 'string' && this.logger.error(err);
+        this.logger.error(errorMessage(err));
       }
 
       setTimeout(handlerFunc, (receiveTimeout && receiveTimeout()) || 10);
