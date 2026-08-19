@@ -11,7 +11,6 @@ const levels: Array<(sut: LoggerWrapper) => void> = [
 
 const callAllLevels = (sut: LoggerWrapper) => levels.forEach(call => call(sut));
 
-// the wrapper falls back to the console, which would pollute the test output
 let consoleSpy: jest.SpyInstance;
 
 beforeEach(() => {
@@ -136,8 +135,44 @@ describe('LoggerWrapper', () => {
     sut.info('first');
     sut.info('second');
 
-    expect(consoleSpy).toHaveBeenCalledTimes(1);
-    expect(consoleSpy.mock.calls[0][0]).toContain('"info"');
+    const diagnostics = consoleSpy.mock.calls.filter(([written]) =>
+      String(written).includes('"info"')
+    );
+    expect(diagnostics).toHaveLength(1);
+  });
+
+  it('should fall back to the console when any level throws', () => {
+    const throwing = () => {
+      throw new Error('boom');
+    };
+    const logger = {
+      log: throwing,
+      debug: throwing,
+      info: throwing,
+      warn: throwing,
+      error: throwing
+    } as unknown as ILogger;
+
+    const sut = new LoggerWrapper(logger);
+    sut.debug('debug message');
+    sut.info('info message');
+    sut.warn('warn message');
+    sut.log('info', 'log message');
+
+    expect(consoleSpy).toHaveBeenCalledWith('debug message');
+    expect(consoleSpy).toHaveBeenCalledWith('info message');
+    expect(consoleSpy).toHaveBeenCalledWith('warn message');
+    expect(consoleSpy).toHaveBeenCalledWith('log message');
+  });
+
+  it('should stay silent when a level other than error is absent', () => {
+    const sut = new LoggerWrapper({error: jest.fn()} as unknown as ILogger);
+    sut.debug('message');
+    sut.info('message');
+    sut.warn('message');
+    sut.log('info', 'message');
+
+    expect(consoleSpy).not.toHaveBeenCalled();
   });
 
   it('should keep calling a method that failed earlier', () => {
@@ -175,13 +210,9 @@ describe('LoggerWrapper', () => {
     }
 
     expect(unhandled).not.toHaveBeenCalled();
-    // the rejected error call still reaches the console
     expect(consoleSpy).toHaveBeenCalledWith('message');
   });
 
-  // the tibber-subscription incident: pino's methods live on the prototype
-  // and rely on symbol-keyed state on the instance, so a logger built by
-  // copying those methods onto a plain object throws on every call
   it('should survive a detached pino-style logger', () => {
     const writeSym = Symbol('pino.write');
     const pinoProto = {
@@ -192,7 +223,6 @@ describe('LoggerWrapper', () => {
     const pino = Object.create(pinoProto);
     pino[writeSym] = (message: string) => message;
 
-    // methods copied off the instance, internals left behind
     const detached = {error: pino.error} as unknown as ILogger;
 
     expect(() => detached.error('message')).toThrow(TypeError);
