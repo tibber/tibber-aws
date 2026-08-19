@@ -47,7 +47,6 @@ const brotliDecompressAsync = promisify(brotliDecompress);
 const gunzipAsync = promisify(gunzip);
 
 const errorMessage = (error: unknown): string => {
-  // a poisoned error can throw from its own stack getter or toString
   try {
     return error instanceof Error
       ? (error.stack ?? error.message)
@@ -139,34 +138,18 @@ export class QueueSubjectListener {
 
     const hasWildCardHandler = !!this.handlers['*'];
 
-    /**
-     * The re-arm must survive anything that happens above it, including a
-     * throw from inside the catch block below - `receiveTimeout` and
-     * `errorMessage` can throw just as the logger can, and a throw in a catch
-     * is not caught by its own try. So it lives in `finally`, and computing
-     * the delay may not throw either.
-     *
-     * `handlerFunc` is async, so the timer must also take its promise: a
-     * throw that escapes it would otherwise be an unhandled rejection, which
-     * takes the process down even though the loop itself re-armed fine.
-     */
     const rearm = (idleDelay: number) => {
       if (this.isStopped) return;
 
       let delay = idleDelay;
       try {
         delay = (receiveTimeout && receiveTimeout()) || idleDelay;
-      } catch {
-        // keep the default delay
-      }
+      } catch {}
       setTimeout(() => {
         void handlerFunc().catch(err => {
           try {
             this.logger.error(errorMessage(err));
-          } catch {
-            // the last resort may not throw; `logger` is a public field, so
-            // it is not necessarily the hardened wrapper
-          }
+          } catch {}
         });
       }, delay);
     };

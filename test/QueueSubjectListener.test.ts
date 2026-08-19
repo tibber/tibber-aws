@@ -502,7 +502,6 @@ describe('QueueSubjectListener (integration with Floci/LocalStack)', () => {
         visibilityTimeout: 30,
       });
 
-      // the first message makes the listener log from inside its own catch
       const handler = jest.fn(() => Promise.reject(new Error('handler failed')));
       sut.onSubject('test', handler);
       sut.listen();
@@ -512,7 +511,6 @@ describe('QueueSubjectListener (integration with Floci/LocalStack)', () => {
       try {
         await waitFor(() => handler.mock.calls.length >= 1);
 
-        // the poll loop must still be alive for the next message
         await queue.send('test', {id: '2'});
         await waitFor(() => handler.mock.calls.length >= 2);
       } finally {
@@ -528,7 +526,6 @@ describe('QueueSubjectListener (integration with Floci/LocalStack)', () => {
         awsEndpointUrl
       );
 
-      // not the logger this time: anything the re-arm depends on can throw
       const sut = new QueueSubjectListener(queue, null, {
         maxConcurrentMessage: 1,
         waitTimeSeconds: 0,
@@ -568,8 +565,6 @@ describe('QueueSubjectListener (integration with Floci/LocalStack)', () => {
         visibilityTimeout: 30,
       });
 
-      // handlerFunc is async, so anything escaping it rejects its own promise;
-      // discarded by the timer, that is a process-level crash, not a stall
       jest.spyOn(sut.logger, 'error').mockImplementation(() => {
         throw new Error('logging is broken');
       });
