@@ -1,6 +1,6 @@
 import {
   ReceiveMessageCommandInput,
-  MessageSystemAttributeName,
+  MessageSystemAttributeName
 } from '@aws-sdk/client-sqs';
 import {ILogger} from '../ILogger';
 import {LoggerWrapper} from '../LoggerWrapper';
@@ -46,8 +46,16 @@ export const ExponentialRetryPolicy = (
 const brotliDecompressAsync = promisify(brotliDecompress);
 const gunzipAsync = promisify(gunzip);
 
-const errorMessage = (error: unknown): string =>
-  error instanceof Error ? (error.stack ?? error.message) : String(error);
+const errorMessage = (error: unknown): string => {
+  // a poisoned error can throw from its own stack getter or toString
+  try {
+    return error instanceof Error
+      ? (error.stack ?? error.message)
+      : String(error);
+  } catch {
+    return 'unknown error';
+  }
+};
 
 const decompressBrotli = async (base64Message: string) => {
   const buffer = Buffer.from(base64Message, 'base64');
@@ -90,7 +98,7 @@ export class QueueSubjectListener {
     public options: QueueSubjectListenerOptions = {
       maxConcurrentMessage: 1,
       waitTimeSeconds: 20,
-      visibilityTimeout: 30,
+      visibilityTimeout: 30
     }
   ) {
     this.logger = new LoggerWrapper(logger);
@@ -112,9 +120,9 @@ export class QueueSubjectListener {
         ? {
             maxAttempts: retryPolicyOptions.maxAttempts || 3,
             backoffDelaySeconds: retryPolicyOptions.backoffDelaySeconds || 10,
-            retryPolicy: retryPolicyOptions.retryPolicy || LinearRetryPolicy,
+            retryPolicy: retryPolicyOptions.retryPolicy || LinearRetryPolicy
           }
-        : undefined,
+        : undefined
     });
   }
 
@@ -137,6 +145,10 @@ export class QueueSubjectListener {
      * `errorMessage` can throw just as the logger can, and a throw in a catch
      * is not caught by its own try. So it lives in `finally`, and computing
      * the delay may not throw either.
+     *
+     * `handlerFunc` is async, so the timer must also take its promise: a
+     * throw that escapes it would otherwise be an unhandled rejection, which
+     * takes the process down even though the loop itself re-armed fine.
      */
     const rearm = (idleDelay: number) => {
       if (this.isStopped) return;
@@ -147,7 +159,16 @@ export class QueueSubjectListener {
       } catch {
         // keep the default delay
       }
-      setTimeout(handlerFunc, delay);
+      setTimeout(() => {
+        void handlerFunc().catch(err => {
+          try {
+            this.logger.error(errorMessage(err));
+          } catch {
+            // the last resort may not throw; `logger` is a public field, so
+            // it is not necessarily the hardened wrapper
+          }
+        });
+      }, delay);
     };
 
     const handlerFunc = async () => {
@@ -166,7 +187,7 @@ export class QueueSubjectListener {
           VisibilityTimeout,
           WaitTimeSeconds,
           // not overridable: the retry policy reads ApproximateReceiveCount
-          MessageSystemAttributeNames: [MessageSystemAttributeName.All],
+          MessageSystemAttributeNames: [MessageSystemAttributeName.All]
         };
 
         const response = await this.queue.receiveMessage(currentParams);
@@ -189,7 +210,7 @@ export class QueueSubjectListener {
               return {
                 handle: m.ReceiptHandle,
                 shouldBeHandled: false,
-                message: {subject: 'Delete Me'},
+                message: {subject: 'Delete Me'}
               };
             }
 
@@ -217,8 +238,8 @@ export class QueueSubjectListener {
                 message: {
                   message: jsonMessage,
                   subject: json.Subject,
-                  attributes: m.Attributes,
-                },
+                  attributes: m.Attributes
+                }
               };
             } catch (error) {
               this.logger.error(
@@ -227,7 +248,7 @@ export class QueueSubjectListener {
               return {
                 handle: m.ReceiptHandle,
                 shouldBeHandled: false,
-                message: {subject: 'Delete Me'},
+                message: {subject: 'Delete Me'}
               };
             }
           })

@@ -555,5 +555,44 @@ describe('QueueSubjectListener (integration with Floci/LocalStack)', () => {
 
       expect(handler.mock.calls.length).toBeGreaterThanOrEqual(2);
     }, 20000);
+
+    it('should not leave an unhandled rejection when the catch block throws', async () => {
+      const queue = await Queue.createQueue(
+        uniqueQueueName('unhandled'),
+        awsEndpointUrl
+      );
+
+      const sut = new QueueSubjectListener(queue, null, {
+        maxConcurrentMessage: 1,
+        waitTimeSeconds: 0,
+        visibilityTimeout: 30,
+      });
+
+      // handlerFunc is async, so anything escaping it rejects its own promise;
+      // discarded by the timer, that is a process-level crash, not a stall
+      jest.spyOn(sut.logger, 'error').mockImplementation(() => {
+        throw new Error('logging is broken');
+      });
+      jest
+        .spyOn(queue, 'receiveMessage')
+        .mockRejectedValueOnce(new Error('receive failed'));
+
+      const unhandled = jest.fn();
+      process.on('unhandledRejection', unhandled);
+
+      const handler = jest.fn(() => Promise.resolve());
+      sut.onSubject('test', handler);
+      sut.listen();
+
+      try {
+        await queue.send('test', {id: '1'});
+        await waitFor(() => handler.mock.calls.length >= 1);
+      } finally {
+        sut.stop();
+        process.off('unhandledRejection', unhandled);
+      }
+
+      expect(unhandled).not.toHaveBeenCalled();
+    }, 20000);
   });
 });
