@@ -131,7 +131,28 @@ export class QueueSubjectListener {
 
     const hasWildCardHandler = !!this.handlers['*'];
 
+    /**
+     * The re-arm must survive anything that happens above it, including a
+     * throw from inside the catch block below - `receiveTimeout` and
+     * `errorMessage` can throw just as the logger can, and a throw in a catch
+     * is not caught by its own try. So it lives in `finally`, and computing
+     * the delay may not throw either.
+     */
+    const rearm = (idleDelay: number) => {
+      if (this.isStopped) return;
+
+      let delay = idleDelay;
+      try {
+        delay = (receiveTimeout && receiveTimeout()) || idleDelay;
+      } catch {
+        // keep the default delay
+      }
+      setTimeout(handlerFunc, delay);
+    };
+
     const handlerFunc = async () => {
+      let idleDelay = 10;
+
       try {
         if (this.isStopped) return;
 
@@ -151,7 +172,7 @@ export class QueueSubjectListener {
         const response = await this.queue.receiveMessage(currentParams);
 
         if (!response.Messages || response.Messages.length === 0) {
-          setTimeout(handlerFunc, (receiveTimeout && receiveTimeout()) || 2000);
+          idleDelay = 2000;
           return;
         }
 
@@ -312,10 +333,10 @@ export class QueueSubjectListener {
         }
       } catch (err) {
         this.logger.error(errorMessage(err));
+      } finally {
+        rearm(idleDelay);
       }
-
-      setTimeout(handlerFunc, (receiveTimeout && receiveTimeout()) || 10);
     };
-    setTimeout(handlerFunc, (receiveTimeout && receiveTimeout()) || 10);
+    rearm(10);
   }
 }

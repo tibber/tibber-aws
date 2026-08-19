@@ -521,5 +521,39 @@ describe('QueueSubjectListener (integration with Floci/LocalStack)', () => {
 
       expect(handler.mock.calls.length).toBeGreaterThanOrEqual(2);
     }, 20000);
+
+    it('should keep polling when receiveTimeout throws', async () => {
+      const queue = await Queue.createQueue(
+        uniqueQueueName('badtimeout'),
+        awsEndpointUrl
+      );
+
+      // not the logger this time: anything the re-arm depends on can throw
+      const sut = new QueueSubjectListener(queue, null, {
+        maxConcurrentMessage: 1,
+        waitTimeSeconds: 0,
+        visibilityTimeout: 30,
+        receiveTimeout: () => {
+          throw new Error('receiveTimeout is broken');
+        },
+      });
+
+      const handler = jest.fn(() => Promise.resolve());
+      sut.onSubject('test', handler);
+      sut.listen();
+
+      await queue.send('test', {id: '1'});
+
+      try {
+        await waitFor(() => handler.mock.calls.length >= 1);
+
+        await queue.send('test', {id: '2'});
+        await waitFor(() => handler.mock.calls.length >= 2);
+      } finally {
+        sut.stop();
+      }
+
+      expect(handler.mock.calls.length).toBeGreaterThanOrEqual(2);
+    }, 20000);
   });
 });
