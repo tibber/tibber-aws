@@ -1,6 +1,6 @@
 import {
   ReceiveMessageCommandInput,
-  MessageSystemAttributeName,
+  MessageSystemAttributeName
 } from '@aws-sdk/client-sqs';
 import {ILogger} from '../ILogger';
 import {LoggerWrapper} from '../LoggerWrapper';
@@ -46,8 +46,15 @@ export const ExponentialRetryPolicy = (
 const brotliDecompressAsync = promisify(brotliDecompress);
 const gunzipAsync = promisify(gunzip);
 
-const errorMessage = (error: unknown): string =>
-  error instanceof Error ? (error.stack ?? error.message) : String(error);
+const errorMessage = (error: unknown): string => {
+  try {
+    return error instanceof Error
+      ? (error.stack ?? error.message)
+      : String(error);
+  } catch {
+    return 'unknown error';
+  }
+};
 
 const decompressBrotli = async (base64Message: string) => {
   const buffer = Buffer.from(base64Message, 'base64');
@@ -90,7 +97,7 @@ export class QueueSubjectListener {
     public options: QueueSubjectListenerOptions = {
       maxConcurrentMessage: 1,
       waitTimeSeconds: 20,
-      visibilityTimeout: 30,
+      visibilityTimeout: 30
     }
   ) {
     this.logger = new LoggerWrapper(logger);
@@ -112,9 +119,9 @@ export class QueueSubjectListener {
         ? {
             maxAttempts: retryPolicyOptions.maxAttempts || 3,
             backoffDelaySeconds: retryPolicyOptions.backoffDelaySeconds || 10,
-            retryPolicy: retryPolicyOptions.retryPolicy || LinearRetryPolicy,
+            retryPolicy: retryPolicyOptions.retryPolicy || LinearRetryPolicy
           }
-        : undefined,
+        : undefined
     });
   }
 
@@ -131,7 +138,25 @@ export class QueueSubjectListener {
 
     const hasWildCardHandler = !!this.handlers['*'];
 
+    const rearm = (idleDelay: number) => {
+      if (this.isStopped) return;
+
+      let delay = idleDelay;
+      try {
+        delay = (receiveTimeout && receiveTimeout()) || idleDelay;
+      } catch {}
+      setTimeout(() => {
+        void handlerFunc().catch(err => {
+          try {
+            this.logger.error(errorMessage(err));
+          } catch {}
+        });
+      }, delay);
+    };
+
     const handlerFunc = async () => {
+      let idleDelay = 10;
+
       try {
         if (this.isStopped) return;
 
@@ -145,13 +170,13 @@ export class QueueSubjectListener {
           VisibilityTimeout,
           WaitTimeSeconds,
           // not overridable: the retry policy reads ApproximateReceiveCount
-          MessageSystemAttributeNames: [MessageSystemAttributeName.All],
+          MessageSystemAttributeNames: [MessageSystemAttributeName.All]
         };
 
         const response = await this.queue.receiveMessage(currentParams);
 
         if (!response.Messages || response.Messages.length === 0) {
-          setTimeout(handlerFunc, (receiveTimeout && receiveTimeout()) || 2000);
+          idleDelay = 2000;
           return;
         }
 
@@ -168,7 +193,7 @@ export class QueueSubjectListener {
               return {
                 handle: m.ReceiptHandle,
                 shouldBeHandled: false,
-                message: {subject: 'Delete Me'},
+                message: {subject: 'Delete Me'}
               };
             }
 
@@ -196,8 +221,8 @@ export class QueueSubjectListener {
                 message: {
                   message: jsonMessage,
                   subject: json.Subject,
-                  attributes: m.Attributes,
-                },
+                  attributes: m.Attributes
+                }
               };
             } catch (error) {
               this.logger.error(
@@ -206,7 +231,7 @@ export class QueueSubjectListener {
               return {
                 handle: m.ReceiptHandle,
                 shouldBeHandled: false,
-                message: {subject: 'Delete Me'},
+                message: {subject: 'Delete Me'}
               };
             }
           })
@@ -312,10 +337,10 @@ export class QueueSubjectListener {
         }
       } catch (err) {
         this.logger.error(errorMessage(err));
+      } finally {
+        rearm(idleDelay);
       }
-
-      setTimeout(handlerFunc, (receiveTimeout && receiveTimeout()) || 10);
     };
-    setTimeout(handlerFunc, (receiveTimeout && receiveTimeout()) || 10);
+    rearm(10);
   }
 }

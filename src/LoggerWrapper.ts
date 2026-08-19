@@ -1,29 +1,88 @@
 import {ILogger} from './ILogger';
 
+type LogMethod = keyof ILogger;
+
+type DispatchResult = 'dispatched' | 'absent' | 'failed';
+
+const writeToConsole = (message: unknown) => {
+  try {
+    console.log(message);
+  } catch {}
+};
+
+const isThenable = (value: unknown): value is PromiseLike<unknown> =>
+  typeof (value as PromiseLike<unknown> | undefined)?.then === 'function';
+
 export class LoggerWrapper implements ILogger {
   private _logger: Partial<ILogger>;
+  private _reportedFailures = new Set<LogMethod>();
 
   constructor(logger?: undefined | null | ILogger) {
-    this._logger = logger || {};
+    this._logger =
+      logger && (typeof logger === 'object' || typeof logger === 'function')
+        ? logger
+        : {};
   }
 
   log(level: string, message: string) {
-    this._logger?.log && this._logger.log(level, message);
+    this.emit('log', [level, message], message);
   }
 
   debug(message: string) {
-    this._logger?.debug && this._logger.debug(message);
+    this.emit('debug', [message], message);
   }
 
   info(message: string) {
-    this._logger?.info && this._logger.info(message);
+    this.emit('info', [message], message);
   }
 
   warn(message: string) {
-    this._logger?.warn && this._logger.warn(message);
+    this.emit('warn', [message], message);
   }
 
   error(message: string) {
-    this._logger?.error ? this._logger.error(message) : console.log(message);
+    if (this.dispatch('error', [message], message) !== 'dispatched')
+      writeToConsole(message);
+  }
+
+  private emit(name: LogMethod, args: string[], message: string) {
+    if (this.dispatch(name, args, message) === 'failed') writeToConsole(message);
+  }
+
+  private dispatch(
+    name: LogMethod,
+    args: string[],
+    message: string
+  ): DispatchResult {
+    try {
+      const method = this._logger[name];
+      if (typeof method !== 'function') return 'absent';
+
+      const result = (method as (...args: string[]) => unknown).apply(
+        this._logger,
+        args
+      );
+
+      if (isThenable(result))
+        result.then(undefined, () => this.onFailure(name, message));
+
+      return 'dispatched';
+    } catch {
+      this.reportFailure(name);
+      return 'failed';
+    }
+  }
+
+  private onFailure(name: LogMethod, message: string) {
+    this.reportFailure(name);
+    writeToConsole(message);
+  }
+
+  private reportFailure(name: LogMethod) {
+    if (this._reportedFailures.has(name)) return;
+    this._reportedFailures.add(name);
+    writeToConsole(
+      `LoggerWrapper: supplied logger failed on "${name}", the call was dropped`
+    );
   }
 }
