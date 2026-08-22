@@ -471,5 +471,123 @@ describe('QueueSubjectListener (integration with Floci/LocalStack)', () => {
       expect(handler).toHaveBeenCalledWith(messagePayload, 'test');
       expect(deleteSpy).toHaveBeenCalledTimes(1);
     }, 20000);
+
+    it('should keep polling when the supplied logger throws', async () => {
+      const queue = await Queue.createQueue(
+        uniqueQueueName('badlogger'),
+        awsEndpointUrl
+      );
+
+      const throwingLogger = {
+        log: () => {
+          throw new Error('logger is broken');
+        },
+        debug: () => {
+          throw new Error('logger is broken');
+        },
+        info: () => {
+          throw new Error('logger is broken');
+        },
+        warn: () => {
+          throw new Error('logger is broken');
+        },
+        error: () => {
+          throw new Error('logger is broken');
+        },
+      };
+
+      const sut = new QueueSubjectListener(queue, throwingLogger, {
+        maxConcurrentMessage: 1,
+        waitTimeSeconds: 0,
+        visibilityTimeout: 30,
+      });
+
+      const handler = jest.fn(() => Promise.reject(new Error('handler failed')));
+      sut.onSubject('test', handler);
+      sut.listen();
+
+      await queue.send('test', {id: '1'});
+
+      try {
+        await waitFor(() => handler.mock.calls.length >= 1);
+
+        await queue.send('test', {id: '2'});
+        await waitFor(() => handler.mock.calls.length >= 2);
+      } finally {
+        sut.stop();
+      }
+
+      expect(handler.mock.calls.length).toBeGreaterThanOrEqual(2);
+    }, 20000);
+
+    it('should keep polling when receiveTimeout throws', async () => {
+      const queue = await Queue.createQueue(
+        uniqueQueueName('badtimeout'),
+        awsEndpointUrl
+      );
+
+      const sut = new QueueSubjectListener(queue, null, {
+        maxConcurrentMessage: 1,
+        waitTimeSeconds: 0,
+        visibilityTimeout: 30,
+        receiveTimeout: () => {
+          throw new Error('receiveTimeout is broken');
+        },
+      });
+
+      const handler = jest.fn(() => Promise.resolve());
+      sut.onSubject('test', handler);
+      sut.listen();
+
+      await queue.send('test', {id: '1'});
+
+      try {
+        await waitFor(() => handler.mock.calls.length >= 1);
+
+        await queue.send('test', {id: '2'});
+        await waitFor(() => handler.mock.calls.length >= 2);
+      } finally {
+        sut.stop();
+      }
+
+      expect(handler.mock.calls.length).toBeGreaterThanOrEqual(2);
+    }, 20000);
+
+    it('should not leave an unhandled rejection when the catch block throws', async () => {
+      const queue = await Queue.createQueue(
+        uniqueQueueName('unhandled'),
+        awsEndpointUrl
+      );
+
+      const sut = new QueueSubjectListener(queue, null, {
+        maxConcurrentMessage: 1,
+        waitTimeSeconds: 0,
+        visibilityTimeout: 30,
+      });
+
+      jest.spyOn(sut.logger, 'error').mockImplementation(() => {
+        throw new Error('logging is broken');
+      });
+      jest
+        .spyOn(queue, 'receiveMessage')
+        .mockRejectedValueOnce(new Error('receive failed'));
+
+      const unhandled = jest.fn();
+      process.on('unhandledRejection', unhandled);
+
+      const handler = jest.fn(() => Promise.resolve());
+      sut.onSubject('test', handler);
+      sut.listen();
+
+      try {
+        await queue.send('test', {id: '1'});
+        await waitFor(() => handler.mock.calls.length >= 1);
+      } finally {
+        sut.stop();
+        process.off('unhandledRejection', unhandled);
+      }
+
+      expect(unhandled).not.toHaveBeenCalled();
+    }, 20000);
   });
 });
