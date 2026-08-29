@@ -7,6 +7,7 @@ import {
   SQS,
 } from '@aws-sdk/client-sqs';
 
+import {partitionFromRegion} from './partition';
 import {Topic} from './Topic';
 
 /**
@@ -144,6 +145,36 @@ export class Queue {
       throw Error("Expected QueueArn to be set on 'response' instance.");
 
     return new Queue(queue.QueueUrl, response.Attributes.QueueArn, endpoint);
+  }
+
+  /**
+   * Resolves an existing queue by name. Uses `sqs:GetQueueUrl` only.
+   * Throws `QueueDoesNotExist` if the queue is not provisioned.
+   */
+  static async attach(queueName: string, endpoint?: string) {
+    const sqs = new SQS({endpoint});
+    const result = await sqs.getQueueUrl({QueueName: queueName});
+
+    if (!result.QueueUrl)
+      throw Error(`Could not resolve URL for queue "${queueName}".`);
+
+    const region = await sqs.config.region();
+    if (!region)
+      throw Error(
+        'AWS region is not configured; cannot derive queue ARN. ' +
+          'Set AWS_REGION or configure the SDK with a region.'
+      );
+
+    const url = new URL(result.QueueUrl);
+    const parts = url.pathname.split('/').filter(Boolean);
+    if (parts.length !== 2)
+      throw Error(`Unexpected queue URL format: ${result.QueueUrl}`);
+
+    const [accountId, name] = parts;
+    const partition = partitionFromRegion(region);
+    const queueArn = `arn:${partition}:sqs:${region}:${accountId}:${name}`;
+
+    return new Queue(result.QueueUrl, queueArn, endpoint);
   }
 
   async receiveMessage(params: Omit<ReceiveMessageCommandInput, 'QueueUrl'>) {
