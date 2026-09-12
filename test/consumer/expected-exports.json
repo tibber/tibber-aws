@@ -1,0 +1,24 @@
+{
+  "_comment": [
+    "Committed snapshot of the PUBLIC runtime surface of tibber-aws. The consumer",
+    "smoke test asserts the installed package exports exactly these names, so an",
+    "accidental removal or rename shows up as a reviewable diff here instead of",
+    "silently breaking consuming services. Adding an export is a one-line change;",
+    "removing one is a breaking change and must be a deliberate major-version",
+    "decision.",
+    "",
+    "'kind' is asserted too, because a class silently becoming a plain object (or",
+    "vice versa) still passes a name-only check."
+  ],
+  "exports": {
+    "configure": "function",
+    "getLambdaFunc": "function",
+    "getSecret": "function",
+    "getSecretCollection": "function",
+    "Queue": "function",
+    "QueueSubjectListener": "function",
+    "QueueSubjectListenerBuilder": "function",
+    "S3Bucket": "function",
+    "Topic": "function"
+  }
+}

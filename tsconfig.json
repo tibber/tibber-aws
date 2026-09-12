@@ -10,5 +10,9 @@
   "include": [
     "src/**/*.ts",
     "test/**/*.ts"
+  ],
+  "//exclude": "test/consumer/probe.ts imports 'tibber-aws' by package name and is compiled only inside the scratch consumer project that test/consumer/run.sh builds.",
+  "exclude": [
+    "test/consumer"
   ]
 }
