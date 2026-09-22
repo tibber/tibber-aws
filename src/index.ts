@@ -1,6 +1,7 @@
 export {configure} from './configure';
 export {getLambdaFunc} from './lambda';
 export {Queue, Topic} from './queue';
+export {AttachedQueueListenerBuilder} from './queue/AttachedQueueListenerBuilder';
 export {QueueSubjectListener} from './queue/QueueSubjectListener';
 export {QueueSubjectListenerBuilder} from './queue/QueueSubjectListenerBuilder';
 export {S3Bucket} from './s3';
