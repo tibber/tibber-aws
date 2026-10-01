@@ -46,3 +46,7 @@ build
 data/
 volume/floci-data/
 
+
+# Tarballs from `npm pack` (test/consumer/run.sh packs into a temp dir, but a
+# killed run elsewhere can leave one behind).
+*.tgz
