@@ -90,5 +90,16 @@ listener.listen();
 
 ## Local emulators (Floci, LocalStack)
 
-Set `AWS_SERVICE_URL` to the emulator, e.g. `http://localhost:4566`. Every client then talks to it with placeholder
-credentials, in `AWS_REGION` or `us-east-1`; no AWS credentials are needed.
+Clients take their endpoint, region and credentials from the standard AWS configuration, so an emulator needs no code.
+Locally, add this profile to `~/.aws/config` and set `AWS_PROFILE=floci`:
+
+```ini
+[profile floci]
+endpoint_url = http://localhost:4566
+region = eu-west-1
+aws_access_key_id = emulator
+aws_secret_access_key = emulator
+```
+
+Tests and CI set `AWS_ENDPOINT_URL`, `AWS_REGION`, `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` instead (see the `test`
+script), which take precedence over any profile, so they need no setup.

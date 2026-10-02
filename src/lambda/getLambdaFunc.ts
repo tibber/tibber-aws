@@ -1,5 +1,4 @@
 import {Lambda} from '@aws-sdk/client-lambda';
-import {clientConfig} from '../clientConfig';
 
 type GetLambdaFunc = {
   <TResult>(
@@ -14,7 +13,9 @@ export const getLambdaFunc: GetLambdaFunc = (
   funcName: string,
   endpoint?: string
 ) => {
-  const lambda = new Lambda(clientConfig(endpoint));
+  const lambda = new Lambda({
+    endpoint,
+  });
   return async payload => {
     const result = await lambda.invoke({
       FunctionName: funcName,

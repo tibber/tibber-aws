@@ -1,5 +1,4 @@
 import {MessageAttributeValue, SNS} from '@aws-sdk/client-sns';
-import {clientConfig} from '../clientConfig';
 
 export class Topic {
   public sns: SNS;
@@ -10,7 +9,7 @@ export class Topic {
     public subject?: string,
     public endpoint?: string
   ) {
-    this.sns = new SNS(clientConfig(this.endpoint));
+    this.sns = new SNS({endpoint: this.endpoint});
   }
 
   static async createTopic(
@@ -18,7 +17,9 @@ export class Topic {
     subjectName?: string,
     endpoint?: string
   ) {
-    const sns = new SNS(clientConfig(endpoint));
+    const sns = new SNS({
+      endpoint,
+    });
     const topicResponse = await sns.createTopic({Name: topicName});
 
     if (!topicResponse.TopicArn) {

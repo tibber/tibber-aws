@@ -17,14 +17,13 @@ import {
   getLambdaFunc,
   getSecret,
 } from '../src';
-import {clientConfig} from '../src/clientConfig';
 
 const LAMBDA_FUNCTION_NAME = 'localstack-lambda-url-example';
 const SECRET_NAME = 'my-secret';
 const SECRET_VALUE = {PG_PASSWORD: 'stacy'};
 
 async function ensureSecret() {
-  const sm = new SecretsManager(clientConfig());
+  const sm = new SecretsManager();
   try {
     await sm.createSecret({
       Name: SECRET_NAME,
@@ -45,7 +44,7 @@ async function buildLambdaZip(): Promise<Buffer> {
 }
 
 async function ensureLambda() {
-  const lambda = new Lambda(clientConfig());
+  const lambda = new Lambda();
   const zip = await buildLambdaZip();
 
   try {
