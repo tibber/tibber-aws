@@ -103,3 +103,6 @@ aws_secret_access_key = emulator
 
 Tests and CI set `AWS_ENDPOINT_URL`, `AWS_REGION`, `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` instead (see the `test`
 script), which take precedence over any profile, so they need no setup.
+
+SQS sends each request to the host in the queue URL the emulator returns, so that hostname must resolve where the code
+runs. This repo's Floci advertises `floci` (`docker-compose-test.yml`); map it to `127.0.0.1` in `/etc/hosts`, as CI does.
