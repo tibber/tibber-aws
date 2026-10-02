@@ -103,9 +103,9 @@ aws_access_key_id = emulator
 aws_secret_access_key = emulator
 ```
 
-In tests and CI, set the same values as environment variables, so nothing has to be set up first: `AWS_ENDPOINT_URL`,
-`AWS_REGION`, `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`. Leave `AWS_PROFILE` unset or empty, otherwise the
-profile's credentials are used instead.
+In tests, set the same values as environment variables instead: `AWS_ENDPOINT_URL`, `AWS_REGION`, and placeholder
+`AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`, with `AWS_PROFILE` unset or empty. Tests then need no setup, behave
+the same locally and in CI, and never pick up real credentials, so they cannot reach real AWS.
 
 SQS sends each request to the host in the queue URL the emulator returns, so the emulator must advertise a hostname your
 code can resolve. With Floci, set `FLOCI_HOSTNAME` only when your code runs in another container on the same Docker
