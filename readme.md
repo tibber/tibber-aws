@@ -88,10 +88,12 @@ listener.listen();
 
 ```
 
-## Local emulators (Floci, LocalStack)
+## Running against an emulator (Floci, LocalStack)
 
-Clients take their endpoint, region and credentials from the standard AWS configuration, so an emulator needs no code.
-Locally, add this profile to `~/.aws/config` and set `AWS_PROFILE=floci`:
+Clients use the standard AWS SDK configuration for endpoint, region and credentials, so pointing them at an emulator
+needs no code.
+
+To run a service locally, add a profile to `~/.aws/config` and set `AWS_PROFILE=floci`:
 
 ```ini
 [profile floci]
@@ -101,8 +103,10 @@ aws_access_key_id = emulator
 aws_secret_access_key = emulator
 ```
 
-Tests and CI set `AWS_ENDPOINT_URL`, `AWS_REGION`, `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` instead (see the `test`
-script), which take precedence over any profile, so they need no setup.
+In tests and CI, set the same values as environment variables, so nothing has to be set up first: `AWS_ENDPOINT_URL`,
+`AWS_REGION`, `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`. Leave `AWS_PROFILE` unset or empty, otherwise the
+profile's credentials are used instead.
 
-SQS sends each request to the host in the queue URL the emulator returns, so that hostname must resolve where the code
-runs. This repo's Floci advertises `floci` (`docker-compose-test.yml`); map it to `127.0.0.1` in `/etc/hosts`, as CI does.
+SQS sends each request to the host in the queue URL the emulator returns. If the emulator advertises a hostname other
+than `localhost`, such as `floci` inside a Docker network, that name must resolve where your code runs, for example
+with `127.0.0.1 floci` in `/etc/hosts`.
