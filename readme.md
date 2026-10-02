@@ -90,6 +90,5 @@ listener.listen();
 
 ## Local emulators (Floci, LocalStack)
 
-Set `AWS_SERVICE_URL`, the same variable `Tibber.Services.Utilities` uses: every client is sent there with placeholder
-credentials, in `AWS_REGION` or `us-east-1` (`src/clientConfig.ts`). Without it the AWS SDK resolves endpoints and
-credentials itself, so `AWS_ENDPOINT_URL` or a profile with `endpoint_url` work as documented by AWS.
+Set `AWS_SERVICE_URL` to the emulator, e.g. `http://localhost:4566`. Every client then talks to it with placeholder
+credentials, in `AWS_REGION` or `us-east-1`; no AWS credentials are needed.
