@@ -14,19 +14,19 @@ import {
   Queue,
   QueueSubjectListener,
   QueueSubjectListenerBuilder,
-  configure,
   getLambdaFunc,
   getSecret,
 } from '../src';
+import {clientConfig} from '../src/clientConfig';
 
-const awsEndpointUrl = process.env.AWS_ENDPOINT_URL;
+const awsEndpointUrl = process.env.AWS_SERVICE_URL;
 
 const LAMBDA_FUNCTION_NAME = 'localstack-lambda-url-example';
 const SECRET_NAME = 'my-secret';
 const SECRET_VALUE = {PG_PASSWORD: 'stacy'};
 
 async function ensureSecret(endpoint?: string) {
-  const sm = new SecretsManager({endpoint, region: 'eu-west-1'});
+  const sm = new SecretsManager(clientConfig(endpoint));
   try {
     await sm.createSecret({
       Name: SECRET_NAME,
@@ -47,7 +47,7 @@ async function buildLambdaZip(): Promise<Buffer> {
 }
 
 async function ensureLambda(endpoint?: string) {
-  const lambda = new Lambda({endpoint, region: 'eu-west-1'});
+  const lambda = new Lambda(clientConfig(endpoint));
   const zip = await buildLambdaZip();
 
   try {
@@ -68,10 +68,6 @@ async function ensureLambda(endpoint?: string) {
     {FunctionName: LAMBDA_FUNCTION_NAME}
   );
 }
-
-beforeAll(async () => {
-  configure({region: 'eu-west-1'});
-});
 
 it('should be able to assign several topics to builderer', () => {
   const builder = new QueueSubjectListenerBuilder(

@@ -1,8 +1,8 @@
 import rand from 'randomstring';
-import {S3Bucket, configure} from '../src';
+import {S3Bucket} from '../src';
 import {NoSuchKey} from '@aws-sdk/client-s3';
 
-const awsEndpointUrl = process.env.AWS_ENDPOINT_URL;
+const awsEndpointUrl = process.env.AWS_SERVICE_URL;
 
 const generateRandomBucketName = () =>
   rand.generate({
@@ -10,10 +10,6 @@ const generateRandomBucketName = () =>
     charset: 'alphanumeric',
     length: 32,
   });
-
-beforeAll(async () => {
-  configure({region: 'eu-west-1'});
-});
 
 describe('getOrCreateBucket', () => {
   it('should be able to create bucket', async () => {

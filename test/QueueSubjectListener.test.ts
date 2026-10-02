@@ -1,8 +1,8 @@
 import {brotliCompressSync, gzipSync} from 'zlib';
-import {Queue, configure} from '../src';
+import {Queue} from '../src';
 import {QueueSubjectListener} from '../src/queue/QueueSubjectListener';
 
-const awsEndpointUrl = process.env.AWS_ENDPOINT_URL;
+const awsEndpointUrl = process.env.AWS_SERVICE_URL;
 
 const waitFor = async (
   predicate: () => boolean,
@@ -40,10 +40,6 @@ const sendSnsEnvelopeMessage = async (
       MessageAttributes: messageAttributes,
     }),
   });
-
-beforeAll(() => {
-  configure({region: 'eu-west-1'});
-});
 
 describe('QueueSubjectListener (integration with Floci/LocalStack)', () => {
   describe('listen', () => {

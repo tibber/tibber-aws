@@ -8,6 +8,7 @@ import {
 } from '@aws-sdk/client-sqs';
 
 import {Topic} from './Topic';
+import {clientConfig} from '../clientConfig';
 
 /**
  * The JSON structure that can be serialized to the string assigned to the SQS Policy Attribute.
@@ -55,8 +56,8 @@ export class Queue {
     public queueArn: string,
     public endpoint?: string
   ) {
-    this.sqs = new SQS({endpoint: this.endpoint});
-    this.sns = new SNS({endpoint: this.endpoint});
+    this.sqs = new SQS(clientConfig(this.endpoint));
+    this.sns = new SNS(clientConfig(this.endpoint));
   }
 
   async subscribeTopic(topic: Topic) {
@@ -129,7 +130,7 @@ export class Queue {
   }
 
   static async createQueue(queueName: string, endpoint?: string) {
-    const sqs = new SQS({endpoint});
+    const sqs = new SQS(clientConfig(endpoint));
     const queue = await sqs.createQueue({QueueName: queueName});
 
     if (!queue.QueueUrl)

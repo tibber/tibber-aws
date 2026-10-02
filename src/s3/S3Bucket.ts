@@ -5,6 +5,10 @@ import {
   S3,
   BucketAlreadyOwnedByYou,
 } from '@aws-sdk/client-s3';
+import {clientConfig, emulatorUrl} from '../clientConfig';
+
+const s3Client = (endpoint?: string) =>
+  new S3({forcePathStyle: !!emulatorUrl(endpoint), ...clientConfig(endpoint)});
 
 export class S3Bucket {
   public name: string;
@@ -22,11 +26,7 @@ export class S3Bucket {
 
     this.name = bucket.Name;
     this.creationDate = bucket.CreationDate;
-    this.s3 = new S3({
-      apiVersion: '2006-03-01',
-      endpoint: this.endpoint,
-      forcePathStyle: !!endpoint,
-    });
+    this.s3 = s3Client(this.endpoint);
   }
 
   static async getExistingBucket(bucketName: string, endpoint?: string) {
@@ -36,12 +36,7 @@ export class S3Bucket {
 
   static async getOrCreateBucket(bucketName: string, endpoint?: string) {
     try {
-      const s3 = new S3({
-        apiVersion: '2006-03-01',
-        endpoint,
-        forcePathStyle: !!endpoint,
-      });
-      await s3.createBucket({Bucket: bucketName});
+      await s3Client(endpoint).createBucket({Bucket: bucketName});
 
       return new S3Bucket(
         {
@@ -66,11 +61,7 @@ export class S3Bucket {
    */
   static async getBuckets(endpoint?: string) {
     try {
-      const result = await new S3({
-        apiVersion: '2006-03-01',
-        endpoint,
-        forcePathStyle: !!endpoint,
-      }).send(new ListBucketsCommand({}));
+      const result = await s3Client(endpoint).send(new ListBucketsCommand({}));
 
       if (!result.Buckets)
         throw Error("Property 'Buckets' was undefined on 'result'.");
@@ -83,11 +74,7 @@ export class S3Bucket {
 
   static async deleteIfExsists(bucketName: string, endpoint?: string) {
     try {
-      await new S3({
-        apiVersion: '2006-03-01',
-        endpoint,
-        forcePathStyle: !!endpoint,
-      }).deleteBucket({Bucket: bucketName});
+      await s3Client(endpoint).deleteBucket({Bucket: bucketName});
       return true;
     } catch (err) {
       return false;
