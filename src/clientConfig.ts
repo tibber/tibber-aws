@@ -1,18 +1,8 @@
-const EMULATOR_CREDENTIALS = {
-  accessKeyId: 'emulator',
-  secretAccessKey: 'emulator',
-};
-
-export const emulatorUrl = (endpoint?: string) =>
-  endpoint || process.env.AWS_SERVICE_URL;
-
-export const clientConfig = (endpoint?: string) => {
-  const url = emulatorUrl(endpoint);
-  return url
+export const clientConfig = (endpoint = process.env.AWS_SERVICE_URL) =>
+  endpoint
     ? {
-        endpoint: url,
+        endpoint,
         region: process.env.AWS_REGION ?? 'us-east-1',
-        credentials: EMULATOR_CREDENTIALS,
+        credentials: {accessKeyId: 'emulator', secretAccessKey: 'emulator'},
       }
     : {};
-};

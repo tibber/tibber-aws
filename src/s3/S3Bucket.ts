@@ -5,10 +5,12 @@ import {
   S3,
   BucketAlreadyOwnedByYou,
 } from '@aws-sdk/client-s3';
-import {clientConfig, emulatorUrl} from '../clientConfig';
+import {clientConfig} from '../clientConfig';
 
-const s3Client = (endpoint?: string) =>
-  new S3({forcePathStyle: !!emulatorUrl(endpoint), ...clientConfig(endpoint)});
+const s3Client = (endpoint?: string) => {
+  const config = clientConfig(endpoint);
+  return new S3({...config, forcePathStyle: !!config.endpoint});
+};
 
 export class S3Bucket {
   public name: string;
