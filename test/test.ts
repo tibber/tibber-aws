@@ -14,19 +14,16 @@ import {
   Queue,
   QueueSubjectListener,
   QueueSubjectListenerBuilder,
-  configure,
   getLambdaFunc,
   getSecret,
 } from '../src';
-
-const awsEndpointUrl = process.env.AWS_ENDPOINT_URL;
 
 const LAMBDA_FUNCTION_NAME = 'localstack-lambda-url-example';
 const SECRET_NAME = 'my-secret';
 const SECRET_VALUE = {PG_PASSWORD: 'stacy'};
 
-async function ensureSecret(endpoint?: string) {
-  const sm = new SecretsManager({endpoint, region: 'eu-west-1'});
+async function ensureSecret() {
+  const sm = new SecretsManager();
   try {
     await sm.createSecret({
       Name: SECRET_NAME,
@@ -46,8 +43,8 @@ async function buildLambdaZip(): Promise<Buffer> {
   return zip.generateAsync({type: 'nodebuffer'});
 }
 
-async function ensureLambda(endpoint?: string) {
-  const lambda = new Lambda({endpoint, region: 'eu-west-1'});
+async function ensureLambda() {
+  const lambda = new Lambda();
   const zip = await buildLambdaZip();
 
   try {
@@ -69,10 +66,6 @@ async function ensureLambda(endpoint?: string) {
   );
 }
 
-beforeAll(async () => {
-  configure({region: 'eu-west-1'});
-});
-
 it('should be able to assign several topics to builderer', () => {
   const builder = new QueueSubjectListenerBuilder(
     'test-queueName',
@@ -87,7 +80,7 @@ describe('QueueSubjectListener', () => {
   it('should be able to listen to queue and call handler', async () => {
     const queueName = 'test-queueName-' + Date.now();
     const subjectName = 'test_subject';
-    const queue = await Queue.createQueue(queueName, awsEndpointUrl);
+    const queue = await Queue.createQueue(queueName);
     const listener = new QueueSubjectListener(queue, null, {
       maxConcurrentMessage: 1,
       visibilityTimeout: 10,
@@ -113,7 +106,7 @@ describe('QueueSubjectListener', () => {
   it('should be able to listen to queue and call handler with retry', async () => {
     const queueName = 'test-retry-queueName-' + Date.now();
     const subjectName = 'test_retry_subject';
-    const queue = await Queue.createQueue(queueName, awsEndpointUrl);
+    const queue = await Queue.createQueue(queueName);
     const listener = new QueueSubjectListener(queue, null, {
       maxConcurrentMessage: 1,
       visibilityTimeout: 5,
@@ -141,11 +134,10 @@ describe('QueueSubjectListener', () => {
 });
 
 it('should run lambda func', async () => {
-  await ensureLambda(awsEndpointUrl);
+  await ensureLambda();
 
   const func = getLambdaFunc(
-    LAMBDA_FUNCTION_NAME,
-    awsEndpointUrl
+    LAMBDA_FUNCTION_NAME
   );
   const payload = {num1: 324, num2: 36};
 
@@ -161,15 +153,14 @@ it('should run lambda func', async () => {
 }, 60000);
 
 it('getSecret', async () => {
-  await ensureSecret(awsEndpointUrl);
-  const res = getSecret(SECRET_NAME, 'PG_PASSWORD', awsEndpointUrl);
+  await ensureSecret();
+  const res = getSecret(SECRET_NAME, 'PG_PASSWORD');
   expect(res).toEqual('stacy');
 });
 
 it('should be able to send message to queue', async () => {
   const queue = await Queue.createQueue(
-    'test-tibber-aws-queue',
-    awsEndpointUrl
+    'test-tibber-aws-queue'
   );
   const res = await queue.send('Test', {property: 'test'});
 
