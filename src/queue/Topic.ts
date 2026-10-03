@@ -31,6 +31,16 @@ export class Topic {
     return new Topic(topicResponse.TopicArn, topicName, subjectName, endpoint);
   }
 
+  /**
+   * Constructs a Topic from a known ARN.
+   */
+  static fromArn(topicArn: string, subject?: string, endpoint?: string) {
+    const parts = topicArn.split(':');
+    if (parts.length < 6 || !parts[5])
+      throw Error(`Invalid SNS topic ARN: "${topicArn}".`);
+    return new Topic(topicArn, parts[5], subject, endpoint);
+  }
+
   async push(
     evt: unknown,
     subject?: string,
