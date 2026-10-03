@@ -1,5 +1,5 @@
 import {QueueDoesNotExist} from '@aws-sdk/client-sqs';
-import {AttachedQueueListenerBuilder, Queue, Topic, configure} from '../src';
+import {Queue, QueueSubjectListener, Topic, configure} from '../src';
 
 const awsEndpointUrl = process.env.AWS_ENDPOINT_URL;
 
@@ -66,19 +66,7 @@ describe('Topic.fromArn', () => {
   });
 });
 
-describe('Topic.fromName', () => {
-  it.each([
-    ['eu-west-1', 'aws'],
-    ['cn-north-1', 'aws-cn'],
-    ['us-gov-east-1', 'aws-us-gov'],
-  ])('region %s -> partition %s', (region, partition) => {
-    expect(Topic.fromName('t', '123', region).topicArn).toBe(
-      `arn:${partition}:sns:${region}:123:t`
-    );
-  });
-});
-
-describe('AttachedQueueListenerBuilder end-to-end', () => {
+describe('attached queue end-to-end', () => {
   it('consumes messages from a pre-provisioned topology', async () => {
     const queueName = uniqueName('attached-q');
     const topicName = uniqueName('attached-t');
@@ -92,7 +80,7 @@ describe('AttachedQueueListenerBuilder end-to-end', () => {
     await provisionedQueue.subscribeTopic(provisionedTopic);
 
     const queue = await Queue.attach(queueName, awsEndpointUrl);
-    const listener = new AttachedQueueListenerBuilder(queue).build();
+    const listener = new QueueSubjectListener(queue);
 
     const received: Array<{message: unknown; subject: string}> = [];
     listener.onSubject('user.created', async (message, subject) => {

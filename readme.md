@@ -98,11 +98,10 @@ Required IAM (consumer): `sqs:GetQueueUrl`, `sqs:ReceiveMessage`,
 Required IAM (publisher): `sns:Publish`.
 
 ```ts
-import {AttachedQueueListenerBuilder, Queue, Topic} from 'tibber-aws';
+import {Queue, QueueSubjectListener, Topic} from 'tibber-aws';
 
 // Consumer
-const queue = await Queue.attach('test-queue');
-const listener = new AttachedQueueListenerBuilder(queue).build();
+const listener = new QueueSubjectListener(await Queue.attach('test-queue'));
 listener.onSubject('test subject', async (message, subject) => {
   // handle message
 });
