@@ -64,7 +64,7 @@ listener.listen();
 
 ## Usage — application owns the queue/topic
 
-```
+```ts
 import {Topic, Queue} from 'tibber-aws';
 
 const topic = await Topic.createTopic('test-topic', 'test subject');
@@ -110,5 +110,6 @@ listener.listen();
 
 // Publisher
 const topic = await Topic.attach('test-topic', 'test subject');
+await topic.verify() //optional - verifies the topic exists
 await topic.push({test: 'test'});
 ```
