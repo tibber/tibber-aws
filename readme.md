@@ -95,7 +95,8 @@ Terraform. The application attaches to existing resources.
 
 Required IAM (consumer): `sqs:GetQueueUrl`, `sqs:ReceiveMessage`,
 `sqs:DeleteMessage`, `sqs:ChangeMessageVisibility`.
-Required IAM (publisher): `sns:Publish`.
+Required IAM (publisher): `sns:Publish`, plus `sns:GetTopicAttributes` for
+`topic.verify()`.
 
 ```ts
 import {Queue, QueueSubjectListener, Topic} from 'tibber-aws';
@@ -108,6 +109,6 @@ listener.onSubject('test subject', async (message, subject) => {
 listener.listen();
 
 // Publisher
-const topic = Topic.fromArn(process.env.TOPIC_ARN!, 'test subject');
+const topic = await Topic.attach('test-topic', 'test subject');
 await topic.push({test: 'test'});
 ```

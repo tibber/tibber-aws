@@ -1,4 +1,16 @@
 import {MessageAttributeValue, SNS} from '@aws-sdk/client-sns';
+import {STS} from '@aws-sdk/client-sts';
+
+let account: Promise<string | undefined> | undefined;
+
+const callerAccount = (endpoint?: string) =>
+  (account ??= new STS({endpoint})
+    .getCallerIdentity({})
+    .then(({Account}) => Account)
+    .catch(err => {
+      account = undefined;
+      throw err;
+    }));
 
 export class Topic {
   public sns: SNS;
@@ -32,13 +44,20 @@ export class Topic {
   }
 
   /**
-   * Constructs a Topic from a known ARN.
+   * Attaches to an existing topic by name. The account comes from
+   * `sts:GetCallerIdentity`, called once per process and needing no IAM.
+   * Call `verify()` to fail fast if the topic does not exist.
    */
-  static fromArn(topicArn: string, subject?: string, endpoint?: string) {
-    const parts = topicArn.split(':');
-    if (parts.length < 6 || !parts[5])
-      throw Error(`Invalid SNS topic ARN: "${topicArn}".`);
-    return new Topic(topicArn, parts[5], subject, endpoint);
+  static async attach(topicName: string, subject?: string, endpoint?: string) {
+    const region = await new SNS({endpoint}).config.region();
+    const account = await callerAccount(endpoint);
+    const topicArn = `arn:aws:sns:${region}:${account}:${topicName}`;
+    return new Topic(topicArn, topicName, subject, endpoint);
+  }
+
+  /** Throws `NotFoundException` if missing; needs `sns:GetTopicAttributes`. */
+  async verify() {
+    await this.sns.getTopicAttributes({TopicArn: this.topicArn});
   }
 
   async push(
