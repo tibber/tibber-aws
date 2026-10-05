@@ -46,7 +46,7 @@ export class Topic {
   /**
    * Attaches to an existing topic by name. The account comes from
    * `sts:GetCallerIdentity`, called once per process.
-   * Call `verify()` to fail fast if the topic does not exist.
+   * Call `verify()` to verify the topic exists.
    */
   static async attach(topicName: string, subject?: string, endpoint?: string) {
     const region = await new SNS({endpoint}).config.region();
