@@ -45,7 +45,7 @@ export class Topic {
 
   /**
    * Attaches to an existing topic by name. The account comes from
-   * `sts:GetCallerIdentity`, called once per process and needing no IAM.
+   * `sts:GetCallerIdentity`, called once per process.
    * Call `verify()` to fail fast if the topic does not exist.
    */
   static async attach(topicName: string, subject?: string, endpoint?: string) {
