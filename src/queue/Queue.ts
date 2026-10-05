@@ -146,6 +146,21 @@ export class Queue {
     return new Queue(queue.QueueUrl, response.Attributes.QueueArn, endpoint);
   }
 
+  /**
+   * Resolves an existing queue by name. Needs `sqs:GetQueueUrl`.
+   * Throws `QueueDoesNotExist` if the queue is not provisioned.
+   */
+  static async attach(queueName: string, endpoint?: string) {
+    const sqs = new SQS({endpoint});
+    const {QueueUrl} = await sqs.getQueueUrl({QueueName: queueName});
+    if (!QueueUrl)
+      throw Error(`Could not resolve URL for queue "${queueName}".`);
+    const [, accountId] = new URL(QueueUrl).pathname.split('/');
+    const region = await sqs.config.region();
+    const queueArn = `arn:aws:sqs:${region}:${accountId}:${queueName}`;
+    return new Queue(QueueUrl, queueArn, endpoint);
+  }
+
   async receiveMessage(params: Omit<ReceiveMessageCommandInput, 'QueueUrl'>) {
     return await this.sqs.receiveMessage({
       ...params,

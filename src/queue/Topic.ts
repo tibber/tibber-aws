@@ -1,4 +1,16 @@
 import {MessageAttributeValue, SNS} from '@aws-sdk/client-sns';
+import {STS} from '@aws-sdk/client-sts';
+
+let account: Promise<string | undefined> | undefined;
+
+const callerAccount = (endpoint?: string) =>
+  (account ??= new STS({endpoint})
+    .getCallerIdentity({})
+    .then(({Account}) => Account)
+    .catch(err => {
+      account = undefined;
+      throw err;
+    }));
 
 export class Topic {
   public sns: SNS;
@@ -29,6 +41,23 @@ export class Topic {
     }
 
     return new Topic(topicResponse.TopicArn, topicName, subjectName, endpoint);
+  }
+
+  /**
+   * Attaches to an existing topic by name. The account comes from
+   * `sts:GetCallerIdentity`, called once per process.
+   * Call `verify()` to verify the topic exists.
+   */
+  static async attach(topicName: string, subject?: string, endpoint?: string) {
+    const region = await new SNS({endpoint}).config.region();
+    const account = await callerAccount(endpoint);
+    const topicArn = `arn:aws:sns:${region}:${account}:${topicName}`;
+    return new Topic(topicArn, topicName, subject, endpoint);
+  }
+
+  /** Throws `NotFoundException` if topic does not exist; needs `sns:GetTopicAttributes`. */
+  async verify() {
+    await this.sns.getTopicAttributes({TopicArn: this.topicArn});
   }
 
   async push(
