@@ -1,0 +1,19 @@
+{
+  "//": [
+    "Deliberately does NOT extend the repo's tsconfig (which extends gts). A",
+    "consumer compiles with its own settings, so the probe uses a plain strict",
+    "config — that is what pins the emitted .d.ts as consumable rather than",
+    "merely self-consistent."
+  ],
+  "compilerOptions": {
+    "strict": true,
+    "target": "ES2022",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "skipLibCheck": false,
+    "noEmit": true,
+    "types": ["node"]
+  },
+  "files": ["probe.ts"]
+}
