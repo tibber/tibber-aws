@@ -147,7 +147,7 @@ export class Queue {
   }
 
   /**
-   * Resolves an existing queue by name. Uses `sqs:GetQueueUrl` only.
+   * Resolves an existing queue by name. Needs `sqs:GetQueueUrl`.
    * Throws `QueueDoesNotExist` if the queue is not provisioned.
    */
   static async attach(queueName: string, endpoint?: string) {

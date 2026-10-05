@@ -55,7 +55,7 @@ export class Topic {
     return new Topic(topicArn, topicName, subject, endpoint);
   }
 
-  /** Throws `NotFoundException` if missing; needs `sns:GetTopicAttributes`. */
+  /** Throws `NotFoundException` if topic does not exist; needs `sns:GetTopicAttributes`. */
   async verify() {
     await this.sns.getTopicAttributes({TopicArn: this.topicArn});
   }
