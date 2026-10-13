@@ -47,34 +47,41 @@ beforeAll(() => {
 
 describe('QueueSubjectListener (integration with Floci/LocalStack)', () => {
   describe('listen', () => {
-    it('should be able to listen to queue and call handler', async () => {
+    it('should finish in-flight handlers without waiting for the idle receive on stop', async () => {
       const queue = await Queue.createQueue(
         uniqueQueueName('listen'),
         awsEndpointUrl
       );
       const deleteSpy = jest.spyOn(queue, 'deleteMessage');
+      const receiveSpy = jest.spyOn(queue, 'receiveMessage');
 
       const sut = new QueueSubjectListener(queue, null, {
-        maxConcurrentMessage: 1,
-        waitTimeSeconds: 0,
+        maxConcurrentMessage: 5,
+        waitTimeSeconds: 20,
         visibilityTimeout: 30,
       });
 
-      const handler = jest.fn(() => Promise.resolve());
+      let finishHandler = () => {};
+      const handler = jest.fn(
+        () => new Promise<void>(r => (finishHandler = r))
+      );
       sut.onSubject('test', handler);
       sut.listen();
 
       await queue.send('test', {id: '123', test: 'test'});
-
-      try {
-        await waitFor(() => handler.mock.calls.length >= 1);
-        await waitFor(() => deleteSpy.mock.calls.length >= 1);
-      } finally {
-        sut.stop();
-      }
-
-      expect(handler).toHaveBeenCalledTimes(1);
+      await waitFor(() => receiveSpy.mock.calls.length >= 2);
+      const stopStartedAt = Date.now();
+      const stopping = sut.stop();
+      expect(deleteSpy).not.toHaveBeenCalled();
+      finishHandler();
+      await stopping;
+      expect(Date.now() - stopStartedAt).toBeLessThan(5000);
       expect(deleteSpy).toHaveBeenCalledTimes(1);
+
+      await queue.send('test', {id: '456'});
+      await receiveSpy.mock.results[1].value;
+      await new Promise(r => setImmediate(r));
+      expect(handler).toHaveBeenCalledTimes(1);
     }, 20000);
 
     it('should delete messages that are not valid JSON', async () => {

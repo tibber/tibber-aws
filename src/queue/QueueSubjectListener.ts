@@ -88,6 +88,7 @@ export class QueueSubjectListener {
     }>
   > = {};
   public isStopped = false;
+  private readonly inFlight = new Set<Promise<void>>();
 
   public logger: ILogger;
 
@@ -103,8 +104,9 @@ export class QueueSubjectListener {
     this.logger = new LoggerWrapper(logger);
   }
 
-  stop() {
+  async stop() {
     this.isStopped = true;
+    await Promise.allSettled(this.inFlight);
   }
 
   onSubject(
@@ -134,8 +136,6 @@ export class QueueSubjectListener {
       params?.WaitTimeSeconds ?? this.options.waitTimeSeconds;
     const receiveTimeout = this.options.receiveTimeout;
 
-    let cntInFlight = 0;
-
     const hasWildCardHandler = !!this.handlers['*'];
 
     const rearm = (idleDelay: number) => {
@@ -163,7 +163,7 @@ export class QueueSubjectListener {
         const maxNumberOfMessagesOrUndefined =
           MaxNumberOfMessages === undefined
             ? undefined
-            : Math.min(10, MaxNumberOfMessages - cntInFlight);
+            : Math.min(10, MaxNumberOfMessages - this.inFlight.size);
 
         const currentParams = {
           MaxNumberOfMessages: maxNumberOfMessagesOrUndefined,
@@ -237,7 +237,7 @@ export class QueueSubjectListener {
           })
         );
 
-        cntInFlight += messages.length;
+        if (this.isStopped) return;
 
         const promises = messages.map(async m => {
           const {message, subject, attributes} = m.message;
@@ -327,12 +327,16 @@ export class QueueSubjectListener {
             );
           } catch (error) {
             this.logger.error(errorMessage(error));
-          } finally {
-            cntInFlight--;
           }
         });
 
-        if (MaxNumberOfMessages === cntInFlight) {
+        promises.forEach(p => {
+          this.inFlight.add(p);
+          const untrack = () => this.inFlight.delete(p);
+          void p.then(untrack, untrack);
+        });
+
+        if (MaxNumberOfMessages === this.inFlight.size) {
           await Promise.race(promises);
         }
       } catch (err) {
