@@ -47,7 +47,7 @@ beforeAll(() => {
 
 describe('QueueSubjectListener (integration with Floci/LocalStack)', () => {
   describe('listen', () => {
-    it('should finish an in-flight receive and its handlers before stop resolves', async () => {
+    it('should finish in-flight handlers without waiting for the idle receive on stop', async () => {
       const queue = await Queue.createQueue(
         uniqueQueueName('listen'),
         awsEndpointUrl
@@ -57,7 +57,7 @@ describe('QueueSubjectListener (integration with Floci/LocalStack)', () => {
 
       const sut = new QueueSubjectListener(queue, null, {
         maxConcurrentMessage: 5,
-        waitTimeSeconds: 5,
+        waitTimeSeconds: 20,
         visibilityTimeout: 30,
       });
 
@@ -65,11 +65,16 @@ describe('QueueSubjectListener (integration with Floci/LocalStack)', () => {
       sut.onSubject('test', handler);
       sut.listen();
 
-      await waitFor(() => receiveSpy.mock.calls.length >= 1);
-      const stopping = sut.stop();
       await queue.send('test', {id: '123', test: 'test'});
-      await stopping;
+      await waitFor(() => receiveSpy.mock.calls.length >= 2);
+      const stopStartedAt = Date.now();
+      await sut.stop();
+      const stopMs = Date.now() - stopStartedAt;
+      await queue.send('test', {id: '456'});
+      await receiveSpy.mock.results[1].value;
+      await new Promise(r => setTimeout(r, 100));
 
+      expect(stopMs).toBeLessThan(5000);
       expect(handler).toHaveBeenCalledTimes(1);
       expect(deleteSpy).toHaveBeenCalledTimes(1);
     }, 20000);
