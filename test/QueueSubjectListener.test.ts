@@ -61,22 +61,27 @@ describe('QueueSubjectListener (integration with Floci/LocalStack)', () => {
         visibilityTimeout: 30,
       });
 
-      const handler = jest.fn(() => new Promise<void>(r => setTimeout(r, 500)));
+      let finishHandler = () => {};
+      const handler = jest.fn(
+        () => new Promise<void>(r => (finishHandler = r))
+      );
       sut.onSubject('test', handler);
       sut.listen();
 
       await queue.send('test', {id: '123', test: 'test'});
       await waitFor(() => receiveSpy.mock.calls.length >= 2);
       const stopStartedAt = Date.now();
-      await sut.stop();
-      const stopMs = Date.now() - stopStartedAt;
+      const stopping = sut.stop();
+      expect(deleteSpy).not.toHaveBeenCalled();
+      finishHandler();
+      await stopping;
+      expect(Date.now() - stopStartedAt).toBeLessThan(5000);
+      expect(deleteSpy).toHaveBeenCalledTimes(1);
+
       await queue.send('test', {id: '456'});
       await receiveSpy.mock.results[1].value;
-      await new Promise(r => setTimeout(r, 100));
-
-      expect(stopMs).toBeLessThan(5000);
+      await new Promise(r => setImmediate(r));
       expect(handler).toHaveBeenCalledTimes(1);
-      expect(deleteSpy).toHaveBeenCalledTimes(1);
     }, 20000);
 
     it('should delete messages that are not valid JSON', async () => {
