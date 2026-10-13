@@ -88,6 +88,7 @@ export class QueueSubjectListener {
     }>
   > = {};
   public isStopped = false;
+  private readonly inFlight = new Set<Promise<unknown>>();
 
   public logger: ILogger;
 
@@ -103,8 +104,16 @@ export class QueueSubjectListener {
     this.logger = new LoggerWrapper(logger);
   }
 
-  stop() {
+  async stop() {
     this.isStopped = true;
+    while (this.inFlight.size) await Promise.allSettled(this.inFlight);
+  }
+
+  private track<T>(promise: Promise<T>) {
+    this.inFlight.add(promise);
+    const untrack = () => this.inFlight.delete(promise);
+    void promise.then(untrack, untrack);
+    return promise;
   }
 
   onSubject(
@@ -146,7 +155,7 @@ export class QueueSubjectListener {
         delay = (receiveTimeout && receiveTimeout()) || idleDelay;
       } catch {}
       setTimeout(() => {
-        void handlerFunc().catch(err => {
+        void this.track(handlerFunc()).catch(err => {
           try {
             this.logger.error(errorMessage(err));
           } catch {}
@@ -331,6 +340,8 @@ export class QueueSubjectListener {
             cntInFlight--;
           }
         });
+
+        promises.forEach(p => this.track(p));
 
         if (MaxNumberOfMessages === cntInFlight) {
           await Promise.race(promises);

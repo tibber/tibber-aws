@@ -47,7 +47,7 @@ beforeAll(() => {
 
 describe('QueueSubjectListener (integration with Floci/LocalStack)', () => {
   describe('listen', () => {
-    it('should be able to listen to queue and call handler', async () => {
+    it('should call handler and finish it before stop resolves', async () => {
       const queue = await Queue.createQueue(
         uniqueQueueName('listen'),
         awsEndpointUrl
@@ -60,7 +60,7 @@ describe('QueueSubjectListener (integration with Floci/LocalStack)', () => {
         visibilityTimeout: 30,
       });
 
-      const handler = jest.fn(() => Promise.resolve());
+      const handler = jest.fn(() => new Promise<void>(r => setTimeout(r, 500)));
       sut.onSubject('test', handler);
       sut.listen();
 
@@ -68,9 +68,8 @@ describe('QueueSubjectListener (integration with Floci/LocalStack)', () => {
 
       try {
         await waitFor(() => handler.mock.calls.length >= 1);
-        await waitFor(() => deleteSpy.mock.calls.length >= 1);
       } finally {
-        sut.stop();
+        await sut.stop();
       }
 
       expect(handler).toHaveBeenCalledTimes(1);
