@@ -47,16 +47,17 @@ beforeAll(() => {
 
 describe('QueueSubjectListener (integration with Floci/LocalStack)', () => {
   describe('listen', () => {
-    it('should call handler and finish it before stop resolves', async () => {
+    it('should finish an in-flight receive and its handlers before stop resolves', async () => {
       const queue = await Queue.createQueue(
         uniqueQueueName('listen'),
         awsEndpointUrl
       );
       const deleteSpy = jest.spyOn(queue, 'deleteMessage');
+      const receiveSpy = jest.spyOn(queue, 'receiveMessage');
 
       const sut = new QueueSubjectListener(queue, null, {
-        maxConcurrentMessage: 1,
-        waitTimeSeconds: 0,
+        maxConcurrentMessage: 5,
+        waitTimeSeconds: 5,
         visibilityTimeout: 30,
       });
 
@@ -64,13 +65,10 @@ describe('QueueSubjectListener (integration with Floci/LocalStack)', () => {
       sut.onSubject('test', handler);
       sut.listen();
 
+      await waitFor(() => receiveSpy.mock.calls.length >= 1);
+      const stopping = sut.stop();
       await queue.send('test', {id: '123', test: 'test'});
-
-      try {
-        await waitFor(() => handler.mock.calls.length >= 1);
-      } finally {
-        await sut.stop();
-      }
+      await stopping;
 
       expect(handler).toHaveBeenCalledTimes(1);
       expect(deleteSpy).toHaveBeenCalledTimes(1);
