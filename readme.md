@@ -39,6 +39,36 @@ will no-op ("no new version to release"). Recovery: delete the tag
 created, then rerun the `deploy` job. A merge with no pending release logs
 `already published, skipping` and exits green.
 
+## Tests
+
+| Command | What it covers |
+|---|---|
+| `yarn test` | Unit/integration suite (jest) against Floci — needs `docker compose -f docker-compose-test.yml up -d`. Imports from `src/`, so it verifies behaviour but **not** the published package. |
+| `yarn test:consumer` | Consumer smoke test. Packs the library and verifies the tarball as a consumer sees it. No AWS, no Floci. |
+
+`yarn test:consumer` ([test/consumer/](test/consumer/)) exists because the unit
+suite cannot fail for a whole class of breakage — a bad `main`/`files` entry, a
+dropped or renamed export, or `.d.ts` a consumer can't resolve all leave it
+green while shipping a broken package. It runs four checks, cheapest first:
+
+1. **[publint](https://publint.dev)** — packaging config against the real tarball
+   (`main`/`files` resolve, no stale fields).
+2. **[attw](https://arethetypeswrong.github.io)** — declarations resolve under
+   `node10`, `node16` (from CJS *and* ESM), and `bundler`.
+3. **`probe.cjs`** — plain `require`, the export surface vs the committed
+   snapshot in `test/consumer/expected-exports.json`, and that the emitted JS
+   runs: `configure()` sets the region and `S3Bucket` constructs (which also
+   proves the AWS SDK deps resolve from the installed tree).
+4. **`probe.ts`** — `tsc --noEmit --strict` from a consumer's own tsconfig, so a
+   breaking signature change fails even though attw is happy. It pins the
+   documented call shapes, including that `S3Bucket.getOrCreateBucket` resolves
+   to `S3Bucket | undefined`.
+
+Changing `expected-exports.json` is how an API addition or removal becomes a
+reviewable decision instead of an accident. CI runs it in **two** places: in
+`build` on every PR (so a harness bug surfaces on the PR), and again in `deploy`
+**before** `yarn release`, so none of the above can publish.
+
 ## Version 6.x.x changes
 - Migrated to aws sdk 3.x
 - Removed ECS Api
