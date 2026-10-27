@@ -6,13 +6,7 @@ import {
   BucketAlreadyOwnedByYou,
 } from '@aws-sdk/client-s3';
 import {Upload} from '@aws-sdk/lib-storage';
-import {PassThrough, Writable} from 'node:stream';
-
-export interface StreamedPutOptions {
-  contentType?: PutObjectCommandInput['ContentType'];
-  metadata?: Record<string, string>;
-  signal?: AbortSignal;
-}
+import {Readable} from 'node:stream';
 
 export class S3Bucket {
   public name: string;
@@ -115,51 +109,20 @@ export class S3Bucket {
     });
   }
 
-  async putObjectStreamed(
+  async putObjectStream(
     key: string,
-    writeData: (stream: Writable, signal?: AbortSignal) => Promise<void>,
-    {contentType, metadata, signal}: StreamedPutOptions = {},
+    body: Readable,
+    contentType?: PutObjectCommandInput['ContentType'],
   ) {
-    signal?.throwIfAborted();
-    const body = new PassThrough();
-    const uploaded = new Upload({
+    return await new Upload({
       client: this.s3,
       params: {
         Bucket: this.name,
         Key: key,
         Body: body,
         ContentType: contentType,
-        Metadata: metadata,
       },
     }).done();
-    let uploadError: unknown;
-    let stopWriting!: (reason: unknown) => void;
-    const stopped = new Promise<never>((_, reject) => (stopWriting = reject));
-    stopped.catch(() => undefined);
-    uploaded.catch(error => {
-      uploadError = error;
-      body.destroy(error);
-      stopWriting(error);
-    });
-    const abort = () => {
-      body.destroy(signal?.reason);
-      stopWriting(signal?.reason);
-    };
-    signal?.addEventListener('abort', abort);
-    try {
-      const written = writeData(body, signal);
-      written.catch(() => undefined);
-      await Promise.race([written, stopped]);
-      body.end();
-      return await uploaded;
-    } catch (error) {
-      const cause = uploadError ?? (signal?.aborted ? signal.reason : error);
-      body.destroy(cause as Error);
-      await uploaded.catch(() => undefined);
-      throw cause;
-    } finally {
-      signal?.removeEventListener('abort', abort);
-    }
   }
 
   async getObject(key: string) {

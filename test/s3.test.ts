@@ -1,5 +1,6 @@
+import {randomBytes, randomUUID} from 'node:crypto';
 import rand from 'randomstring';
-import {S3Bucket, configure} from '../src';
+import {DataSet, S3Bucket, configure, exportDataSet} from '../src';
 import {NoSuchKey} from '@aws-sdk/client-s3';
 
 const awsEndpointUrl = process.env.AWS_ENDPOINT_URL;
@@ -264,4 +265,106 @@ describe('getOrCreateBucket', () => {
 
     expect(contents).toHaveLength(1);
   });
+});
+
+describe('exportDataSet', () => {
+  type Row = {id: number; label: string | null; at: Date};
+  const columns: DataSet<Row>['columns'] = [
+    {name: 'id', type: 'INT32', nullable: false},
+    {name: 'label', type: 'STRING', nullable: true},
+    {name: 'at', type: 'TIMESTAMP', nullable: false},
+  ];
+  const rowAt = (id: number): Row => ({
+    id,
+    label: id % 2 ? `row-${id}` : null,
+    at: new Date(Date.UTC(2026, 0, 1, 0, 0, id)),
+  });
+  let bucket: S3Bucket;
+  const keysUnder = async (prefix: string) =>
+    ((await bucket.listObjects(prefix)).Contents ?? []).map(o =>
+      o.Key!.slice(prefix.length),
+    );
+
+  beforeAll(async () => {
+    bucket = (await S3Bucket.getOrCreateBucket(
+      generateRandomBucketName(),
+      awsEndpointUrl,
+    ))!;
+  });
+
+  it.each([0, 25])('writes %i rows to parquet and then _SUCCESS', async n => {
+    const rows = Array.from({length: n}, (_, i) => rowAt(i + 1));
+    const prefix = await exportDataSet(
+      bucket,
+      {name: `${n}`, columns, rows},
+      4,
+    );
+
+    expect(await keysUnder(`${prefix}/`)).toEqual(['_SUCCESS', 'data.parquet']);
+    const {parquetReadObjects} = await import('hyparquet');
+    const file = await (
+      await bucket.getObject(`${prefix}/data.parquet`)
+    ).Body!.transformToByteArray();
+    expect(
+      await parquetReadObjects({file: new Uint8Array(file).buffer}),
+    ).toEqual(rows);
+  });
+
+  it('pulls rows only as fast as the upload reads them', async () => {
+    let pulled = 0;
+    const rows = (async function* () {
+      while (pulled < 10_000) yield rowAt(++pulled);
+    })();
+    let startUpload!: () => void;
+    const uploadStarted = new Promise<void>(resolve => (startUpload = resolve));
+    const putObjectStream = bucket.putObjectStream.bind(bucket);
+    jest
+      .spyOn(bucket, 'putObjectStream')
+      .mockImplementationOnce(async (...args) => {
+        await uploadStarted;
+        return putObjectStream(...args);
+      });
+
+    const exported = exportDataSet(bucket, {name: 'lazy', columns, rows}, 100);
+    await new Promise(resolve => setTimeout(resolve, 100));
+    expect(pulled).toBeLessThan(10_000);
+    startUpload();
+    await exported;
+    expect(pulled).toBe(10_000);
+  });
+
+  it.each([
+    ['the source fails', () => bucket, 5_000, 'source failed'],
+    [
+      'the upload fails',
+      () =>
+        new S3Bucket(
+          {Name: generateRandomBucketName(), CreationDate: new Date()},
+          awsEndpointUrl,
+        ),
+      Infinity,
+      /bucket/i,
+    ],
+  ])(
+    'leaves no files and closes the source when %s',
+    async (_, target, failAt, error) => {
+      let closed = false;
+      const rows = (async function* () {
+        try {
+          for (let id = 1; id <= failAt; id++)
+            yield {...rowAt(id), label: randomBytes(1000).toString('hex')};
+          throw new Error('source failed');
+        } finally {
+          closed = true;
+        }
+      })();
+      const name = randomUUID();
+
+      await expect(
+        exportDataSet(target(), {name, columns, rows}, 100),
+      ).rejects.toThrow(error);
+      expect(await keysUnder(`data-exports/${name}/`)).toEqual([]);
+      expect(closed).toBe(true);
+    },
+  );
 });
