@@ -1,8 +1,6 @@
 import rand from 'randomstring';
-import {S3Bucket, configure} from '../src';
+import {S3Bucket} from '../src';
 import {NoSuchKey} from '@aws-sdk/client-s3';
-
-const awsEndpointUrl = process.env.AWS_ENDPOINT_URL;
 
 const generateRandomBucketName = () =>
   rand.generate({
@@ -11,27 +9,17 @@ const generateRandomBucketName = () =>
     length: 32,
   });
 
-beforeAll(async () => {
-  configure({region: 'eu-west-1'});
-});
-
 describe('getOrCreateBucket', () => {
   it('should be able to create bucket', async () => {
-    const result = await S3Bucket.getOrCreateBucket(
-      generateRandomBucketName(),
-      awsEndpointUrl
-    );
+    const result = await S3Bucket.getOrCreateBucket(generateRandomBucketName());
     expect(typeof result).toBe('object');
   });
 });
 
 describe('getBuckets', () => {
   it('getBuckets should return array', async () => {
-    await S3Bucket.getOrCreateBucket(
-      generateRandomBucketName(),
-      awsEndpointUrl
-    );
-    const result = await S3Bucket.getBuckets(awsEndpointUrl);
+    await S3Bucket.getOrCreateBucket(generateRandomBucketName());
+    const result = await S3Bucket.getBuckets();
 
     expect(Array.isArray(result)).toBe(true);
     expect(result.length).toBeGreaterThan(0);
@@ -41,30 +29,21 @@ describe('getBuckets', () => {
 describe('getExistingBucket', () => {
   it('should return bucket if it exists', async () => {
     const testBucketName = generateRandomBucketName();
-    await S3Bucket.getOrCreateBucket(testBucketName, awsEndpointUrl);
-    const result = await S3Bucket.getExistingBucket(
-      testBucketName,
-      awsEndpointUrl
-    );
+    await S3Bucket.getOrCreateBucket(testBucketName);
+    const result = await S3Bucket.getExistingBucket(testBucketName);
     expect(result?.name).toBe(testBucketName);
   });
 
   it('should return undefined if bucket does not exist', async () => {
     const testBucketName = generateRandomBucketName();
-    const result = await S3Bucket.getExistingBucket(
-      testBucketName,
-      awsEndpointUrl
-    );
+    const result = await S3Bucket.getExistingBucket(testBucketName);
     expect(result).toBeUndefined();
   });
 });
 
 describe('deleteObject', () => {
   it('should be able to delete object', async () => {
-    const bucket = await S3Bucket.getOrCreateBucket(
-      generateRandomBucketName(),
-      awsEndpointUrl
-    );
+    const bucket = await S3Bucket.getOrCreateBucket(generateRandomBucketName());
     const buffer = Buffer.from([8, 6, 7, 5, 3, 0, 9]);
     await bucket!.putObject('test', buffer, 'image/png');
     const buffer2 = Buffer.from([8, 6, 7, 5, 3, 0, 9]);
@@ -92,20 +71,14 @@ describe('deleteObject', () => {
 describe('deleteIfExsists', () => {
   it('should be able to delete bucket', async () => {
     const testBucketName = generateRandomBucketName();
-    await S3Bucket.getOrCreateBucket(testBucketName, awsEndpointUrl);
-    const result = await S3Bucket.deleteIfExsists(
-      testBucketName,
-      awsEndpointUrl
-    );
+    await S3Bucket.getOrCreateBucket(testBucketName);
+    const result = await S3Bucket.deleteIfExsists(testBucketName);
     expect(result).toBe(true);
   });
 
   it('should return false if bucket does not exist', async () => {
     const testBucketName = generateRandomBucketName();
-    const result = await S3Bucket.deleteIfExsists(
-      testBucketName,
-      awsEndpointUrl
-    );
+    const result = await S3Bucket.deleteIfExsists(testBucketName);
     expect(result).toBe(false);
   });
 });
@@ -113,50 +86,32 @@ describe('deleteIfExsists', () => {
 describe('getOrCreateBucket', () => {
   it('should get bucket if it already exists', async () => {
     const testBucketName = generateRandomBucketName();
-    const result = await S3Bucket.getOrCreateBucket(
-      testBucketName,
-      awsEndpointUrl
-    );
-    const result2 = await S3Bucket.getOrCreateBucket(
-      testBucketName,
-      awsEndpointUrl
-    );
+    const result = await S3Bucket.getOrCreateBucket(testBucketName);
+    const result2 = await S3Bucket.getOrCreateBucket(testBucketName);
     expect(result?.name).toBe(result2?.name);
   });
 
   it('should be able to put object without content type', async () => {
-    const bucket = await S3Bucket.getOrCreateBucket(
-      generateRandomBucketName(),
-      awsEndpointUrl
-    );
+    const bucket = await S3Bucket.getOrCreateBucket(generateRandomBucketName());
     const buffer = Buffer.from([8, 6, 7, 5, 3, 0, 9]);
     bucket!.putObject('test', buffer);
   });
 
   it('should be able to put object with content type', async () => {
-    const bucket = await S3Bucket.getOrCreateBucket(
-      generateRandomBucketName(),
-      awsEndpointUrl
-    );
+    const bucket = await S3Bucket.getOrCreateBucket(generateRandomBucketName());
     const buffer = Buffer.from([8, 6, 7, 5, 3, 0, 9]);
     await bucket!.putObject('test', buffer, 'image/png');
   });
 
   it('should be able to retrieve object', async () => {
-    const bucket = await S3Bucket.getOrCreateBucket(
-      generateRandomBucketName(),
-      awsEndpointUrl
-    );
+    const bucket = await S3Bucket.getOrCreateBucket(generateRandomBucketName());
     const buffer = Buffer.from([8, 6, 7, 5, 3, 0, 9]);
     await bucket!.putObject('test', buffer, 'image/png');
     await bucket!.getObject('test');
   });
 
   it('should be able to retrieve object as stream', async () => {
-    const bucket = await S3Bucket.getOrCreateBucket(
-      generateRandomBucketName(),
-      awsEndpointUrl
-    );
+    const bucket = await S3Bucket.getOrCreateBucket(generateRandomBucketName());
     const buffer = Buffer.from([8, 6, 7, 5, 3, 0, 9]);
     await bucket!.putObject('test', buffer, 'image/png');
     const result = await bucket!.getObjectAsStream('test');
@@ -164,10 +119,7 @@ describe('getOrCreateBucket', () => {
   });
 
   it('should be able to actually retrieve object as stream', async () => {
-    const bucket = await S3Bucket.getOrCreateBucket(
-      generateRandomBucketName(),
-      awsEndpointUrl
-    );
+    const bucket = await S3Bucket.getOrCreateBucket(generateRandomBucketName());
     const data = new Uint8Array([8, 6, 7, 5, 3, 0, 9]);
     const buffer = Buffer.from(data);
     await bucket!.putObject('test', buffer, 'image/png');
@@ -181,10 +133,7 @@ describe('getOrCreateBucket', () => {
   });
 
   it('should be able to handle missing key exception', async () => {
-    const bucket = await S3Bucket.getOrCreateBucket(
-      generateRandomBucketName(),
-      awsEndpointUrl
-    );
+    const bucket = await S3Bucket.getOrCreateBucket(generateRandomBucketName());
     const name = generateRandomBucketName();
 
     try {
@@ -195,10 +144,7 @@ describe('getOrCreateBucket', () => {
   });
 
   it('should be able to check whether object is available in S3', async () => {
-    const bucket = await S3Bucket.getOrCreateBucket(
-      generateRandomBucketName(),
-      awsEndpointUrl
-    );
+    const bucket = await S3Bucket.getOrCreateBucket(generateRandomBucketName());
     const buffer = Buffer.from([8, 6, 7, 5, 3, 0, 9]);
 
     let name = generateRandomBucketName();
@@ -216,10 +162,7 @@ describe('getOrCreateBucket', () => {
   it('should be able to list objects', async () => {
     const buffer = Buffer.from([8, 6, 7, 5, 3, 0, 9]);
 
-    const bucket = await S3Bucket.getOrCreateBucket(
-      generateRandomBucketName(),
-      awsEndpointUrl
-    );
+    const bucket = await S3Bucket.getOrCreateBucket(generateRandomBucketName());
 
     for (let index = 0; index < 10; index++) {
       await bucket?.putObject('myItem' + index, buffer);
@@ -234,10 +177,7 @@ describe('getOrCreateBucket', () => {
 
   it('should be able to list objects with prefix', async () => {
     const buffer = Buffer.from([8, 6, 7, 5, 3, 0, 9]);
-    const bucket = await S3Bucket.getOrCreateBucket(
-      generateRandomBucketName(),
-      awsEndpointUrl
-    );
+    const bucket = await S3Bucket.getOrCreateBucket(generateRandomBucketName());
     await bucket?.putObject('item1', buffer);
     await bucket?.putObject('item2', buffer);
     await bucket?.putObject('nomatch', buffer);
@@ -250,10 +190,7 @@ describe('getOrCreateBucket', () => {
   });
 
   it('should be able to list after a given key', async () => {
-    const bucket = await S3Bucket.getOrCreateBucket(
-      generateRandomBucketName(),
-      awsEndpointUrl
-    );
+    const bucket = await S3Bucket.getOrCreateBucket(generateRandomBucketName());
 
     const buffer = Buffer.from([8, 6, 7, 5, 3, 0, 9]);
     await bucket!.putObject('test2', buffer);

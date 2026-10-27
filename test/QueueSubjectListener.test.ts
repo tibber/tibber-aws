@@ -1,8 +1,6 @@
 import {brotliCompressSync, gzipSync} from 'zlib';
-import {Queue, configure} from '../src';
+import {Queue} from '../src';
 import {QueueSubjectListener} from '../src/queue/QueueSubjectListener';
-
-const awsEndpointUrl = process.env.AWS_ENDPOINT_URL;
 
 const waitFor = async (
   predicate: () => boolean,
@@ -41,17 +39,10 @@ const sendSnsEnvelopeMessage = async (
     }),
   });
 
-beforeAll(() => {
-  configure({region: 'eu-west-1'});
-});
-
 describe('QueueSubjectListener (integration with Floci/LocalStack)', () => {
   describe('listen', () => {
     it('should finish in-flight handlers without waiting for the idle receive on stop', async () => {
-      const queue = await Queue.createQueue(
-        uniqueQueueName('listen'),
-        awsEndpointUrl
-      );
+      const queue = await Queue.createQueue(uniqueQueueName('listen'));
       const deleteSpy = jest.spyOn(queue, 'deleteMessage');
       const receiveSpy = jest.spyOn(queue, 'receiveMessage');
 
@@ -85,10 +76,7 @@ describe('QueueSubjectListener (integration with Floci/LocalStack)', () => {
     }, 20000);
 
     it('should delete messages that are not valid JSON', async () => {
-      const queue = await Queue.createQueue(
-        uniqueQueueName('badjson'),
-        awsEndpointUrl
-      );
+      const queue = await Queue.createQueue(uniqueQueueName('badjson'));
       const deleteSpy = jest.spyOn(queue, 'deleteMessage');
 
       const sut = new QueueSubjectListener(queue, null, {
@@ -114,10 +102,7 @@ describe('QueueSubjectListener (integration with Floci/LocalStack)', () => {
     }, 20000);
 
     it('should be able to listen to queue and call handler with retry', async () => {
-      const queue = await Queue.createQueue(
-        uniqueQueueName('retry'),
-        awsEndpointUrl
-      );
+      const queue = await Queue.createQueue(uniqueQueueName('retry'));
       const deleteSpy = jest.spyOn(queue, 'deleteMessage');
       const changeVisibilitySpy = jest.spyOn(queue, 'changeMessageVisibility');
 
@@ -145,10 +130,7 @@ describe('QueueSubjectListener (integration with Floci/LocalStack)', () => {
     }, 20000);
 
     it('should log an error and delete the message when retry attempts are exhausted', async () => {
-      const queue = await Queue.createQueue(
-        uniqueQueueName('exhausted'),
-        awsEndpointUrl
-      );
+      const queue = await Queue.createQueue(uniqueQueueName('exhausted'));
       const deleteSpy = jest.spyOn(queue, 'deleteMessage');
       const logger = {
         log: jest.fn(),
@@ -186,10 +168,7 @@ describe('QueueSubjectListener (integration with Floci/LocalStack)', () => {
     }, 20000);
 
     it('should not retry when multiple handlers are registered', async () => {
-      const queue = await Queue.createQueue(
-        uniqueQueueName('multi-same'),
-        awsEndpointUrl
-      );
+      const queue = await Queue.createQueue(uniqueQueueName('multi-same'));
       const deleteSpy = jest.spyOn(queue, 'deleteMessage');
 
       const sut = new QueueSubjectListener(queue, null, {
@@ -219,10 +198,7 @@ describe('QueueSubjectListener (integration with Floci/LocalStack)', () => {
     }, 20000);
 
     it('should retry when multiple handlers are registered with different subjects', async () => {
-      const queue = await Queue.createQueue(
-        uniqueQueueName('multi-diff'),
-        awsEndpointUrl
-      );
+      const queue = await Queue.createQueue(uniqueQueueName('multi-diff'));
       const deleteSpy = jest.spyOn(queue, 'deleteMessage');
       const changeVisibilitySpy = jest.spyOn(queue, 'changeMessageVisibility');
 
@@ -254,10 +230,7 @@ describe('QueueSubjectListener (integration with Floci/LocalStack)', () => {
     }, 20000);
 
     it('should not retry when no retry policy is set', async () => {
-      const queue = await Queue.createQueue(
-        uniqueQueueName('noretry'),
-        awsEndpointUrl
-      );
+      const queue = await Queue.createQueue(uniqueQueueName('noretry'));
       const deleteSpy = jest.spyOn(queue, 'deleteMessage');
 
       const sut = new QueueSubjectListener(queue, null, {
@@ -283,10 +256,7 @@ describe('QueueSubjectListener (integration with Floci/LocalStack)', () => {
     }, 20000);
 
     it('should call the retryPolicy when retrying', async () => {
-      const queue = await Queue.createQueue(
-        uniqueQueueName('retrypolicy'),
-        awsEndpointUrl
-      );
+      const queue = await Queue.createQueue(uniqueQueueName('retrypolicy'));
       const deleteSpy = jest.spyOn(queue, 'deleteMessage');
       const changeVisibilitySpy = jest.spyOn(queue, 'changeMessageVisibility');
       const retryPolicy = jest.fn(() => 1);
@@ -326,10 +296,7 @@ describe('QueueSubjectListener (integration with Floci/LocalStack)', () => {
      * with a spy that resolves immediately while still capturing the params.
      */
     it('should default waitTimeSeconds to 20', async () => {
-      const queue = await Queue.createQueue(
-        uniqueQueueName('defaults'),
-        awsEndpointUrl
-      );
+      const queue = await Queue.createQueue(uniqueQueueName('defaults'));
       const receiveSpy = jest
         .spyOn(queue, 'receiveMessage')
         .mockResolvedValue({} as never);
@@ -358,10 +325,7 @@ describe('QueueSubjectListener (integration with Floci/LocalStack)', () => {
         JSON.stringify(messagePayload)
       ).toString('base64');
 
-      const queue = await Queue.createQueue(
-        uniqueQueueName('brotli'),
-        awsEndpointUrl
-      );
+      const queue = await Queue.createQueue(uniqueQueueName('brotli'));
       const deleteSpy = jest.spyOn(queue, 'deleteMessage');
 
       const logger = {
@@ -405,10 +369,7 @@ describe('QueueSubjectListener (integration with Floci/LocalStack)', () => {
         JSON.stringify(messagePayload)
       ).toString('base64');
 
-      const queue = await Queue.createQueue(
-        uniqueQueueName('gzip'),
-        awsEndpointUrl
-      );
+      const queue = await Queue.createQueue(uniqueQueueName('gzip'));
       const deleteSpy = jest.spyOn(queue, 'deleteMessage');
 
       const logger = {
@@ -449,10 +410,7 @@ describe('QueueSubjectListener (integration with Floci/LocalStack)', () => {
     it('should handle messages without compression', async () => {
       const messagePayload = {id: '789', test: 'uncompressed'};
 
-      const queue = await Queue.createQueue(
-        uniqueQueueName('plain'),
-        awsEndpointUrl
-      );
+      const queue = await Queue.createQueue(uniqueQueueName('plain'));
       const deleteSpy = jest.spyOn(queue, 'deleteMessage');
 
       const sut = new QueueSubjectListener(queue, null, {
@@ -480,10 +438,7 @@ describe('QueueSubjectListener (integration with Floci/LocalStack)', () => {
     }, 20000);
 
     it('should keep polling when the supplied logger throws', async () => {
-      const queue = await Queue.createQueue(
-        uniqueQueueName('badlogger'),
-        awsEndpointUrl
-      );
+      const queue = await Queue.createQueue(uniqueQueueName('badlogger'));
 
       const throwingLogger = {
         log: () => {
@@ -528,10 +483,7 @@ describe('QueueSubjectListener (integration with Floci/LocalStack)', () => {
     }, 20000);
 
     it('should keep polling when receiveTimeout throws', async () => {
-      const queue = await Queue.createQueue(
-        uniqueQueueName('badtimeout'),
-        awsEndpointUrl
-      );
+      const queue = await Queue.createQueue(uniqueQueueName('badtimeout'));
 
       const sut = new QueueSubjectListener(queue, null, {
         maxConcurrentMessage: 1,
@@ -561,10 +513,7 @@ describe('QueueSubjectListener (integration with Floci/LocalStack)', () => {
     }, 20000);
 
     it('should not leave an unhandled rejection when the catch block throws', async () => {
-      const queue = await Queue.createQueue(
-        uniqueQueueName('unhandled'),
-        awsEndpointUrl
-      );
+      const queue = await Queue.createQueue(uniqueQueueName('unhandled'));
 
       const sut = new QueueSubjectListener(queue, null, {
         maxConcurrentMessage: 1,
