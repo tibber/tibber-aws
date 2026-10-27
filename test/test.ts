@@ -164,6 +164,7 @@ it('getSecret', async () => {
   await ensureSecret(awsEndpointUrl);
   const res = getSecret(SECRET_NAME, 'PG_PASSWORD', awsEndpointUrl);
   expect(res).toEqual('stacy');
+  expect(getSecret('missing-secret', 'PG_PASSWORD')).toBeUndefined();
 });
 
 it('should be able to send message to queue', async () => {
