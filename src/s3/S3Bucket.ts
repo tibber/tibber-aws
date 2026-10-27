@@ -5,6 +5,8 @@ import {
   S3,
   BucketAlreadyOwnedByYou,
 } from '@aws-sdk/client-s3';
+import {Upload} from '@aws-sdk/lib-storage';
+import {Readable} from 'node:stream';
 
 export class S3Bucket {
   public name: string;
@@ -105,6 +107,22 @@ export class S3Bucket {
       ContentType: contentType,
       Key: key,
     });
+  }
+
+  async putObjectStream(
+    key: string,
+    body: Readable,
+    contentType?: PutObjectCommandInput['ContentType'],
+  ) {
+    return await new Upload({
+      client: this.s3,
+      params: {
+        Bucket: this.name,
+        Key: key,
+        Body: body,
+        ContentType: contentType,
+      },
+    }).done();
   }
 
   async getObject(key: string) {

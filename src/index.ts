@@ -3,5 +3,5 @@ export {getLambdaFunc} from './lambda';
 export {Queue, Topic} from './queue';
 export {QueueSubjectListener} from './queue/QueueSubjectListener';
 export {QueueSubjectListenerBuilder} from './queue/QueueSubjectListenerBuilder';
-export {S3Bucket} from './s3';
+export {DataSet, S3Bucket, exportDataSet} from './s3';
 export {getSecret, getSecretCollection} from './secrets';
