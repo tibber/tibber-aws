@@ -154,6 +154,7 @@ it('getSecret', async () => {
   await ensureSecret();
   const res = getSecret(SECRET_NAME, 'PG_PASSWORD');
   expect(res).toEqual('stacy');
+  expect(getSecret('missing-secret', 'PG_PASSWORD')).toBeUndefined();
 });
 
 it('should be able to send message to queue', async () => {
