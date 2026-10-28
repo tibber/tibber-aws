@@ -113,3 +113,23 @@ const topic = await Topic.attach('test-topic', 'test subject');
 await topic.verify() //optional - verifies the topic exists
 await topic.push({test: 'test'});
 ```
+
+## Running against an emulator (Floci, LocalStack)
+
+Add a profile to `~/.aws/config`:
+
+```ini
+[profile floci]
+endpoint_url = http://localhost:4566
+region = eu-west-1
+aws_access_key_id = test
+aws_secret_access_key = test
+aws_account_id = 000000000000
+```
+
+Set `AWS_PROFILE=floci` inline in the script that starts the service locally, not in `.env` or your shell: dotenv won't
+override an `AWS_PROFILE` your shell already exports. A developer without the profile then gets a credentials error, not
+their real AWS credentials.
+
+In tests, set the same values as environment variables in the test runner's config (see `jest.config.js`) and delete
+`AWS_PROFILE`: when it is set, the JS SDK ignores environment credentials.

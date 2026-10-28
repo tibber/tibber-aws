@@ -2,8 +2,6 @@ import {NotFoundException} from '@aws-sdk/client-sns';
 import {QueueDoesNotExist} from '@aws-sdk/client-sqs';
 import {Queue, QueueSubjectListener, Topic} from '../src';
 
-const awsEndpointUrl = process.env.AWS_ENDPOINT_URL;
-
 const uniqueName = (prefix: string) =>
   `${prefix}-${Date.now()}-${Math.floor(Math.random() * 1e6)}`;
 
@@ -13,10 +11,10 @@ afterAll(() => listener?.stop());
 it('delivers from an attached topic to an attached queue', async () => {
   const queueName = uniqueName('attached-q');
   const topicName = uniqueName('attached-t');
-  const provisioned = await Queue.createQueue(queueName, awsEndpointUrl);
+  const provisioned = await Queue.createQueue(queueName);
   await provisioned.subscribeTopic(await Topic.createTopic(topicName));
 
-  const queue = await Queue.attach(queueName, awsEndpointUrl);
+  const queue = await Queue.attach(queueName);
   expect(queue.queueArn).toBe(provisioned.queueArn);
   const topic = await Topic.attach(topicName, 'user.created');
   await topic.verify();
@@ -40,7 +38,7 @@ it.each([
   [
     'Queue.attach',
     QueueDoesNotExist,
-    () => Queue.attach(uniqueName('missing'), awsEndpointUrl),
+    () => Queue.attach(uniqueName('missing')),
   ],
   [
     'Topic.verify',
