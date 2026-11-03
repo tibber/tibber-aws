@@ -86,7 +86,10 @@ export class Topic {
     } catch (error) {
       if (!isMessageTooLong(error) || messageAttributes?.contentType)
         throw error;
-      const gzipped = await gzipSnsMessage(payload.Message, messageAttributes);
+      const gzipped = await gzipSnsMessage(
+        payload.Message,
+        payload.MessageAttributes
+      );
       console.warn(
         `SNS message to ${this.name} exceeded the size limit, retrying gzip-compressed (${payload.Message.length} -> ${gzipped.Message.length} chars)`
       );
