@@ -87,3 +87,23 @@ it.each([
 ])('%s throws for a missing resource', async (_, error, attach) => {
   await expect(attach()).rejects.toBeInstanceOf(error);
 });
+
+const subjectAttribute = (StringValue?: string) =>
+  StringValue ? {subject: {DataType: 'String', StringValue}} : undefined;
+
+it.each([
+  ['comes from the topic subject', 'topic', undefined, undefined, 'topic'],
+  ['prefers the push subject', 'topic', 'push', undefined, 'push'],
+  ['keeps a caller-set value', 'topic', 'push', 'caller', 'caller'],
+  ['is omitted without a subject', undefined, undefined, undefined, undefined],
+])(
+  'subject message attribute %s',
+  async (_, topicSubject, pushSubject, callerSubject, expected) => {
+    const topic = await Topic.createTopic(uniqueName('subject'), topicSubject);
+    const publish = jest.spyOn(topic.sns, 'publish');
+    await topic.push({}, pushSubject, subjectAttribute(callerSubject));
+    expect(publish).toHaveBeenCalledWith(
+      expect.objectContaining({MessageAttributes: subjectAttribute(expected)}),
+    );
+  },
+);
