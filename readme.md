@@ -46,7 +46,9 @@ created, then rerun the `deploy` job. A merge with no pending release logs
 ## Features
 
 ### Queue Message Compression Support
-The library now supports automatic decompression of SQS messages compressed with Brotli or GZip. Messages with a `contentType` message attribute set to `brotli` or `gzip` will be automatically decompressed.
+`Topic.push` publishes messages as-is. Only when SNS rejects a message as too long does it retry once gzip-compressed (base64, `contentType: gzip`), the same format `Tibber.Services.Utilities` uses. Messages that fit are never compressed, and if you set `contentType` yourself the size error is rethrown.
+
+The library supports automatic decompression of SQS messages compressed with Brotli or GZip. Messages with a `contentType` message attribute set to `brotli` or `gzip` will be automatically decompressed. Consumers that don't use `QueueSubjectListener` can call `decodeSnsMessage(JSON.parse(sqsMessage.Body))`.
 
 ```typescript
 import {QueueSubjectListener, Queue} from 'tibber-aws';

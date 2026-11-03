@@ -1,5 +1,14 @@
-import {MessageAttributeValue, SNS} from '@aws-sdk/client-sns';
+import {
+  InvalidParameterException,
+  MessageAttributeValue,
+  SNS,
+} from '@aws-sdk/client-sns';
 import {STS} from '@aws-sdk/client-sts';
+import {gzipSync} from 'zlib';
+
+const isMessageTooLong = (error: unknown) =>
+  error instanceof InvalidParameterException &&
+  /message too long/i.test(error.message);
 
 let account: Promise<string | undefined> | undefined;
 
@@ -72,6 +81,23 @@ export class Topic {
       TopicArn: this.topicArn,
     };
 
-    return await this.sns.publish(payload);
+    try {
+      return await this.sns.publish(payload);
+    } catch (error) {
+      if (!isMessageTooLong(error) || messageAttributes?.contentType)
+        throw error;
+      const compressed = gzipSync(payload.Message).toString('base64');
+      console.warn(
+        `SNS message to ${this.name} exceeded the size limit, retrying gzip-compressed (${payload.Message.length} -> ${compressed.length} chars)`
+      );
+      return await this.sns.publish({
+        ...payload,
+        Message: compressed,
+        MessageAttributes: {
+          ...messageAttributes,
+          contentType: {DataType: 'String', StringValue: 'gzip'},
+        },
+      });
+    }
   }
 }
