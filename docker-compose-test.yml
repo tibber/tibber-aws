@@ -1,7 +1,7 @@
 services:
   floci:
     container_name: "floci_test"
-    image: hectorvent/floci:latest
+    image: floci/floci:latest
     user: root
     ports:
       - "127.0.0.1:4566:4566"
