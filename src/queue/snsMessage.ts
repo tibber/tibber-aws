@@ -1,5 +1,6 @@
+import {MessageAttributeValue} from '@aws-sdk/client-sns';
 import {promisify} from 'util';
-import {brotliDecompress, gunzip} from 'zlib';
+import {brotliDecompress, gunzip, gzip} from 'zlib';
 
 /**
  * Publishers send to SNS, which delivers to the queue without raw message
@@ -16,6 +17,18 @@ const decompressors = new Map<string, (buffer: Buffer) => Promise<Buffer>>([
   ['brotli', promisify(brotliDecompress)],
   ['gzip', promisify(gunzip)],
 ]);
+const gzipAsync = promisify(gzip);
+
+export const gzipSnsMessage = async (
+  message: string,
+  attributes?: Record<string, MessageAttributeValue>,
+) => ({
+  Message: (await gzipAsync(message)).toString('base64'),
+  MessageAttributes: {
+    ...attributes,
+    contentType: {DataType: 'String', StringValue: 'gzip'},
+  },
+});
 
 export const compressionOf = ({MessageAttributes}: SnsEnvelope) => {
   const contentType = MessageAttributes?.contentType?.Value ?? '';

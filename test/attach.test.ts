@@ -12,6 +12,7 @@ const uniqueName = (prefix: string) =>
 const oversized = {
   items: Array.from({length: 20000}, (_, id) => ({id, name: `item-${id}`})),
 };
+const incompressible = {data: randomBytes(3e5).toString('base64')};
 const contentType = (StringValue: string) => ({
   contentType: {DataType: 'String', StringValue},
 });
@@ -58,12 +59,7 @@ it.each([
 );
 
 it.each([
-  [
-    'is incompressible',
-    {data: randomBytes(3e5).toString('base64')},
-    undefined,
-    2,
-  ],
+  ['is incompressible', incompressible, undefined, 2],
   ['already has a contentType', oversized, contentType('json'), 1],
 ])(
   'rethrows the size error when an oversized message %s',
