@@ -74,10 +74,16 @@ export class Topic {
     subject?: string,
     messageAttributes?: Record<string, MessageAttributeValue>
   ) {
+    subject ||= this.subject;
     const payload = {
       Message: JSON.stringify(evt),
-      MessageAttributes: messageAttributes,
-      Subject: subject || this.subject,
+      MessageAttributes: subject
+        ? {
+            subject: {DataType: 'String', StringValue: subject},
+            ...messageAttributes,
+          }
+        : messageAttributes,
+      Subject: subject,
       TopicArn: this.topicArn,
     };
 

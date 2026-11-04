@@ -17,12 +17,19 @@ const contentType = (StringValue: string) => ({
   contentType: {DataType: 'String', StringValue},
 });
 
+const subject = {subject: {DataType: 'String', StringValue: 'user.created'}};
+
 let listener: QueueSubjectListener | undefined;
 afterEach(() => listener?.stop());
 
 it.each([
-  ['a message that fits', {userId: 42}, undefined, 1],
-  ['an oversized message gzipped', oversized, contentType('gzip'), 2],
+  ['a message that fits', {userId: 42}, subject, 1],
+  [
+    'an oversized message gzipped',
+    oversized,
+    {...subject, ...contentType('gzip')},
+    2,
+  ],
 ])(
   'delivers %s from an attached topic to an attached queue',
   async (_, payload, MessageAttributes, publishes) => {
@@ -87,3 +94,23 @@ it.each([
 ])('%s throws for a missing resource', async (_, error, attach) => {
   await expect(attach()).rejects.toBeInstanceOf(error);
 });
+
+const subjectAttribute = (StringValue?: string) =>
+  StringValue ? {subject: {DataType: 'String', StringValue}} : undefined;
+
+it.each([
+  ['comes from the topic subject', 'topic', undefined, undefined, 'topic'],
+  ['prefers the push subject', 'topic', 'push', undefined, 'push'],
+  ['keeps a caller-set value', 'topic', 'push', 'caller', 'caller'],
+  ['is omitted without a subject', undefined, undefined, undefined, undefined],
+])(
+  'subject message attribute %s',
+  async (_, topicSubject, pushSubject, callerSubject, expected) => {
+    const topic = await Topic.createTopic(uniqueName('subject'), topicSubject);
+    const publish = jest.spyOn(topic.sns, 'publish');
+    await topic.push({}, pushSubject, subjectAttribute(callerSubject));
+    expect(publish).toHaveBeenCalledWith(
+      expect.objectContaining({MessageAttributes: subjectAttribute(expected)}),
+    );
+  },
+);
