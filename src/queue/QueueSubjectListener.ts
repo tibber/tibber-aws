@@ -5,12 +5,7 @@ import {
 import {ILogger} from '../ILogger';
 import {LoggerWrapper} from '../LoggerWrapper';
 import {Queue} from './Queue';
-import {brotliDecompress, gunzip} from 'zlib';
-import {promisify} from 'util';
-
-const MESSAGE_ATTRIBUTE_CONTENT_TYPE = 'contentType';
-const COMPRESSTION_METHOD_BROTLI = 'brotli';
-const COMPRESSTION_METHOD_GZIP = 'gzip';
+import {compressionOf, decodeSnsMessage, SnsEnvelope} from './snsMessage';
 
 export type QueueSubjectListenerOptions = {
   maxConcurrentMessage: number;
@@ -43,9 +38,6 @@ export const ExponentialRetryPolicy = (
   backoffDelaySeconds: number
 ) => Math.pow(attempt, backoffDelaySeconds);
 
-const brotliDecompressAsync = promisify(brotliDecompress);
-const gunzipAsync = promisify(gunzip);
-
 const errorMessage = (error: unknown): string => {
   try {
     return error instanceof Error
@@ -54,29 +46,6 @@ const errorMessage = (error: unknown): string => {
   } catch {
     return 'unknown error';
   }
-};
-
-const decompressBrotli = async (base64Message: string) => {
-  const buffer = Buffer.from(base64Message, 'base64');
-  const decompressed = await brotliDecompressAsync(Uint8Array.from(buffer));
-  return JSON.parse(decompressed.toString('utf-8'));
-};
-
-const decompressGzip = async (base64Message: string) => {
-  const buffer = Buffer.from(base64Message, 'base64');
-  const decompressed = await gunzipAsync(Uint8Array.from(buffer));
-  return JSON.parse(decompressed.toString('utf-8'));
-};
-
-/**
- * Publishers send to SNS, which delivers to the queue without raw message
- * delivery, so the SQS message body is the SNS envelope and the message
- * attributes sit inside it rather than on the SQS message itself.
- */
-type SnsEnvelope = {
-  Subject: string;
-  Message: string;
-  MessageAttributes?: Record<string, {Type?: string; Value?: string}>;
 };
 
 export class QueueSubjectListener {
@@ -198,28 +167,16 @@ export class QueueSubjectListener {
             }
 
             try {
-              const compressionMethod =
-                json.MessageAttributes?.[MESSAGE_ATTRIBUTE_CONTENT_TYPE]?.Value;
-              let jsonMessage;
-
-              if (compressionMethod === COMPRESSTION_METHOD_BROTLI) {
+              const compression = compressionOf(json);
+              if (compression)
                 this.logger.info(
-                  `Message with ID '${m.MessageId}' is compressed with Brotli.`
+                  `Message with ID '${m.MessageId}' is compressed with ${compression}.`
                 );
-                jsonMessage = await decompressBrotli(json.Message);
-              } else if (compressionMethod === COMPRESSTION_METHOD_GZIP) {
-                this.logger.info(
-                  `Message with ID '${m.MessageId}' is compressed with Gzip.`
-                );
-                jsonMessage = await decompressGzip(json.Message);
-              } else {
-                jsonMessage = JSON.parse(json.Message);
-              }
               return {
                 handle: m.ReceiptHandle,
                 shouldBeHandled: true,
                 message: {
-                  message: jsonMessage,
+                  message: await decodeSnsMessage(json),
                   subject: json.Subject,
                   attributes: m.Attributes
                 }
