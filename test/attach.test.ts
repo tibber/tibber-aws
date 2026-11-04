@@ -17,12 +17,19 @@ const contentType = (StringValue: string) => ({
   contentType: {DataType: 'String', StringValue},
 });
 
+const subject = {subject: {DataType: 'String', StringValue: 'user.created'}};
+
 let listener: QueueSubjectListener | undefined;
 afterEach(() => listener?.stop());
 
 it.each([
-  ['a message that fits', {userId: 42}, undefined, 1],
-  ['an oversized message gzipped', oversized, contentType('gzip'), 2],
+  ['a message that fits', {userId: 42}, subject, 1],
+  [
+    'an oversized message gzipped',
+    oversized,
+    {...subject, ...contentType('gzip')},
+    2,
+  ],
 ])(
   'delivers %s from an attached topic to an attached queue',
   async (_, payload, MessageAttributes, publishes) => {
