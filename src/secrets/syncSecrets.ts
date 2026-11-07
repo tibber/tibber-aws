@@ -1,19 +1,11 @@
 import {SecretsManager} from '@aws-sdk/client-secrets-manager';
-import {SyncSecretsInit} from './types';
+import {SyncSecretsRequest} from './types';
 
-const init: SyncSecretsInit = () => {
-  return request => {
-    const client = new SecretsManager({
-      region: request.region,
-      endpoint: request.endpoint,
-    });
-    return client.getSecretValue({SecretId: request.secret});
-  };
-};
+// Executed by getSecretCollection as a child process; nothing imports it.
+const {region, secret, endpoint}: SyncSecretsRequest = JSON.parse(
+  process.argv[2]
+);
 
-// noinspection JSUnusedGlobalSymbols
-/**
- * This file is executed out-of-proc by sync-rpc in 'getSecretCollection.ts'.
- * The default export is important, and should not be removed;
- */
-export default init;
+new SecretsManager({region, endpoint})
+  .getSecretValue({SecretId: secret})
+  .then(({SecretString}) => process.stdout.write(SecretString ?? ''));
