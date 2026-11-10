@@ -9,7 +9,7 @@ import {compressionOf, decodeSnsMessage, SnsEnvelope} from './snsMessage';
 
 export type QueueSubjectListenerOptions = {
   maxConcurrentMessage: number;
-  /** Overrides the queue's own visibility timeout on every receive. Omit to use the queue's. */
+  /** Overrides the queue's visibility timeout on every receive. */
   visibilityTimeout?: number;
   waitTimeSeconds: number;
   receiveTimeout?: () => number;
