@@ -291,11 +291,12 @@ describe('QueueSubjectListener (integration with Floci/LocalStack)', () => {
 
     /**
      * Pure parameter-wiring assertion: the listener should default
-     * WaitTimeSeconds to 20. We can't realistically issue a 20s long-poll
+     * WaitTimeSeconds to 20 and leave VisibilityTimeout to the queue's own
+     * setting. We can't realistically issue a 20s long-poll
      * against the broker inside a unit test, so receiveMessage is overridden
      * with a spy that resolves immediately while still capturing the params.
      */
-    it('should default waitTimeSeconds to 20', async () => {
+    it('should default waitTimeSeconds to 20 and not override the visibility timeout', async () => {
       const queue = await Queue.createQueue(uniqueQueueName('defaults'));
       const receiveSpy = jest
         .spyOn(queue, 'receiveMessage')
@@ -317,6 +318,7 @@ describe('QueueSubjectListener (integration with Floci/LocalStack)', () => {
       expect(receiveSpy).toHaveBeenCalledWith(
         expect.objectContaining({WaitTimeSeconds: 20})
       );
+      expect(receiveSpy.mock.calls[0][0].VisibilityTimeout).toBeUndefined();
     }, 20000);
 
     it('should decompress brotli compressed messages', async () => {
