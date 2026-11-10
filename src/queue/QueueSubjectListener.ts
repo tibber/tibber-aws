@@ -9,7 +9,8 @@ import {compressionOf, decodeSnsMessage, SnsEnvelope} from './snsMessage';
 
 export type QueueSubjectListenerOptions = {
   maxConcurrentMessage: number;
-  visibilityTimeout: number;
+  /** Overrides the queue's own visibility timeout on every receive. Omit to use the queue's. */
+  visibilityTimeout?: number;
   waitTimeSeconds: number;
   receiveTimeout?: () => number;
 };
@@ -66,8 +67,7 @@ export class QueueSubjectListener {
     logger?: undefined | null | ILogger,
     public options: QueueSubjectListenerOptions = {
       maxConcurrentMessage: 1,
-      waitTimeSeconds: 20,
-      visibilityTimeout: 30
+      waitTimeSeconds: 20
     }
   ) {
     this.logger = new LoggerWrapper(logger);
