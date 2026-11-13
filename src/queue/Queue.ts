@@ -80,7 +80,7 @@ export class Queue {
       QueueUrl: this.queueUrl,
     });
 
-    let policy = policyTemplate;
+    let policy = structuredClone(policyTemplate);
 
     if (response.Attributes?.Policy) {
       policy = JSON.parse(response.Attributes.Policy);
@@ -88,7 +88,7 @@ export class Queue {
 
     const statement = policy.Statement[0];
 
-    statement.Resource = statement.Resource || this.queueArn;
+    statement.Resource = this.queueArn;
     statement.Condition = statement.Condition || {};
     statement.Condition.ArnLike = statement.Condition.ArnLike || {};
     statement.Condition.ArnLike['aws:SourceArn'] =

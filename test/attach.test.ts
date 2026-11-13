@@ -114,3 +114,55 @@ it.each([
     );
   },
 );
+
+const queuePolicyStatement = async (queue: Queue) => {
+  const {Attributes} = await queue.sqs.getQueueAttributes({
+    AttributeNames: ['Policy'],
+    QueueUrl: queue.queueUrl,
+  });
+  return JSON.parse(Attributes!.Policy!).Statement[0];
+};
+
+it('scopes each queue policy to its own queue and topic', async () => {
+  const subscribed = [];
+  for (let i = 0; i < 2; i++) {
+    const queue = await Queue.createQueue(uniqueName('policy-q'));
+    const topic = await Topic.createTopic(uniqueName('policy-t'));
+    await queue.subscribeTopic(topic);
+    subscribed.push({queue, topic});
+  }
+
+  for (const {queue, topic} of subscribed) {
+    const statement = await queuePolicyStatement(queue);
+    expect(statement.Resource).toBe(queue.queueArn);
+    expect(statement.Condition.ArnLike['aws:SourceArn']).toEqual([
+      topic.topicArn,
+    ]);
+  }
+});
+
+it('points an existing queue policy at its own queue', async () => {
+  const queue = await Queue.createQueue(uniqueName('policy-q'));
+  const other = await Queue.createQueue(uniqueName('policy-q'));
+  await queue.sqs.setQueueAttributes({
+    Attributes: {
+      Policy: JSON.stringify({
+        Version: '2012-10-17',
+        Statement: [
+          {
+            Sid: 'stale',
+            Effect: 'Allow',
+            Principal: {AWS: '*'},
+            Action: ['sqs:SendMessage'],
+            Resource: other.queueArn,
+          },
+        ],
+      }),
+    },
+    QueueUrl: queue.queueUrl,
+  });
+
+  await queue.subscribeTopic(await Topic.createTopic(uniqueName('policy-t')));
+
+  expect((await queuePolicyStatement(queue)).Resource).toBe(queue.queueArn);
+});
