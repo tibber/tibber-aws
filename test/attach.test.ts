@@ -114,3 +114,29 @@ it.each([
     );
   },
 );
+
+const queuePolicyStatement = async (queue: Queue) => {
+  const {Attributes} = await queue.sqs.getQueueAttributes({
+    AttributeNames: ['Policy'],
+    QueueUrl: queue.queueUrl,
+  });
+  return JSON.parse(Attributes!.Policy!).Statement[0];
+};
+
+it('scopes each queue policy to its own queue and topic', async () => {
+  const subscribed = [];
+  for (let i = 0; i < 2; i++) {
+    const queue = await Queue.createQueue(uniqueName('policy-q'));
+    const topic = await Topic.createTopic(uniqueName('policy-t'));
+    await queue.subscribeTopic(topic);
+    subscribed.push({queue, topic});
+  }
+
+  for (const {queue, topic} of subscribed) {
+    const statement = await queuePolicyStatement(queue);
+    expect(statement.Resource).toBe(queue.queueArn);
+    expect(statement.Condition.ArnLike['aws:SourceArn']).toEqual([
+      topic.topicArn,
+    ]);
+  }
+});

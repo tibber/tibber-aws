@@ -80,7 +80,7 @@ export class Queue {
       QueueUrl: this.queueUrl,
     });
 
-    let policy = policyTemplate;
+    let policy = structuredClone(policyTemplate);
 
     if (response.Attributes?.Policy) {
       policy = JSON.parse(response.Attributes.Policy);
