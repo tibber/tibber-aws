@@ -1,4 +1,8 @@
 # tibber-aws
+
+[![Backstage](https://img.shields.io/badge/Backstage-catalog-9BF0E1?logo=backstage 'Backstage')](https://tibber.roadie.so/catalog/default/component/tibber-aws)
+[![CircleCI](https://img.shields.io/badge/CircleCI-pipelines-343434?logo=circleci 'CircleCI')](https://circleci.com/gh/tibber/tibber-aws)
+
 Thie repo is a typescript wrapper around the AWS SDK for Javascript.
 
 ## Releases & publishing — read before merging a PR
