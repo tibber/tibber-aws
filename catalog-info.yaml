@@ -5,6 +5,7 @@ metadata:
   annotations:
     github.com/project-slug: tibber/tibber-aws
     circleci.com/project-slug: gh/tibber/tibber-aws
+    roadie.io/use-codeowners: "true"
   tags:
   - typescript
 spec:
