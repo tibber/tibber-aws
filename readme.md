@@ -120,6 +120,21 @@ await topic.verify() //optional - verifies the topic exists
 await topic.push({test: 'test'});
 ```
 
+## RDS IAM authentication token
+
+The password for an IAM database user, for any database that takes RDS IAM tokens (for example Postgres through
+`@tibber/tibber-postgres`).
+
+```ts
+import {getRdsIamToken} from 'tibber-aws';
+
+const password = await getRdsIamToken({hostname, port: 5432, username});
+```
+
+The token is cached for 10 minutes per host, port, user and region, because it is valid for 15 minutes and only new
+connections need one. A failed request is not cached. `getRdsIamTokenWithExpiry` also returns `expiresAt`, for callers
+that decide per connection whether to ask again, and `onGenerated` runs once for each new token.
+
 ## Running against an emulator (Floci, LocalStack)
 
 Add a profile to `~/.aws/config`:

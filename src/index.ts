@@ -4,5 +4,11 @@ export {Queue, Topic} from './queue';
 export {QueueSubjectListener} from './queue/QueueSubjectListener';
 export {QueueSubjectListenerBuilder} from './queue/QueueSubjectListenerBuilder';
 export {decodeSnsMessage} from './queue/snsMessage';
+export {getRdsIamToken, getRdsIamTokenWithExpiry} from './rds';
+export type {
+  RdsIamTokenOptions,
+  RdsIamTokenTarget,
+  RdsIamTokenWithExpiry,
+} from './rds';
 export {S3Bucket} from './s3';
 export {getSecret, getSecretCollection} from './secrets';

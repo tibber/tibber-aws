@@ -1,0 +1,78 @@
+import {Signer} from '@aws-sdk/rds-signer';
+
+export type RdsIamTokenTarget = {
+  hostname: string;
+  port: number;
+  username: string;
+  /** Defaults to the SDK's own region lookup (AWS_REGION). */
+  region?: string;
+};
+
+export type RdsIamTokenOptions = {
+  /** Called once for every new token that was generated successfully, not for cached ones. */
+  onGenerated?: () => void;
+};
+
+export type RdsIamTokenWithExpiry = {
+  token: Promise<string>;
+  /** Epoch milliseconds. After this the next call asks AWS for a new token. */
+  expiresAt: number;
+};
+
+// A token is valid for 15 minutes and is only needed for NEW connections. Reusing it for 10 minutes stays far
+// below the 200 tokens/s account limit and well inside the validity.
+const TOKEN_TTL_MS = 10 * 60 * 1000;
+
+const cache = new Map<string, RdsIamTokenWithExpiry>();
+
+const dropExpired = (now: number) => {
+  for (const [key, entry] of cache) {
+    if (entry.expiresAt <= now) {
+      cache.delete(key);
+    }
+  }
+};
+
+/**
+ * An RDS IAM authentication token (the password for an IAM database user), cached for 10 minutes per host, port,
+ * user and region. Also returns when the cached token expires, for callers that decide per connection.
+ * A failed request is not cached.
+ */
+export const getRdsIamTokenWithExpiry = (
+  target: RdsIamTokenTarget,
+  options: RdsIamTokenOptions = {}
+): RdsIamTokenWithExpiry => {
+  const {hostname, port, username, region} = target;
+  const key = `${hostname}:${port}:${username}:${region ?? ''}`;
+  const now = Date.now();
+  const cached = cache.get(key);
+  if (cached && cached.expiresAt > now) {
+    return cached;
+  }
+  dropExpired(now);
+
+  let token: Promise<string>;
+  try {
+    token = new Signer({hostname, port, username, region}).getAuthToken();
+  } catch (err) {
+    return {token: Promise.reject(err), expiresAt: now};
+  }
+  const entry = {token, expiresAt: now + TOKEN_TTL_MS};
+  cache.set(key, entry);
+  token.then(
+    () => options.onGenerated?.(),
+    () => {
+      // Leave a newer entry for the same key alone.
+      if (cache.get(key) === entry) {
+        cache.delete(key);
+      }
+    }
+  );
+  return entry;
+};
+
+/** See getRdsIamTokenWithExpiry. */
+export const getRdsIamToken = (
+  target: RdsIamTokenTarget,
+  options?: RdsIamTokenOptions
+): Promise<string> => getRdsIamTokenWithExpiry(target, options).token;
