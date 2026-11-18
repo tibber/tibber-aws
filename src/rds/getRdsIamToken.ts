@@ -23,7 +23,7 @@ export type RdsIamTokenWithExpiry = {
 // below the 200 tokens/s account limit and well inside the validity.
 const TOKEN_TTL_MS = 10 * 60 * 1000;
 
-const cache = new Map<string, RdsIamTokenWithExpiry>();
+const cache = new Map<string, Readonly<RdsIamTokenWithExpiry>>();
 
 const dropExpired = (now: number) => {
   for (const [key, entry] of cache) {
@@ -41,9 +41,9 @@ const dropExpired = (now: number) => {
 export const getRdsIamTokenWithExpiry = (
   target: RdsIamTokenTarget,
   options: RdsIamTokenOptions = {}
-): RdsIamTokenWithExpiry => {
+): Readonly<RdsIamTokenWithExpiry> => {
   const {hostname, port, username, region} = target;
-  const key = `${hostname}:${port}:${username}:${region ?? ''}`;
+  const key = JSON.stringify([hostname, port, username, region ?? '']);
   const now = Date.now();
   const cached = cache.get(key);
   if (cached && cached.expiresAt > now) {
@@ -55,12 +55,18 @@ export const getRdsIamTokenWithExpiry = (
   try {
     token = new Signer({hostname, port, username, region}).getAuthToken();
   } catch (err) {
-    return {token: Promise.reject(err), expiresAt: now};
+    return Object.freeze({token: Promise.reject(err), expiresAt: now});
   }
-  const entry = {token, expiresAt: now + TOKEN_TTL_MS};
+  const entry = Object.freeze({token, expiresAt: now + TOKEN_TTL_MS});
   cache.set(key, entry);
   token.then(
-    () => options.onGenerated?.(),
+    () => {
+      try {
+        options.onGenerated?.();
+      } catch {
+        // A failing callback must not become an unhandled rejection.
+      }
+    },
     () => {
       // Leave a newer entry for the same key alone.
       if (cache.get(key) === entry) {

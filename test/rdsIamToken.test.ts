@@ -115,4 +115,29 @@ describe('getRdsIamToken', () => {
     await getRdsIamToken(t, {onGenerated});
     expect(onGenerated).toHaveBeenCalledTimes(1);
   });
+
+  it('survives a throwing onGenerated callback', async () => {
+    const t = target();
+    const onGenerated = jest.fn(() => {
+      throw new Error('logger closed');
+    });
+    const unhandled = jest.fn();
+    process.on('unhandledRejection', unhandled);
+    await expect(getRdsIamToken(t, {onGenerated})).resolves.toBe('iam-token');
+    await new Promise(resolve => setImmediate(resolve));
+    process.off('unhandledRejection', unhandled);
+    expect(onGenerated).toHaveBeenCalledTimes(1);
+    expect(unhandled).not.toHaveBeenCalled();
+  });
+
+  it('does not mix up targets whose fields contain a colon', async () => {
+    await getRdsIamToken({hostname: 'a', port: 5432, username: 'b:c'});
+    await getRdsIamToken({hostname: 'a:b', port: 5432, username: 'c'});
+    expect(getAuthToken).toHaveBeenCalledTimes(2);
+  });
+
+  it('hands out an entry that callers cannot change', () => {
+    const entry = getRdsIamTokenWithExpiry(target());
+    expect(Object.isFrozen(entry)).toBe(true);
+  });
 });
