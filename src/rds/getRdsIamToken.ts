@@ -1,3 +1,4 @@
+import {fromNodeProviderChain} from '@aws-sdk/credential-providers';
 import {Signer} from '@aws-sdk/rds-signer';
 
 export type RdsIamTokenTarget = {
@@ -9,7 +10,11 @@ export type RdsIamTokenTarget = {
 };
 
 export type RdsIamTokenOptions = {
-  /** Called once for every new token that was generated successfully, not for cached ones. */
+  /**
+   * Called once for every new token that was generated successfully, not for cached ones. Only the caller that
+   * created the cache entry gets it: a second caller that arrives while the request is still running shares the
+   * pending token and its callback is not called.
+   */
   onGenerated?: () => void;
 };
 
@@ -19,8 +24,12 @@ export type RdsIamTokenWithExpiry = {
   expiresAt: number;
 };
 
-// A token is valid for 15 minutes and is only needed for NEW connections. Reusing it for 10 minutes stays far
-// below the 200 tokens/s account limit and well inside the validity.
+// One credentials provider for all signers. A new Signer would resolve the credential chain again, which under
+// IRSA is an STS AssumeRoleWithWebIdentity call. The provider caches the credentials until they expire.
+const credentials = fromNodeProviderChain();
+
+// A token is valid for 15 minutes and is only needed for NEW connections. Reusing it for 10 minutes stays well
+// inside the validity and gives knex one expiry time to check.
 const TOKEN_TTL_MS = 10 * 60 * 1000;
 
 const cache = new Map<string, Readonly<RdsIamTokenWithExpiry>>();
@@ -53,7 +62,7 @@ export const getRdsIamTokenWithExpiry = (
 
   let token: Promise<string>;
   try {
-    token = new Signer({hostname, port, username, region}).getAuthToken();
+    token = new Signer({hostname, port, username, region, credentials}).getAuthToken();
   } catch (err) {
     return Object.freeze({token: Promise.reject(err), expiresAt: now});
   }

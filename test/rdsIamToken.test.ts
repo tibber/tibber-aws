@@ -34,7 +34,15 @@ describe('getRdsIamToken', () => {
       port: 5432,
       username: t.username,
       region: 'eu-north-1',
+      credentials: expect.any(Function),
     });
+  });
+
+  it('gives every signer the same credentials provider', async () => {
+    await getRdsIamToken(target());
+    await getRdsIamToken(target());
+    const [first, second] = signerCtor.mock.calls.map(c => c[0].credentials);
+    expect(first).toBe(second);
   });
 
   it('returns the cached token within 10 minutes and a new one after', async () => {

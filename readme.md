@@ -133,7 +133,9 @@ const password = await getRdsIamToken({hostname, port: 5432, username});
 
 The token is cached for 10 minutes per host, port, user and region, because it is valid for 15 minutes and only new
 connections need one. A failed request is not cached. `getRdsIamTokenWithExpiry` also returns `expiresAt`, for callers
-that decide per connection whether to ask again, and `onGenerated` runs once for each new token.
+that decide per connection whether to ask again, and `onGenerated` runs once for each new token. It runs only for the caller that started the request: a caller that
+arrives while the request is running shares the pending token and gets no callback. All signers share one credentials
+provider, so the credential chain (an STS call under IRSA) is not resolved again for every token.
 
 ## Running against an emulator (Floci, LocalStack)
 
