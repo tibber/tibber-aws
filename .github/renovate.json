@@ -5,6 +5,13 @@
     "dockerfile",
     "npm"
   ],
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": [
+      "* 9-12 * * 1"
+    ]
+  },
+  "osvVulnerabilityAlerts": true,
   "packageRules": [
     {
       "pinDigests": true,
