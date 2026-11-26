@@ -5,6 +5,24 @@
 
 Thie repo is a typescript wrapper around the AWS SDK for Javascript.
 
+## Installing
+
+Point the `@tibber` scope at GitHub Packages in the consuming repo's `.npmrc`:
+
+```
+@tibber:registry=https://npm.pkg.github.com
+```
+
+Installing needs a token that can read the org's packages. CircleCI appends it before `yarn install` (`echo "//npm.pkg.github.com/:_authToken=$GITHUB_READONLY_PACKAGES" >> .npmrc`), and Docker builds get it as a build secret, as in `service-template`.
+
+To move off the npmjs package without touching imports, install it under the old name with an alias:
+
+```json
+"tibber-aws": "npm:@tibber/tibber-aws@^7"
+```
+
+New code can depend on `@tibber/tibber-aws` directly and import from it.
+
 ## Releases & publishing — read before merging a PR
 
 Merging to `master` runs the CircleCI `build_and_deploy` workflow. The
@@ -17,7 +35,7 @@ and **the squash-commit title decides whether a new version is published**
 | `fix: …` / `fix(deps): …` | patch release |
 | `feat: …` | minor release |
 | `feat!: …` or a `BREAKING CHANGE:` footer | major release |
-| `chore: …`, `docs: …`, `refactor: …`, or a plain title (e.g. Renovate's default `Update dependency x to vY`) | **no release** — the merge ships nothing to npm |
+| `chore: …`, `docs: …`, `refactor: …`, or a plain title (e.g. Renovate's default `Update dependency x to vY`) | **no release** — the merge publishes nothing |
 
 **Merging a dep-update PR (Renovate/Dependabot)?** The default squash title
 does *not* publish. If consumers should get the bump (security fixes
@@ -26,22 +44,22 @@ Note: a later release publishes whatever is on `master` at that point, so
 unreleased chore-merges still ship with the next `fix`/`feat` release.
 
 **Versioning is tag-based.** The git tag, GitHub release (with generated
-notes), and npm carry the real version — the in-repo `package.json` version
+notes), and the published package carry the real version — the in-repo `package.json` version
 and `CHANGELOG.md` are frozen at v7.0.23 and no release commit is pushed
 back to `master` (its branch rules forbid it).
 
-**Publishing uses npm [trusted publishing](https://docs.npmjs.com/trusted-publishers)**
-via CircleCI OIDC — there is no stored npm token. Requirements: the
-npmjs.com trusted-publisher entry for this package (CircleCI, org `tibber`,
-project `tibber-aws`, job `deploy`) and npm ≥ 11.11 in the job (the
-`cimg/node:24` image). Provenance is attached automatically.
+**Publishing goes to GitHub Packages** as `@tibber/tibber-aws`, with the
+`GITHUB` context's `GITHUB_AUTH_TOKEN`. Versions up to 7.6.10 were also
+published to npmjs as `tibber-aws`; npmjs gets no new versions. The job
+publishes only when semantic-release tagged the commit, so the frozen
+in-repo version is never published.
 
 **If the deploy job fails after tagging** (e.g. a registry error), the tag
-and GitHub release exist but npm doesn't have the version. A plain rerun
+and GitHub release exist but GitHub Packages doesn't have the version. A plain rerun
 will no-op ("no new version to release"). Recovery: delete the tag
 (`git push origin :refs/tags/vX.Y.Z`), delete the GitHub release if one was
 created, then rerun the `deploy` job. A merge with no pending release logs
-`already published, skipping` and exits green.
+`No release on this commit, skipping publish` and exits green.
 
 ## Version 6.x.x changes
 - Migrated to aws sdk 3.x
@@ -55,7 +73,7 @@ If `Topic.push` rejects a message as too long it will retry with gzip-compressio
 The library supports automatic decompression of SQS messages compressed with Brotli or GZip. Messages with a `contentType` message attribute set to `brotli` or `gzip` will be automatically decompressed. Consumers that don't use `QueueSubjectListener` can call `decodeSnsMessage(JSON.parse(sqsMessage.Body))` directly.
 
 ```typescript
-import {QueueSubjectListener, Queue} from 'tibber-aws';
+import {QueueSubjectListener, Queue} from '@tibber/tibber-aws';
 
 const queue = await Queue.createQueue('test-queue');
 const listener = new QueueSubjectListener(queue);
@@ -71,7 +89,7 @@ listener.listen();
 ## Usage — application owns the queue/topic
 
 ```ts
-import {Topic, Queue} from 'tibber-aws';
+import {Topic, Queue} from '@tibber/tibber-aws';
 
 const topic = await Topic.createTopic('test-topic', 'test subject');
 const topic2 = await Topic.createTopic('test-topic2');
@@ -105,7 +123,7 @@ Required IAM (publisher): `sns:Publish`, plus `sns:GetTopicAttributes` for
 `topic.verify()`.
 
 ```ts
-import {Queue, QueueSubjectListener, Topic} from 'tibber-aws';
+import {Queue, QueueSubjectListener, Topic} from '@tibber/tibber-aws';
 
 // Consumer
 const listener = new QueueSubjectListener(await Queue.attach('test-queue'));
@@ -126,7 +144,7 @@ The password for an IAM database user, for any database that takes RDS IAM token
 `@tibber/tibber-postgres`).
 
 ```ts
-import {getRdsIamToken} from 'tibber-aws';
+import {getRdsIamToken} from '@tibber/tibber-aws';
 
 const password = await getRdsIamToken({hostname, port: 5432, username});
 ```

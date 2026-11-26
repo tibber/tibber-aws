@@ -1,5 +1,5 @@
 {
-  "name": "tibber-aws",
+  "name": "@tibber/tibber-aws",
   "version": "7.0.23",
   "description": "",
   "main": "./dist/src/index.js",
@@ -26,7 +26,10 @@
   },
   "homepage": "https://github.com/tibber/tibber-aws#readme",
   "author": "tibber",
-  "license": "ISC",
+  "license": "UNLICENSED",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
   "devDependencies": {
     "@types/jest": "^29.5.8",
     "@types/jszip": "^3.4.1",
