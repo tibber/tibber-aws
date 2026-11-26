@@ -50,9 +50,6 @@ jobs:
     working_directory: ~/package
     resource_class: small
     docker:
-      # cimg/node:24.18.0 ships npm 11.16.0; CircleCI OIDC trusted
-      # publishing requires npm >= 11.11.0 (same pattern as tibber-dsf /
-      # tibber-httpclient).
       - image: cimg/node:24.18.0
     steps:
       - checkout
@@ -63,16 +60,21 @@ jobs:
             yarn
             # semantic-release computes the version from commits, tags, and
             # creates the GitHub release; npmPublish is off in .releaserc.js
-            # so the publish itself happens below via OIDC trusted publishing
-            # (no stored npm token, nothing for 2FA to block).
+            # so the publish itself happens below, to GitHub Packages
+            # (publishConfig.registry in package.json).
             yarn release
+            NAME=$(node -p "require('./package.json').name")
             V=$(node -p "require('./package.json').version")
-            if npm view "tibber-aws@$V" version >/dev/null 2>&1; then
-              echo "tibber-aws@$V already published, skipping"
+            # Without a release, package.json keeps its frozen in-repo version
+            # (7.0.23), which must not be published. semantic-release tags HEAD
+            # when it releases, so publish only then.
+            if ! git tag --points-at HEAD | grep -qx "v$V"; then
+              echo "No release on this commit, skipping publish"
               exit 0
             fi
-            NPM_ID_TOKEN=$(circleci run oidc get --claims '{"aud": "npm:registry.npmjs.org"}')
-            export NPM_ID_TOKEN
-            # Provenance is emitted automatically under trusted publishing —
-            # no --provenance flag needed.
+            echo "//npm.pkg.github.com/:_authToken=$GITHUB_AUTH_TOKEN" > ~/.npmrc
+            if npm view "$NAME@$V" version --registry https://npm.pkg.github.com/ >/dev/null 2>&1; then
+              echo "$NAME@$V already published, skipping"
+              exit 0
+            fi
             npm publish

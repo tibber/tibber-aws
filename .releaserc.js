@@ -65,9 +65,8 @@ module.exports = {
         "@semantic-release/release-notes-generator",
         /**
          * Patches package.json with the new semver. Publishing is done by the
-         * CI job itself via CircleCI OIDC trusted publishing (npm >= 11.11,
-         * no stored token) — with npmPublish off, this plugin also skips its
-         * NPM_TOKEN verification.
+         * CI job itself, to GitHub Packages — with npmPublish off, this plugin
+         * also skips its NPM_TOKEN verification.
          */
         ["@semantic-release/npm", { "npmPublish": false }],
         /**
