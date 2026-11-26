@@ -385,29 +385,7 @@
     "@smithy/types" "^4.20.0"
     tslib "^2.6.2"
 
-"@aws-sdk/credential-providers@3.1177.0":
-  version "3.1177.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/credential-providers/-/credential-providers-3.1177.0.tgz#5f046e19cee456787984cc5be93156475112807e"
-  integrity sha512-jcWzP92Kab5CD9asI2pNymg57meUqjves8ugnY0WzSnDf6iueAO3bX6LaWjtdJ5A3h9RFnnsPPQkMeCnJR8PNQ==
-  dependencies:
-    "@aws-sdk/core" "^3.981.2"
-    "@aws-sdk/credential-provider-cognito-identity" "^3.972.85"
-    "@aws-sdk/credential-provider-env" "^3.972.86"
-    "@aws-sdk/credential-provider-http" "^3.972.88"
-    "@aws-sdk/credential-provider-ini" "^3.973.32"
-    "@aws-sdk/credential-provider-login" "^3.972.94"
-    "@aws-sdk/credential-provider-node" "^3.972.99"
-    "@aws-sdk/credential-provider-process" "^3.972.86"
-    "@aws-sdk/credential-provider-sso" "^3.973.30"
-    "@aws-sdk/credential-provider-web-identity" "^3.972.92"
-    "@aws-sdk/nested-clients" "^3.998.5"
-    "@aws-sdk/types" "^3.975.1"
-    "@smithy/core" "^3.41.1"
-    "@smithy/credential-provider-imds" "^4.5.2"
-    "@smithy/types" "^4.20.0"
-    tslib "^2.6.2"
-
-"@aws-sdk/credential-providers@^3.1078.0":
+"@aws-sdk/credential-providers@3.1178.0", "@aws-sdk/credential-providers@^3.1078.0":
   version "3.1178.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/credential-providers/-/credential-providers-3.1178.0.tgz#0aa630e504372fd104f066c894216d259e930d64"
   integrity sha512-93tR01qUWdG/vFFw/BvP7xIZXSQSaZ16MEGbOZsurIEYdGTdKHSd5HhFHqyd6VmKmrd+XOgW6GGR5DGgnRGhmA==
@@ -480,12 +458,12 @@
     tslib "^2.6.2"
 
 "@aws-sdk/rds-signer@^3.1078.0":
-  version "3.1177.0"
-  resolved "https://registry.yarnpkg.com/@aws-sdk/rds-signer/-/rds-signer-3.1177.0.tgz#b13f6de513f34ea2d2d2ffc272563a375d671f5b"
-  integrity sha512-r9gEYg0s1LxxrnAQdVgurVS5LVLjqLwIacCY2AYhCWxkya2goDOoF1cnKv1DXTvnRtqvndwEhs7FOoRNKEaOOg==
+  version "3.1178.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/rds-signer/-/rds-signer-3.1178.0.tgz#edadb54b20b1bdf3289e59848282c63ba2a03c09"
+  integrity sha512-B6Y0q/+jTJNXFh2hQlPzVcq7Q94KQZk7Nw/QlspoCuzMrAaJBRyz3ASeMB/tYlw5vTet75MEn+5ORBiaCJdmoQ==
   dependencies:
     "@aws-sdk/core" "^3.981.2"
-    "@aws-sdk/credential-providers" "3.1177.0"
+    "@aws-sdk/credential-providers" "3.1178.0"
     "@smithy/core" "^3.41.1"
     "@smithy/signature-v4" "^5.7.5"
     "@smithy/types" "^4.20.0"
